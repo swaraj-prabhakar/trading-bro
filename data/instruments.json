@@ -1,0 +1,377 @@
+{
+ "_note": "NIFTY 50 constituents and F&O lot sizes. NSE revises both periodically (index rebalancing every Mar/Sep, lot sizes every ~6 months). VERIFY against nseindia.com before trading and edit this file. 'lot' is the F&O lot size, 'strike_step' is optional (auto-estimated from price when missing). 'upstox' = Upstox stock/index page, 'upstox_oc' = Upstox option chain (verified 2026-11-23).",
+ "indices": [
+  {
+   "symbol": "NIFTY",
+   "yahoo": "^NSEI",
+   "lot": 65,
+   "strike_step": 50,
+   "expiry": "weekly",
+   "margin_pct": 0.11,
+   "upstox": "https://upstox.com/indices/nifty-50-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/nifty/"
+  },
+  {
+   "symbol": "BANKNIFTY",
+   "yahoo": "^NSEBANK",
+   "lot": 30,
+   "strike_step": 100,
+   "expiry": "monthly",
+   "margin_pct": 0.11,
+   "upstox": "https://upstox.com/indices/nifty-bank-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/banknifty/"
+  }
+ ],
+ "stocks": [
+  {
+   "symbol": "ADANIENT",
+   "lot": 309,
+   "isin": "INE423A01024",
+   "upstox": "https://upstox.com/stocks/adani-enterprises-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/adani-enterprises-limited/"
+  },
+  {
+   "symbol": "ADANIPORTS",
+   "lot": 475,
+   "isin": "INE742F01042",
+   "upstox": "https://upstox.com/stocks/adani-port-sez-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/adani-port-sez-ltd/"
+  },
+  {
+   "symbol": "APOLLOHOSP",
+   "lot": 125,
+   "isin": "INE437A01024",
+   "upstox": "https://upstox.com/stocks/apollo-hospitals-enter-l-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/apollo-hospitals-enter-l/"
+  },
+  {
+   "symbol": "ASIANPAINT",
+   "lot": 250,
+   "isin": "INE021A01026",
+   "upstox": "https://upstox.com/stocks/asian-paints-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/asian-paints-limited/"
+  },
+  {
+   "symbol": "AXISBANK",
+   "lot": 625,
+   "isin": "INE238A01034",
+   "upstox": "https://upstox.com/stocks/axis-bank-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/axis-bank-limited/"
+  },
+  {
+   "symbol": "BAJAJ-AUTO",
+   "lot": 75,
+   "isin": "INE917I01010",
+   "upstox": "https://upstox.com/stocks/bajaj-auto-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/bajaj-auto-limited/"
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "lot": 750,
+   "isin": "INE296A01032",
+   "upstox": "https://upstox.com/stocks/bajaj-finance-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/bajaj-finance-limited/"
+  },
+  {
+   "symbol": "BAJAJFINSV",
+   "lot": 300,
+   "isin": "INE918I01026",
+   "upstox": "https://upstox.com/stocks/bajaj-finserv-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/bajaj-finserv-ltd/"
+  },
+  {
+   "symbol": "BEL",
+   "lot": 1425,
+   "isin": "INE263A01024",
+   "upstox": "https://upstox.com/stocks/bharat-electronics-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/bharat-electronics-ltd/"
+  },
+  {
+   "symbol": "BHARTIARTL",
+   "lot": 475,
+   "isin": "INE397D01024",
+   "upstox": "https://upstox.com/stocks/bharti-airtel-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/bharti-airtel-limited/"
+  },
+  {
+   "symbol": "CIPLA",
+   "lot": 425,
+   "isin": "INE059A01026",
+   "upstox": "https://upstox.com/stocks/cipla-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/cipla-ltd/"
+  },
+  {
+   "symbol": "COALINDIA",
+   "lot": 1350,
+   "isin": "INE522F01014",
+   "upstox": "https://upstox.com/stocks/coal-india-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/coal-india-ltd/"
+  },
+  {
+   "symbol": "DRREDDY",
+   "lot": 625,
+   "isin": "INE089A01031",
+   "upstox": "https://upstox.com/stocks/dr-reddy-s-laboratories-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/dr-reddy-s-laboratories/"
+  },
+  {
+   "symbol": "EICHERMOT",
+   "lot": 100,
+   "isin": "INE066A01021",
+   "upstox": "https://upstox.com/stocks/eicher-motors-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/eicher-motors-ltd/"
+  },
+  {
+   "symbol": "ETERNAL",
+   "lot": 2425,
+   "isin": "INE758T01015",
+   "upstox": "https://upstox.com/stocks/eternal-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/eternal-limited/"
+  },
+  {
+   "symbol": "GRASIM",
+   "lot": 250,
+   "isin": "INE047A01021",
+   "upstox": "https://upstox.com/stocks/grasim-industries-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/grasim-industries-ltd/"
+  },
+  {
+   "symbol": "HCLTECH",
+   "lot": 400,
+   "isin": "INE860A01027",
+   "upstox": "https://upstox.com/stocks/hcl-technologies-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/hcl-technologies-ltd/"
+  },
+  {
+   "symbol": "HDFCBANK",
+   "lot": 650,
+   "isin": "INE040A01034",
+   "upstox": "https://upstox.com/stocks/hdfc-bank-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/hdfc-bank-ltd/"
+  },
+  {
+   "symbol": "HDFCLIFE",
+   "lot": 1100,
+   "isin": "INE795G01014",
+   "upstox": "https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/hdfc-life-ins-co-ltd/"
+  },
+  {
+   "symbol": "HINDALCO",
+   "lot": 700,
+   "isin": "INE038A01020",
+   "upstox": "https://upstox.com/stocks/hindalco-industries-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/hindalco-industries-ltd/"
+  },
+  {
+   "symbol": "HINDUNILVR",
+   "lot": 300,
+   "isin": "INE030A01027",
+   "upstox": "https://upstox.com/stocks/hindustan-unilever-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/hindustan-unilever-ltd/"
+  },
+  {
+   "symbol": "ICICIBANK",
+   "lot": 700,
+   "isin": "INE090A01021",
+   "upstox": "https://upstox.com/stocks/icici-bank-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/icici-bank-ltd/"
+  },
+  {
+   "symbol": "INDIGO",
+   "lot": 150,
+   "isin": "INE646L01027",
+   "upstox": "https://upstox.com/stocks/interglobe-aviation-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/interglobe-aviation-ltd/"
+  },
+  {
+   "symbol": "INFY",
+   "lot": 400,
+   "isin": "INE009A01021",
+   "upstox": "https://upstox.com/stocks/infosys-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/infosys-limited/"
+  },
+  {
+   "symbol": "ITC",
+   "lot": 1725,
+   "isin": "INE154A01025",
+   "upstox": "https://upstox.com/stocks/itc-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/itc-ltd/"
+  },
+  {
+   "symbol": "JIOFIN",
+   "lot": 2350,
+   "isin": "INE758E01017",
+   "upstox": "https://upstox.com/stocks/jio-fin-services-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/jio-fin-services-ltd/"
+  },
+  {
+   "symbol": "JSWSTEEL",
+   "lot": 675,
+   "isin": "INE019A01038",
+   "upstox": "https://upstox.com/stocks/jsw-steel-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/jsw-steel-limited/"
+  },
+  {
+   "symbol": "KOTAKBANK",
+   "lot": 2000,
+   "isin": "INE237A01036",
+   "upstox": "https://upstox.com/stocks/kotak-mahindra-bank-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/kotak-mahindra-bank-ltd/"
+  },
+  {
+   "symbol": "LT",
+   "lot": 175,
+   "isin": "INE018A01030",
+   "upstox": "https://upstox.com/stocks/larsen-toubro-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/larsen-toubro-ltd/"
+  },
+  {
+   "symbol": "M&M",
+   "lot": 200,
+   "isin": "INE101A01026",
+   "upstox": "https://upstox.com/stocks/mahindra-mahindra-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/mahindra-mahindra-ltd/"
+  },
+  {
+   "symbol": "MARUTI",
+   "lot": 50,
+   "isin": "INE585B01010",
+   "upstox": "https://upstox.com/stocks/maruti-suzuki-india-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/maruti-suzuki-india-ltd/"
+  },
+  {
+   "symbol": "MAXHEALTH",
+   "lot": 525,
+   "isin": "INE027H01010",
+   "upstox": "https://upstox.com/stocks/max-healthcare-ins-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/max-healthcare-ins-ltd/"
+  },
+  {
+   "symbol": "NESTLEIND",
+   "lot": 500,
+   "isin": "INE239A01024",
+   "upstox": "https://upstox.com/stocks/nestle-india-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/nestle-india-limited/"
+  },
+  {
+   "symbol": "NTPC",
+   "lot": 1500,
+   "isin": "INE733E01010",
+   "upstox": "https://upstox.com/stocks/ntpc-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/ntpc-ltd/"
+  },
+  {
+   "symbol": "ONGC",
+   "lot": 2250,
+   "isin": "INE213A01029",
+   "upstox": "https://upstox.com/stocks/oil-and-natural-gas-corp-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/oil-and-natural-gas-corp/"
+  },
+  {
+   "symbol": "POWERGRID",
+   "lot": 1900,
+   "isin": "INE752E01010",
+   "upstox": "https://upstox.com/stocks/power-grid-corp-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/power-grid-corp-ltd/"
+  },
+  {
+   "symbol": "RELIANCE",
+   "lot": 500,
+   "isin": "INE002A01018",
+   "upstox": "https://upstox.com/stocks/reliance-industries-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/reliance-industries-ltd/"
+  },
+  {
+   "symbol": "SBILIFE",
+   "lot": 375,
+   "isin": "INE123W01016",
+   "upstox": "https://upstox.com/stocks/sbi-life-insurance-co-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/sbi-life-insurance-co-ltd/"
+  },
+  {
+   "symbol": "SBIN",
+   "lot": 750,
+   "isin": "INE062A01020",
+   "upstox": "https://upstox.com/stocks/state-bank-of-india-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/state-bank-of-india/"
+  },
+  {
+   "symbol": "SHRIRAMFIN",
+   "lot": 825,
+   "isin": "INE721A01047",
+   "upstox": "https://upstox.com/stocks/shriram-finance-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/shriram-finance-limited/"
+  },
+  {
+   "symbol": "SUNPHARMA",
+   "lot": 350,
+   "isin": "INE044A01036",
+   "upstox": "https://upstox.com/stocks/sun-pharmaceutical-ind-l-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/sun-pharmaceutical-ind-l/"
+  },
+  {
+   "symbol": "TATACONSUM",
+   "lot": 550,
+   "isin": "INE192A01025",
+   "upstox": "https://upstox.com/stocks/tata-consumer-product-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/tata-consumer-product-ltd/"
+  },
+  {
+   "symbol": "TMPV",
+   "lot": 1600,
+   "isin": "INE155A01022",
+   "upstox": "https://upstox.com/stocks/tata-motors-pass-veh-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/tata-motors-pass-veh-ltd/"
+  },
+  {
+   "symbol": "TATASTEEL",
+   "lot": 2750,
+   "isin": "INE081A01020",
+   "upstox": "https://upstox.com/stocks/tata-steel-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/tata-steel-limited/"
+  },
+  {
+   "symbol": "TCS",
+   "lot": 225,
+   "isin": "INE467B01029",
+   "upstox": "https://upstox.com/stocks/tata-consultancy-serv-lt-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/tata-consultancy-serv-lt/"
+  },
+  {
+   "symbol": "TECHM",
+   "lot": 600,
+   "isin": "INE669C01036",
+   "upstox": "https://upstox.com/stocks/tech-mahindra-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/tech-mahindra-limited/"
+  },
+  {
+   "symbol": "TITAN",
+   "lot": 175,
+   "isin": "INE280A01028",
+   "upstox": "https://upstox.com/stocks/titan-company-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/titan-company-limited/"
+  },
+  {
+   "symbol": "TRENT",
+   "lot": 225,
+   "isin": "INE849A01020",
+   "upstox": "https://upstox.com/stocks/trent-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/trent-ltd/"
+  },
+  {
+   "symbol": "ULTRACEMCO",
+   "lot": 50,
+   "isin": "INE481G01011",
+   "upstox": "https://upstox.com/stocks/ultratech-cement-limited-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/ultratech-cement-limited/"
+  },
+  {
+   "symbol": "WIPRO",
+   "lot": 3000,
+   "isin": "INE075A01022",
+   "upstox": "https://upstox.com/stocks/wipro-ltd-share-price/",
+   "upstox_oc": "https://upstox.com/option-chain/wipro-ltd/"
+  }
+ ]
+}

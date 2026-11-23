@@ -1,0 +1,9 @@
+.cache/
+reports/
+__pycache__/
+*.pyc
+upstox_credentials.json
+.upstox_token.json
+
+# local scratch
+output/**/trend_filter_*/
