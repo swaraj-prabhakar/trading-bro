@@ -11,7 +11,7 @@ on:
       job:
         description: "Job to run"
         type: choice
-        options: [scan, midday, final, results]
+        options: [scan, midday, final, results, picks]
         default: scan
       force:
         description: "Run even if today is not a trading day"
@@ -64,7 +64,7 @@ jobs:
         run: |
           git config user.name "swaraj-prabhakar"
           git config user.email "98304110+swaraj-prabhakar@users.noreply.github.com"
-          git add output Result.md 2>/dev/null || true
+          git add output Result.md Picks.md 2>/dev/null || true
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           git commit -m "${{ steps.job.outputs.job }}: $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')"
           for i in 1 2 3; do

@@ -15,6 +15,11 @@ In Claude Code, open this folder and ask, e.g. *"give me intraday stock picks fo
 or *"which CE/PE should I buy with ₹20k today?"*. The matching skill in `.claude/skills/`
 runs the scanner and explains the output.
 
+## On your phone
+- **[Picks.md](Picks.md)**: today's picks with an *Open in Upstox* link on every row. It's rewritten at 10:10, and gets status updates at 13:30 and 15:40 IST.
+- **[Result.md](Result.md)**: the track record (overall summary first, then each day).
+- **Claude app skill:** upload `claude-app-skill/tradingbro-picks.zip` once in Claude (Customize → Skills → Upload a skill). Then ask *"today's picks"* in the Claude phone app. It reads Picks.md and shows the table with tappable Upstox links.
+
 ## Save picks and review them at the end of the day
 Every live scan saves its picks to `output/<date>/<kind>_<HHMM>.json` (turn off with `--no-save`).
 After 15:30, run the `intraday-review` skill or:

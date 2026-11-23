@@ -144,6 +144,91 @@ def build_results():
     print(f"Result.md updated: {len(days)} day(s), {len(allp)} picks")
 
 
+# ------------------------------------------------------------------ Picks.md (phone view)
+PICKS_MD = ROOT / "Picks.md"
+
+
+def _latest_scan_files(folder):
+    best = {}
+    for f in sorted(folder.glob("*_*.json")):
+        k = f.stem.split("_")[0]
+        if k in KINDS:
+            best[k] = f
+    return [best[k] for k in KINDS if k in best]
+
+
+def _status_map(folder):
+    """(source file, kind, symbol) -> verdict, from the most recent review of the day."""
+    for name, label in (("review.json", "final 15:40"), ("review_1330.json", "mid-day 13:30")):
+        f = folder / name
+        if f.exists():
+            rv = json.loads(f.read_text())
+            return label, {(r["source"], r["kind"], r["symbol"]): _icon(r.get("verdict")) for r in rv["predictions"]}
+    return None, {}
+
+
+def _link(url, text="Open in Upstox"):
+    return f"[{text}]({url})" if url else "-"
+
+
+def write_picks(day=None):
+    day = day or now_ist().date().isoformat()
+    folder = OUTPUT_DIR / day
+    files = _latest_scan_files(folder) if folder.exists() else []
+    md = ["# TradingBro – today's picks", ""]
+    if not files:
+        md += [f"No scan saved for **{day}** (holiday, weekend, or the 10:10 scan has not run yet).", ""]
+        PICKS_MD.write_text(chr(10).join(md + [f"> {DISCLAIMER}"]), encoding="utf-8")
+        print("Picks.md: no scan for", day)
+        return
+    status_label, status = _status_map(folder)
+    first = json.loads(files[0].read_text())
+    m = first.get("market") or {}
+    cap = first.get("capital", 0)
+    md += [f"**{day}** · scan at {str(first['asof'])[11:16]} IST · market **{m.get('label', '-')}** · "
+           f"capital ₹{cap:,.0f} per pick" + (f" · status as of **{status_label}**" if status_label else ""), "",
+           "How to trade: tap **Open in Upstox** → stocks: Buy · futures: F&O tab, pick the expiry · "
+           "options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; "
+           "square off by 15:15. Options: exit on the **spot** stop/target.", ""]
+    total = 0
+    for f in files:
+        pl = json.loads(f.read_text())
+        kind, rows = pl["kind"], pl["picks"]
+        total += len(rows)
+        md += [f"## {kind.capitalize()} ({len(rows)})", ""]
+        if not rows:
+            md += ["No picks." + (" Market trend blocks buy-first trades today." if m.get("trend") == -1 and kind != "options" else ""), ""]
+            continue
+        st = lambda r: status.get((f.name, kind, r["symbol"]), "")
+        if kind == "stocks":
+            cols = ["Stock", "Side", "Buy at", "Stop", "Target", "Qty", "Max loss", "Max gain", "Votes", "Upstox"]
+            body = [[r["symbol"], r["side"], f"{r['price']:,.2f}", f"{r['stop']:,.2f}", f"{r['target']:,.2f}",
+                     str(r["units"]), f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}", r["votes"],
+                     _link(r.get("upstox"))] for r in rows]
+        elif kind == "futures":
+            cols = ["Contract", "Side", "Buy at ~", "Stop", "Target", "Lots × lot", "Margin ~", "Max loss",
+                    "Max gain", "Upstox"]
+            body = [[f"{r['symbol']} {r['expiry']}", r["side"], f"{r['fut_price']:,.1f}", f"{r['stop']:,.1f}",
+                     f"{r['target']:,.1f}", f"{r['lots']} × {r['lot']}", f"₹{r['margin']:,.0f}",
+                     f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}", _link(r.get("upstox"))] for r in rows]
+        else:
+            cols = ["Option", "Premium ~", "Spot stop", "Spot target", "Lots × lot", "Invest", "Max loss",
+                    "Max gain", "Votes", "Upstox"]
+            body = [[r["option"], f"{r['premium']:,.1f}", f"{r['spot_stop']:,.1f}", f"{r['spot_target']:,.1f}",
+                     f"{r['lots']} × {r['lot']}", f"₹{r['invest']:,.0f}", f"₹{r['max_loss']:,.0f}",
+                     f"₹{r['max_gain']:,.0f}", r["votes"], _link(r.get("upstox"), "Option chain")] for r in rows]
+        if status_label:
+            cols.insert(1, "Status")
+            for r, b in zip(rows, body):
+                b.insert(1, st(r) or "-")
+        md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
+    md += [f"_{total} pick(s). Each row is sized on the full capital – split it if you take several. "
+           "Premiums/futures prices are estimates: use the live Upstox price. "
+           "Full history: [Result.md](Result.md)._", "", f"> {DISCLAIMER}"]
+    PICKS_MD.write_text(chr(10).join(md), encoding="utf-8")
+    print(f"Picks.md updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     job = argv[0] if argv else ""
@@ -153,15 +238,20 @@ def main(argv=None):
         return
     if job == "scan":
         scan()
+        write_picks()
     elif job == "midday":
         review("review_1330")
+        write_picks()
     elif job == "final":
         review("review")
         build_results()
+        write_picks()
     elif job == "results":
         build_results()
+    elif job == "picks":
+        write_picks(argv[1] if len(argv) > 1 else None)
     else:
-        sys.exit("usage: python -m tradingbro.daily scan|midday|final|results")
+        sys.exit("usage: python -m tradingbro.daily scan|midday|final|results|picks [date]")
 
 
 if __name__ == "__main__":
