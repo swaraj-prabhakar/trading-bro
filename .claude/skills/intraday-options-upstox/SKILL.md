@@ -71,9 +71,17 @@ profitable in **both** periods (avg R -0.06 → +0.05 and +0.21 → +0.38; about
    (above its high for CE, below its low for PE).
 2. **Strong market**: at least **2 of the 3** market-trend views agree (market score ≥ 2/3), not just a lean.
 
-The scanner prints how many signals each filter skipped (`Loss filters:` note). Report it. `--classic` switches both
-off (the original rules). Things that did **not** help in the study: breakeven stops, scanning later (10:30/11:00),
-avoiding stretched prices, time stops, wider/tighter stops, a 1.5R target.
+Optional, off by default (tested, not reliably better):
+- `--rr 3`: 3R target. Slightly better in the 1-year study; in a 30-day replay Yahoo made 12% more with a deeper
+  drawdown and Upstox made 6% less. Fewer trades reach the target.
+- `--cooldown`: skip a symbol for 5 sessions after the same setup on it hit its stop. It helped the older period of
+  the study, but in the 30-day replay it cut Yahoo profit by 19% (the next-ranked pick that replaces a skipped one
+  was often worse).
+
+The scanner prints how many signals each filter skipped (`Loss filters:` note). Report it. `--classic` switches the
+loss filters off (the original rules). Things that did **not** help in the study: breakeven stops, scanning later (10:30/11:00),
+avoiding stretched prices, time stops, wider/tighter stops, a 1.5R target, trailing stops, skipping expiry Tuesdays,
+requiring all 3 market views. Taking half at 1R raises the win rate (46% → 55%) but lowers the profit.
 Losses are not eliminated: in the study about half the months still had a negative average. Keep the 2% risk per
 trade and the 15:15 square-off.
 

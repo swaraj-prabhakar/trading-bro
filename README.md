@@ -42,6 +42,9 @@ The app's redirect URL must be `http://127.0.0.1:8765/callback`. Orders are only
 ## Method – stocks: ORB-30 + relative volume
 Buy when the scan bar closes above the 09:15–09:45 high, today's volume so far is ≥ 1.5× normal for that time of day,
 and the market is BULLISH. Stop = opening-range low, target = 2R, square-off 15:15 (`tradingbro/stock_orb.py`).
+Optional refinements, off by default (they protected the weak part of the study but lowered profit in a 30-day
+replay): `--entry pullback` (limit buy at the opening-range high till 11:30) and `--daily-trend` (stock above its
+20-day EMA).
 In a 1-year Upstox study of 50 stocks it was the only one of 11 well-known methods that beat the original ensemble in
 both the older 165 sessions (≈ break-even after costs vs −0.18%/trade) and the latest 60 (+0.32%/trade, PF 1.93).
 `--method ensemble` brings back the original vote for stocks.
@@ -61,6 +64,8 @@ historical edge after charges are shown, ordered by strategy agreement, then max
 **Loss filters** (from the same 1-year study; `--classic` turns them off): an option is only bought when the price is
 already beyond the 15-minute opening range in the trade's direction **and** at least 2 of the 3 market-trend views
 agree. That was the only change profitable in both periods (avg −0.06R → +0.05R older, +0.21R → +0.38R recent).
+Optional, off by default (tested but not reliably better): `--rr 3` (3R target: slightly better in the study, mixed in
+a 30-day replay) and `--cooldown` (skip a symbol for 5 sessions after its setup hit the stop).
 
 ## Market-trend filter (on by default)
 Before picking anything, the scanner reads the overall market trend at the scan time from three views:

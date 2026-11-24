@@ -48,7 +48,7 @@ def normalise(kind, r, day, source):
              max_loss=r.get("max_loss"))
     if kind == "stocks":
         p.update(direction=1 if r["side"] == "BUY" else -1, entry=r["price"], stop=r["stop"], target=r["target"],
-                 label=f"{r['symbol']} {r['side']}")
+                 label=f"{r['symbol']} {r['side']}", valid_until=r.get("valid_until"))
     else:
         p.update(direction=1 if r["type"] == "CE" else -1, entry=r["spot"], stop=r["spot_stop"],
                  target=r["spot_target"], label=r["option"], opt_type=r["type"], strike=r["strike"],
@@ -77,11 +77,12 @@ def day_bars(tickers, day, bars="auto", refresh=True):
 ENTRY_DEADLINE = StrategyParams().entry_end
 
 
-def find_fill(b, d, e):
+def find_fill(b, d, e, deadline=None):
     """First bar where a limit order at `e` would have filled (buy: price traded at or
     below e; sell: at or above e) before the entry deadline. Returns index or None."""
+    deadline = deadline or ENTRY_DEADLINE
     for i, (ts, row) in enumerate(b.iterrows()):
-        if ts.strftime("%H:%M") > ENTRY_DEADLINE:
+        if ts.strftime("%H:%M") > deadline:
             return None
         if (d == 1 and row.low <= e) or (d == -1 and row.high >= e):
             return i
@@ -111,7 +112,7 @@ def evaluate(p, bars, interval, day_complete):
     risk = abs(e - s)
     res = dict(outcome="no data", exit_time=None, exit=None)
     if len(b):
-        fi = find_fill(b, d, e)
+        fi = find_fill(b, d, e, p.get("valid_until"))
         if fi is None:
             out = dict(p, outcome="not filled", exit_time=None, exit=None, interval=interval, fill_time=None)
             out["verdict"] = verdict(out)

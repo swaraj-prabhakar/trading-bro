@@ -27,6 +27,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+VARIANTS = {"current": {},
+            "rr3": {"options": ["--rr", "3"]},
+            "all_refinements": {"stocks": ["--entry", "pullback", "--daily-trend"], "options": ["--cooldown"]}}
 
 
 def run_source(a):
@@ -47,7 +50,7 @@ def run_source(a):
         for mod in (stocks, options):
             got = []
             mod.finish = lambda kind, args, payload, rows, cols, notes: got.append(payload)   # capture, don't print
-            argv = daily.scan_argv(a.capital) + ["--date", day, "--time", a.time, "--no-save"]
+            argv = daily.scan_argv(a.capital) + ["--date", day, "--time", a.time, "--no-save"] +                 VARIANTS[a.variant].get(mod.__name__.split(".")[-1], [])
             with contextlib.redirect_stdout(io.StringIO()):
                 mod.main(argv)
             pl = dict(got[0], saved_at=f"replay {day} {a.time}", source=SOURCE_LABEL.lower())
@@ -78,6 +81,9 @@ def main(argv=None):
     ap.add_argument("--sources", default="yahoo,upstox")
     ap.add_argument("--history", type=int, default=None,
                     help="Sessions of 5-minute history for backtests (default 60 on both; >60 needs Upstox)")
+    ap.add_argument("--variant", choices=sorted(VARIANTS), default="current",
+                    help="rr3 = 3R option target; all_refinements = stock pullback entry + 20-day EMA "
+                         "filter + option cooldown")
     ap.add_argument("--profile", default="", help="'personal' = 2 picks per segment, capital split (default: standard)")
     ap.add_argument("--out", default=str(ROOT / "backtest"), help="Folder for the replayed outputs (default backtest/)")
     ap.add_argument("--one", help=argparse.SUPPRESS)       # internal: run one source in this process
@@ -95,7 +101,8 @@ def main(argv=None):
         env = dict(os.environ, TRADINGBRO_SOURCE=src, TRADINGBRO_RUN_DIR=str(out), CAPITAL=str(int(a.capital)),
                    TRADINGBRO_HISTORY_SESSIONS=str(hist), TRADINGBRO_PROFILE=a.profile)
         cmd = [sys.executable, "-m", "tradingbro.replay_days", "--one", src, "--from", a.start, "--to", a.end,
-               "--time", a.time, "--capital", str(a.capital), "--profile", a.profile]
+               "--time", a.time, "--capital", str(a.capital), "--profile", a.profile,
+               "--variant", a.variant]
         procs.append((src, subprocess.Popen(cmd, cwd=ROOT, env=env)))   # the two sources run in parallel
     failed = [s for s, p in procs if p.wait() != 0]
     if failed:

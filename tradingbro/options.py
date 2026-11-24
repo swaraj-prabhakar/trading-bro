@@ -5,6 +5,7 @@ Covers NIFTY, BANKNIFTY and NIFTY 50 stock options.
     python -m tradingbro.options --capital 20000 --otm 1     # one strike out-of-the-money (cheaper)
 """
 import math
+from dataclasses import replace
 
 import numpy as np
 import pandas as pd
@@ -13,13 +14,53 @@ from . import charges
 from .common import base_parser, finish, header, params_from_args, resolve_asof, symbols_arg
 from .data import fetch_universe, fetch_vix
 from .market import describe, market_trend, trend_at
-from .engine import signal_at, simulate
+from .engine import levels, signal_at, simulate, walk
 from .indicators import hist_vol
 from .options_math import bs_delta, bs_price, next_expiry, pick_strike, years_to_expiry
 from .strategies import add_signals
 from .universe import estimate_strike_step, filter_symbols, load_instruments
 
 OPT_MIN_MARKET_SCORE = 2
+OPT_RR = 2.0              # target = 2 x risk. --rr 3 was tested: slightly better in the 1-year study, mixed in a
+                          # 30-day replay (Yahoo +12% with a deeper drawdown, Upstox -6%), so 2R stays the default
+COOLDOWN_SESSIONS = 5     # --cooldown: skip a symbol for 5 sessions after its setup hit the stop (opt-in: helped
+                          # the 1-year study but cut Yahoo profit in the 30-day replay)
+
+
+def recent_stop(df, asof, p, mkt, sessions=COOLDOWN_SESSIONS):
+    """True if, in the last `sessions` sessions before asof's date, this symbol had a setup at the
+    same clock time (same rules: >= min_votes, opening-range vote agrees, market trend in the same
+    direction with score >= OPT_MIN_MARKET_SCORE) that hit its stop."""
+    at = asof.strftime("%H:%M")
+    times = df.index.strftime("%H:%M").values
+    dates = df.index.date
+    prev = sorted({d for d in dates if d < asof.date()})[-sessions:]
+    for day in prev:
+        idx = np.flatnonzero((dates == day) & (times == at))
+        if not len(idx):
+            continue
+        i = idx[0]
+        v = int(df["votes"].iat[i])
+        d = 1 if v >= p.min_votes else (-1 if v <= -p.min_votes else 0)
+        if d == 0 or int(df["s_orb"].iat[i]) != d:
+            continue
+        if mkt is not None:
+            ts = df.index[i]
+            if mkt["trend"].asof(ts) != d or abs(mkt["score"].asof(ts)) < OPT_MIN_MARKET_SCORE:
+                continue
+        end = i
+        while end + 1 < len(df) and dates[end + 1] == day:
+            end += 1
+        if end == i:
+            continue
+        sl = slice(i + 1, end + 1)
+        e = df["open"].iat[i + 1]
+        s, tg = levels(e, df["atr"].iat[i], d, p)
+        _, _, reason = walk(times[sl], df.open.values[sl], df.high.values[sl], df.low.values[sl],
+                            df.close.values[sl], 0, d, e, s, tg, p.squareoff)
+        if reason == "stop":
+            return True
+    return False
 
 
 def implied_vol(inst, daily, vix, day):
@@ -70,6 +111,9 @@ def analyze(a):
     mdir = mtrend["trend"] if mtrend else None
     against = 0
     risk_budget = a.capital * a.risk_pct / 100
+    if not a.classic and a.rr is None:
+        p = replace(p, rr=OPT_RR)                       # after the market trend, which uses the standard params
+    cooled = 0
 
     # Loss filters (1-year Upstox study, 165 + 60 sessions): only trade when price is already beyond the
     # 15-minute opening range in the trade's direction AND at least 2 of the 3 market-trend views agree.
@@ -95,6 +139,9 @@ def analyze(a):
             continue
         if not a.classic and "orb" not in sig.agreeing:
             orb_filtered += 1
+            continue
+        if not a.classic and not a.no_cooldown and recent_stop(df, asof, p, mkt):
+            cooled += 1
             continue
         kind = "CE" if sig.direction == 1 else "PE"
         step = inst.strike_step or estimate_strike_step(sig.price)
@@ -167,7 +214,10 @@ def analyze(a):
     if not a.classic:
         notes.append(f"Loss filters: {orb_filtered} signal(s) skipped because price was not beyond the 15-min opening range "
                      f"in the trade direction; {weak_filtered} skipped because the market trend score was below "
-                     f"{OPT_MIN_MARKET_SCORE}/3. Use --classic to turn these filters off.")
+                     f"{OPT_MIN_MARKET_SCORE}/3"
+                     + ("" if a.no_cooldown else f"; {cooled} skipped because the same setup on that symbol hit its "
+                        f"stop in the last {COOLDOWN_SESSIONS} sessions (cooldown)") + f". Target {p.rr:g}R. "
+                     "Use --classic to turn these filters off.")
     if mtrend:
         notes.append(f"{against} signal(s) skipped for going against the market trend "
                      f"({mtrend['label']}; SIDEWAYS = no trades). Use --no-trend to disable.")
@@ -187,7 +237,9 @@ def main(argv=None):
                     help="Allow contracts expiring today (default: roll to the next expiry on expiry day)")
     ap.add_argument("--max-premium", type=float, default=0, help="Skip options whose premium per unit exceeds this (0 = no limit)")
     ap.add_argument("--classic", action="store_true",
-                    help="Turn off the loss filters (opening-range agreement + market score >= 2), i.e. the original rules")
+                    help="Original rules: no loss filters, no cooldown, 2R target")
+    ap.add_argument("--cooldown", dest="no_cooldown", action="store_false",
+                    help=f"Skip symbols whose setup hit the stop in the last {COOLDOWN_SESSIONS} sessions (optional)")
     analyze(ap.parse_args(argv))
 
 

@@ -34,6 +34,8 @@ Useful flags:
 | `--date 2026-11-20 --time 10:30` | replay a past session and show what actually happened |
 | `--symbols SBIN,ITC,TMPV` | analyse only these |
 | `--method ensemble` | use the original 5-strategy vote instead of ORB-30 + RVOL |
+| `--entry pullback` | optional: limit buy at the opening-range high till 11:30 instead of buying at the scan price |
+| `--daily-trend` | optional: also require the stock above its 20-day EMA |
 | `--min-votes 4` / `--allow-short` | ensemble method only |
 | `--json` | machine-readable output |
 
@@ -44,7 +46,8 @@ If the market is closed, the tool automatically **replays the last session** at 
 - Show each pick's **RVOL** (volume vs normal for that time of day) and the `Method backtest` note line (trades, win %, avg R, profit factor).
 - Point out that each row assumes the whole capital goes into that one trade. If the user wants several picks, re-run with capital divided by the number of picks.
 - If fewer than 10 picks appear, say so. Do not pad the list. ORB-30 + RVOL setups are rare (about one a day across all 50 stocks), and none appear when the market is not BULLISH.
-- Remind the user: place a stop-loss order immediately after buying, and square off by 15:15.
+- **Order type:** a LIMIT buy at the 'Buy at' price. With `--entry pullback` that price is the opening-range high, valid till **11:30**; it fills only if price pulls back to it, otherwise cancel it (no trade). Say this clearly.
+- Remind the user: place a stop-loss order immediately after the buy fills, and square off by 15:15.
 
 ## 4. Validation
 To check past days, replay them: `python -m tradingbro.up stocks --capital <AMOUNT> --date YYYY-MM-DD --time 10:05`, or many days at once with `python -m tradingbro.replay_days`. (`python -m tradingbro.up validate` checks the original ensemble strategies.) Report the numbers honestly, including losing days.
@@ -77,17 +80,21 @@ Backtest on Yahoo data (60 sessions): with the filter, buy-only trades went from
 **ORB-30 + relative volume**, a classic intraday stock method (Toby Crabel's opening range breakout, with a
 relative-volume filter as used by day-trading desks):
 1. The **opening range** is the high and low between 09:15 and 09:45.
-2. **Buy** when the scan bar closes above the opening-range high **and** today's volume so far is at least **1.5×**
+2. **Setup** when the scan bar closes above the opening-range high **and** today's volume so far is at least **1.5×**
    the stock's normal volume by that time of day (average of the previous 10 sessions), **and** the market is BULLISH.
-3. **Stop-loss** = the opening-range low. **Target** = 2 × the risk. Square off by 15:15.
-4. The `ExpRs` column uses the method's own backtest over all 50 stocks at the same clock time; if that average is
+3. **Entry**: buy at the scan price.
+4. **Stop-loss** = the opening-range low. **Target** = 2 × the risk. Square off by 15:15.
+5. The `ExpRs` column uses the method's own backtest over all 50 stocks at the same clock time; if that average is
    not positive after charges, no picks are shown.
 
 Why this method: a 1-year Upstox study of 50 stocks (decision at the 10:05 bar, ~0.11% costs per trade) compared
 11 well-known methods. Over the older 165 sessions every long method lost after costs, including the original
 5-strategy vote (-0.18% per trade, profit factor 0.60). ORB-30 + RVOL with the stop at the opening-range low was
 the only one that beat it in both periods: roughly break-even in the older period (-0.01%, PF 0.98) and
-+0.32% per trade (PF 1.93) in the latest 60 sessions. Others tested: ORB-15 + VWAP, previous-day-high breakout,
++0.32% per trade (PF 1.93) in the latest 60 sessions. Two optional refinements, `--entry pullback` (wait for a
+pullback to the broken level) and `--daily-trend` (stock above its 20-day EMA), lifted the study to +0.15% (PF 1.44)
+older and +0.44% (PF 2.12) recent, but cut trades to one every three sessions and lowered profit in a 30-day replay of
+a strong market, so they are off by default. Others tested: ORB-15 + VWAP, previous-day-high breakout,
 VWAP pullback, gap-and-go, Camarilla H4, NR7 + ORB. Be honest with the user: this is a modest edge, not a sure thing.
 
 Always end with: educational analysis, not investment advice; intraday trading carries a high risk of loss.

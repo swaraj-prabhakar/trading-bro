@@ -229,6 +229,9 @@ def write_picks(day=None):
             for r, b in zip(rows, body):
                 b.insert(1, st(r) or "-")
         md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
+        if kind == "stocks" and rows[0].get("valid_until"):
+            md += [f"Stocks: place a **LIMIT buy at the 'Buy at' price** (the opening-range high) – it fills only if "
+                   f"price pulls back to it. Cancel it if it has not filled by **{rows[0]['valid_until']}**.", ""]
     sizing = (f"Each row uses 1/{PERSONAL_SLOTS} of your capital: choose ONE segment (stocks or options) "
               f"and take its picks; with a single pick the rest stays unused. " if PROFILE else
               "Each row is sized on the full capital – split it if you take several. ")
