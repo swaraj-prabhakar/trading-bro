@@ -1,6 +1,6 @@
 ---
 name: tradingbro-picks
-description: Shows today's TradingBro intraday picks (NIFTY 50 stocks, futures and CE/PE options) from both data sources, Yahoo and Upstox, with entry, stop-loss, target, quantity, max loss/gain and an "Open in Upstox" link for each, plus their live status, the track record and the Yahoo-vs-Upstox comparison. Use when the user asks for today's picks, intraday trades, what to buy today, TradingBro results, how the picks performed, or which data source is doing better.
+description: Shows today's TradingBro intraday picks (NIFTY 50 stocks and CE/PE options) from both data sources, Yahoo and Upstox, with entry, stop-loss, target, quantity, max loss/gain and an "Open in Upstox" link for each, plus their live status, the track record and the Yahoo-vs-Upstox comparison. Use when the user asks for today's picks, intraday trades, what to buy today, TradingBro results, how the picks performed, or which data source is doing better.
 ---
 
 # TradingBro picks (read-only, for phone use)
@@ -33,7 +33,6 @@ Base: `https://raw.githubusercontent.com/swaraj-prabhakar/trading-bro/main/`
 
 ## How to place the trade in the Upstox app (tell the user briefly)
 - **Stock:** tap the link → **Buy** → Intraday → Limit at the "Buy at" price → Qty. Then place a **stop-loss (SL-M) sell** at the Stop.
-- **Futures:** tap the link → **F&O** tab → the expiry shown → Buy → Intraday → the lots shown. Shift the stop and target by (live futures price − the shown price) if they differ.
 - **Option:** tap "Option chain" → choose the **expiry and strike** shown → **Buy** the CE/PE → Intraday → the lots shown. Use the **live premium**; the shown premium is an estimate. Exit when the **spot** price reaches the spot stop or spot target.
 - If the link opens in the browser instead of the app, use the browser's "Open in app", or search the symbol in the Upstox app.
 

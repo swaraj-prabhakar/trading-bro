@@ -53,7 +53,7 @@ def test_fetch_one_chunks_and_keeps_n_sessions(monkeypatch):
     hist = [u for u in calls if "/intraday/" not in u]
     for u in hist:                                       # every minute chunk within Upstox's 1-month cap
         to, frm = u.rsplit("/", 2)[-2:]
-        assert (pd.Timestamp(to) - pd.Timestamp(frm)).days < 31
+        assert (pd.Timestamp(to) - pd.Timestamp(frm)).days < 28   # stays inside 1 calendar month, even in Feb
     assert len(set(df.index.date)) == 60                 # 60 sessions, like Yahoo's "60d"
     assert df.index[-1].date() == date(2026, 11, 25)     # today's intraday bars appended
 
@@ -64,3 +64,28 @@ def test_source_switch_separates_outputs():
                                      env=dict(os.environ, TRADINGBRO_SOURCE=src)).stdout.split()
     assert run("yahoo") == ["yahoo", "output", "Result.md", "Picks.md"]
     assert run("upstox") == ["upstox", "output_upstox", "Result_upstox.md", "Picks_upstox.md"]
+
+
+def _cfg(env, code):
+    return subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True,
+                          env=dict(os.environ, **env)).stdout.split()
+
+
+def test_personal_profile_has_own_files_and_split_capital():
+    code = ("from tradingbro import config as c, daily as d; "
+            "print(c.OUTPUT_DIR.name, c.RESULT_MD.name, c.PICKS_MD.name, c.COMPARE_MD.name, *d.scan_argv(100000))")
+    assert _cfg({"TRADINGBRO_SOURCE": "yahoo", "TRADINGBRO_PROFILE": ""}, code) == \
+        ["output", "Result.md", "Picks.md", "Compare.md", "--capital", "100000"]
+    assert _cfg({"TRADINGBRO_SOURCE": "upstox", "TRADINGBRO_PROFILE": "personal"}, code) == \
+        ["output_upstox_personal", "Result_upstox_personal.md", "Picks_upstox_personal.md", "Compare_personal.md",
+         "--capital", "50000", "--top", "2"]
+
+
+def test_up_launcher_uses_same_history_as_yahoo():
+    code = ("import os; import tradingbro.up as u; "
+            "u.importlib.import_module = lambda n: type('M', (), {'main': staticmethod("
+            "lambda a: print(os.environ['TRADINGBRO_SOURCE'], os.environ.get('TRADINGBRO_HISTORY_SESSIONS', '60')))}); "
+            "u.main(['stocks'])")
+    env = {k: v for k, v in os.environ.items() if k not in ("TRADINGBRO_HISTORY_SESSIONS", "TRADINGBRO_SOURCE")}
+    out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, env=env).stdout.split()
+    assert out == ["upstox", "60"]

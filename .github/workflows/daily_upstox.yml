@@ -69,17 +69,27 @@ jobs:
       - name: Run
         run: python -m tradingbro.up daily ${{ steps.job.outputs.job }}
 
+      - name: Run personal (top 2 per segment, capital split, P&L per segment)
+        continue-on-error: true     # never blocks the main results
+        env:
+          TRADINGBRO_PROFILE: personal
+          TRADINGBRO_CACHE_TTL: "1800"   # same bars as the main scan above
+        run: |
+          JOB=${{ steps.job.outputs.job }}
+          if [ "$JOB" != compare ]; then python -m tradingbro.up daily $JOB; fi
+
       - name: Compare with the Yahoo pipeline
-        if: steps.job.outputs.job == 'final'
+        if: steps.job.outputs.job == 'final' || steps.job.outputs.job == 'compare'
         run: |
           git pull --rebase --autostash || true    # pick up the Yahoo workflow's 15:40 review
           python -m tradingbro.up daily compare
+          TRADINGBRO_PROFILE=personal python -m tradingbro.up daily compare || true   # -> Compare_personal.md
 
       - name: Commit results
         run: |
           git config user.name "swaraj-prabhakar"
           git config user.email "98304110+swaraj-prabhakar@users.noreply.github.com"
-          git add output_upstox Result_upstox.md Picks_upstox.md Compare.md 2>/dev/null || true
+          git add output_upstox Result_upstox.md Picks_upstox.md Compare.md output_upstox_personal Result_upstox_personal.md Picks_upstox_personal.md Compare_personal.md 2>/dev/null || true
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           git commit -m "upstox ${{ steps.job.outputs.job }}: $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')"
           for i in 1 2 3; do

@@ -7,3 +7,6 @@ upstox_credentials.json
 
 # local scratch
 output/**/trend_filter_*/
+
+# local replay / backtest outputs (python -m tradingbro.replay_days)
+backtest*/

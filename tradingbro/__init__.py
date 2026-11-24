@@ -1,1 +1,1 @@
-"""TradingBro - intraday analysis agent for NIFTY 50 stocks, futures and options."""
+"""TradingBro - intraday analysis agent for NIFTY 50 stocks and options."""

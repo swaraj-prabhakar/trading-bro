@@ -1,11 +1,11 @@
 ---
 name: intraday-review
-description: End-of-day accuracy check of the intraday predictions saved by the stocks, futures and options scanners. Compares each saved pick (entry, stop, target) with the actual price moves for that day and produces an accuracy summary (target/stop hits, win rate, direction accuracy, R-multiples, P&L) overall, per segment and by strategy agreement. Use when the user asks whether today's (or a past day's) predictions were correct, for an accuracy report, or for a review of saved picks.
+description: End-of-day accuracy check of the intraday predictions saved by the stocks and options scanners. Compares each saved pick (entry, stop, target) with the actual price moves for that day and produces an accuracy summary (target/stop hits, win rate, direction accuracy, R-multiples, P&L) overall, per segment and by strategy agreement. Use when the user asks whether today's (or a past day's) predictions were correct, for an accuracy report, or for a review of saved picks.
 ---
 
 # Intraday prediction review
 
-Every **live** run of `tradingbro.stocks`, `tradingbro.futures` or `tradingbro.options` saves its picks to
+Every **live** run of `tradingbro.stocks` or `tradingbro.options` saves its picks to
 `output/<YYYY-MM-DD>/<kind>_<HHMM>.json` (turn this off with `--no-save`). This skill checks those saved
 predictions against what the market actually did.
 
@@ -35,7 +35,7 @@ It writes `output/<date>/review.md` and `review.json` next to the saved predicti
 Always show the per-pick verdict list (at least for the "first per symbol" picks), then the summary.
 
 ## 3. Present
-1. **Accuracy summary**: per segment (stocks / futures / options), then overall. Show picks, targets hit, stops hit, square-offs, Win%, RightDir%, AvgR, profit factor and total P&L.
+1. **Accuracy summary**: per segment (stocks / options), then overall. Show picks, targets hit, stops hit, square-offs, Win%, RightDir%, AvgR, profit factor and total P&L.
 2. **By strategy agreement**: 5/5 vs 4/5 vs 3/5. This tells you whether stronger agreement predicted better.
 3. **Notable picks**: biggest winner, biggest loser, and any trade that reached a high BestR but still closed at a loss (the target may be too far away).
 4. **Overlap**: if the same symbol was predicted in several scans, the "first per symbol" row is the realistic one (you'd trade it once). "ALL saved predictions" counts every scan.

@@ -8,12 +8,12 @@ gets credit for days the other one missed. Uses the first pick per (segment, sym
 per day, the same rule as Result.md.
 """
 from .common import DISCLAIMER, fmt
-from .config import OUTPUT_DIRS, ROOT
+from .config import COMPARE_MD, OUTPUT_DIRS, PROFILE
 from .daily import KINDS, SUMMARY_COLS, _table, load_days
 from .data import now_ist
 from .review import summarise
 
-COMPARE_MD = ROOT / "Compare.md"
+PSFX = f"_{PROFILE}" if PROFILE else ""
 SOURCES = ("yahoo", "upstox")
 LABEL = {"yahoo": "Yahoo", "upstox": "Upstox"}
 
@@ -23,17 +23,17 @@ def build_compare():
     common = sorted(set(days["yahoo"]) & set(days["upstox"]), reverse=True)
     only = {s: sorted(set(days[s]) - set(common)) for s in SOURCES}
 
-    md = ["# TradingBro – Yahoo vs Upstox data", "",
+    md = [f"# TradingBro – Yahoo vs Upstox data{' (personal: 2 picks per segment)' if PROFILE else ''}", "",
           f"_Updated {now_ist():%Y-%m-%d %H:%M} IST · same strategies, same schedule, only the market-data "
-          f"source differs · full details: [Result.md](Result.md) (Yahoo) and "
-          f"[Result_upstox.md](Result_upstox.md) (Upstox)._", "", f"> {DISCLAIMER}", ""]
+          f"source differs · full details: [Result{PSFX}.md](Result{PSFX}.md) (Yahoo) and "
+          f"[Result_upstox{PSFX}.md](Result_upstox{PSFX}.md) (Upstox)._", "", f"> {DISCLAIMER}", ""]
     if not common:
         md += ["No day has a final review from both sources yet.", ""]
         for s in SOURCES:
             if only[s]:
                 md.append(f"- {LABEL[s]} only: {', '.join(only[s])}")
         COMPARE_MD.write_text("\n".join(md), encoding="utf-8")
-        print("Compare.md: no common days yet")
+        print(f"{COMPARE_MD.name}: no common days yet")
         return
 
     picks = {s: [p for d in common for p in days[s][d]["picks"]] for s in SOURCES}
@@ -79,7 +79,7 @@ def build_compare():
                "average R; a higher total P&L from just a few picks is weaker evidence. "
                "Differences come from data timing (Yahoo lags) and small price differences between feeds._", ""]
     COMPARE_MD.write_text("\n".join(md), encoding="utf-8")
-    print(f"Compare.md updated: {len(common)} common day(s)")
+    print(f"{COMPARE_MD.name} updated: {len(common)} common day(s)")
 
 
 def main(argv=None):

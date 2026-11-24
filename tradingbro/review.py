@@ -25,6 +25,7 @@ from .options_math import bs_price, years_to_expiry
 from .universe import load_instruments
 
 SQUAREOFF = StrategyParams().squareoff
+KINDS = ("stocks", "options")
 
 
 def load_predictions(day: Date):
@@ -33,6 +34,8 @@ def load_predictions(day: Date):
     preds = []
     for f in files:
         pl = json.loads(f.read_text())
+        if pl.get("kind") not in KINDS:                # futures are no longer part of the agent
+            continue
         for r in pl.get("picks", []):
             preds.append(normalise(pl["kind"], r, day, f.name))
     return folder, files, preds
@@ -46,10 +49,6 @@ def normalise(kind, r, day, source):
     if kind == "stocks":
         p.update(direction=1 if r["side"] == "BUY" else -1, entry=r["price"], stop=r["stop"], target=r["target"],
                  label=f"{r['symbol']} {r['side']}")
-    elif kind == "futures":
-        basis = r["fut_price"] - r["spot"]
-        p.update(direction=1 if r["side"] == "BUY" else -1, entry=r["spot"], stop=r["stop"] - basis,
-                 target=r["target"] - basis, label=f"{r['symbol']} FUT {r['side']}")
     else:
         p.update(direction=1 if r["type"] == "CE" else -1, entry=r["spot"], stop=r["spot_stop"],
                  target=r["spot_target"], label=r["option"], opt_type=r["type"], strike=r["strike"],
@@ -57,10 +56,10 @@ def normalise(kind, r, day, source):
     return p
 
 
-def day_bars(tickers, day):
-    """{ticker: (bars, interval)} preferring 1-minute data."""
+def day_bars(tickers, day, bars="auto", refresh=True):
+    """{ticker: (bars, interval)} preferring 1-minute data (bars="5m" forces 5-minute)."""
     out = {}
-    one = fetch(tickers, "1m", "7d", refresh=True)
+    one = fetch(tickers, "1m", "7d", refresh=refresh) if bars == "auto" else {}
     five = None
     for t in tickers:
         df = one.get(t)
@@ -68,7 +67,7 @@ def day_bars(tickers, day):
             out[t] = (df[df.index.date == day], "1m")
             continue
         if five is None:
-            five = fetch(tickers, "5m", "60d", refresh=True)
+            five = fetch(tickers, "5m", "60d", refresh=refresh)
         df = five.get(t)
         if df is not None and (df.index.date == day).any():
             out[t] = (df[df.index.date == day], "5m")
@@ -182,18 +181,22 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Check saved intraday predictions against actual prices")
     ap.add_argument("--date", help="YYYY-MM-DD (default today)")
     ap.add_argument("--name", default="review", help="Output file name (review -> review.md/json)")
+    ap.add_argument("--bars", choices=["auto", "5m"], default="auto",
+                    help="auto = 1-minute bars when available (default), 5m = always 5-minute bars")
+    ap.add_argument("--cached", action="store_true", help="Use cached bars instead of re-downloading")
     a = ap.parse_args(argv)
     now = now_ist()
     day = parse_date(a.date) if a.date else now.date()
     folder, files, preds = load_predictions(day)
-    if not preds:
+    if not files:
         print(f"No saved predictions in {folder}. Run a scanner during market hours first.")
         return
+    # Scans ran but found no picks: still write the review, so the day counts (as a no-trade day) in the results.
     day_complete = day < now.date() or now.strftime("%H:%M") >= "15:30"
 
     stocks, indices = load_instruments()
     ymap = {i.symbol: i.yahoo for i in stocks + indices}
-    bars = day_bars(sorted({ymap[p["symbol"]] for p in preds if p["symbol"] in ymap}), day)
+    bars = day_bars(sorted({ymap[p["symbol"]] for p in preds if p["symbol"] in ymap}), day, a.bars, not a.cached)
 
     rows = []
     for p in preds:
@@ -211,7 +214,7 @@ def main(argv=None):
             seen.add(k)
             unique.append(r)
 
-    summary = [summarise([r for r in unique if r["kind"] == k], k) for k in ("stocks", "futures", "options")]
+    summary = [summarise([r for r in unique if r["kind"] == k], k) for k in KINDS]
     summary.append(summarise(unique, "ALL (first per symbol)"))
     summary.append(summarise(rows, "ALL saved predictions"))
     by_votes = [summarise([r for r in unique if r["votes"] == v], f"votes {v}")

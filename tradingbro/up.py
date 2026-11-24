@@ -1,7 +1,6 @@
 """Run any TradingBro command on Upstox market data instead of Yahoo.
 
     python -m tradingbro.up stocks  --capital 50000
-    python -m tradingbro.up futures --capital 200000
     python -m tradingbro.up options --capital 20000
     python -m tradingbro.up review  [--date 2026-11-25]
     python -m tradingbro.up validate
@@ -16,7 +15,7 @@ import importlib
 import os
 import sys
 
-COMMANDS = {"stocks", "futures", "options", "review", "validate", "daily", "compare"}
+COMMANDS = {"stocks", "options", "review", "validate", "daily", "compare"}
 
 
 def main(argv=None):

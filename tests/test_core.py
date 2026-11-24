@@ -141,7 +141,7 @@ def test_strikes():
     assert pick_strike(24987, 50, "PE", 1) == 24950
 
 
-@pytest.mark.parametrize("seg", ["equity", "futures", "options"])
+@pytest.mark.parametrize("seg", ["equity", "options"])
 def test_charges_positive_and_scale(seg):
     small, big = charges.round_trip(seg, 1e4, 1e4), charges.round_trip(seg, 1e6, 1e6)
     assert 0 < small < big

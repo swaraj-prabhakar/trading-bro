@@ -151,11 +151,6 @@ class Contracts:
             if r.get("segment") == "NSE_FO":
                 self.fo.setdefault(r["underlying_symbol"], []).append(r)
 
-    def future(self, sym, expiry):
-        f = [r for r in self.fo.get(sym, []) if r["instrument_type"] == "FUT"]
-        exact = [r for r in f if _ist_date(r["expiry"]) == expiry]
-        return exact[0] if exact else None
-
     def option(self, sym, expiry, kind, strike):
         opts = [r for r in self.fo.get(sym, []) if r["instrument_type"] == kind and _ist_date(r["expiry"]) == expiry]
         if not opts:
@@ -164,7 +159,7 @@ class Contracts:
         return best, best["strike_price"] == strike
 
     def lot(self, sym):
-        f = sorted((r for r in self.fo.get(sym, []) if r["instrument_type"] == "FUT"), key=lambda r: r["expiry"])
+        f = sorted((r for r in self.fo.get(sym, []) if r["instrument_type"] in ("CE", "PE")), key=lambda r: r["expiry"])
         return f[0]["lot_size"] if f else None
 
 
@@ -201,6 +196,8 @@ def build_orders(files):
     for f in files:
         pl = json.loads(f.read_text())
         kind = pl["kind"]
+        if kind not in ("stocks", "options"):          # futures are not traded by this agent
+            continue
         for r in pl["picks"]:
             sym = r["symbol"]
             warn = []
@@ -211,18 +208,7 @@ def build_orders(files):
                 order_type, price = "LIMIT", _tick(r["price"], rec and rec.get("tick_size"))
                 levels = f"Stop {r['stop']:,.2f} · Target {r['target']:,.2f}"
                 title = f"{sym} {side}"
-            elif kind == "futures":
-                rec = c.future(sym, r["expiry"])
-                side = r["side"]
-                if rec and rec["lot_size"] != r["lot"]:
-                    warn.append(f"Lot size is {rec['lot_size']} on Upstox (scan used {r['lot']}) - margin/P&L scale accordingly.")
-                qty = int(r["lots"] * (rec["lot_size"] if rec else r["lot"]))
-                order_type, price = "MARKET", 0
-                basis = r["fut_price"] - r["spot"]
-                levels = (f"Spot stop {r['stop'] - basis:,.2f} · Spot target {r['target'] - basis:,.2f} "
-                          f"(futures ≈ {r['stop']:,.1f} / {r['target']:,.1f})")
-                title = f"{sym} FUT {r['expiry']} {side}"
-            else:
+            elif kind == "options":
                 rec, exact = c.option(sym, r["expiry"], r["type"], r["strike"])
                 side = "BUY"
                 if rec and not exact:
@@ -299,9 +285,9 @@ def latest_files(day):
     best = {}
     for f in sorted(folder.glob("*_*.json")):
         k = f.stem.split("_")[0]
-        if k in ("stocks", "futures", "options"):
+        if k in ("stocks", "options"):
             best[k] = f                       # sorted -> last one is the latest HHMM
-    return [best[k] for k in ("stocks", "futures", "options") if k in best]
+    return [best[k] for k in ("stocks", "options") if k in best]
 
 
 def orders(a):

@@ -19,15 +19,31 @@ _SFX = "" if SOURCE == "yahoo" else "_" + SOURCE
 
 CACHE_DIR = ROOT / ".cache" if SOURCE == "yahoo" else ROOT / ".cache" / SOURCE
 REPORT_DIR = ROOT / ("reports" + ("" if SOURCE == "yahoo" else "/" + SOURCE))
-OUTPUT_DIR = ROOT / ("output" + _SFX)    # saved predictions (per day) + end-of-day reviews
-RESULT_MD = ROOT / f"Result{_SFX}.md"
-PICKS_MD = ROOT / f"Picks{_SFX}.md"
-OUTPUT_DIRS = {"yahoo": ROOT / "output", "upstox": ROOT / "output_upstox"}   # for the comparison report
+# TRADINGBRO_RUN_DIR redirects predictions, reviews and result pages (used by the
+# multi-day replay, python -m tradingbro.replay_days, so it never touches the live record)
+OUT_BASE = Path(os.environ["TRADINGBRO_RUN_DIR"]).resolve() if os.environ.get("TRADINGBRO_RUN_DIR") else ROOT
+
+# Profile: "" (default: top 10 per segment, each pick sized on the full capital) or
+# "personal" (TRADINGBRO_PROFILE=personal): at most PERSONAL_SLOTS picks per segment, the
+# capital split equally between them, and P&L tracked per segment because only ONE
+# segment (stocks OR options) is traded with the capital. Kept in its own
+# files: output*_personal/, Result*_personal.md, Picks*_personal.md.
+PROFILE = os.environ.get("TRADINGBRO_PROFILE", "").strip().lower()
+if PROFILE not in ("", "personal"):
+    raise SystemExit(f"TRADINGBRO_PROFILE must be empty or 'personal', not {PROFILE!r}")
+PERSONAL_SLOTS = 2
+_PSFX = "_" + PROFILE if PROFILE else ""
+
+OUTPUT_DIR = OUT_BASE / ("output" + _SFX + _PSFX)    # saved predictions (per day) + end-of-day reviews
+RESULT_MD = OUT_BASE / f"Result{_SFX}{_PSFX}.md"
+PICKS_MD = OUT_BASE / f"Picks{_SFX}{_PSFX}.md"
+COMPARE_MD = OUT_BASE / f"Compare{_PSFX}.md"
+OUTPUT_DIRS = {"yahoo": OUT_BASE / ("output" + _PSFX), "upstox": OUT_BASE / ("output_upstox" + _PSFX)}  # comparison
 
 TZ = "Asia/Kolkata"
 MARKET_OPEN = "09:15"
 MARKET_CLOSE = "15:30"
-RISK_FREE_RATE = 0.065  # used for Black-Scholes and futures basis
+RISK_FREE_RATE = 0.065  # used for Black-Scholes option pricing
 
 # NSE F&O trading holidays (YYYY-MM-DD). An expiry that falls on one moves to the
 # previous trading day. Add the full year's list from nseindia.com.
@@ -71,12 +87,11 @@ class StrategyParams:
 # exchange circulars - verify with your broker's calculator. F&O STT is set to the
 # higher post-Budget-2026 rates so the backtest stays conservative.
 # ---------------------------------------------------------------------------
-BROKERAGE_PER_ORDER = 20.0      # flat, or 0.03% if lower (equity/futures)
+BROKERAGE_PER_ORDER = 20.0      # flat, or 0.03% if lower (equity)
 GST = 0.18                      # on brokerage + exchange txn + SEBI fee
 SEBI_FEE = 10 / 1e7             # Rs 10 per crore
 
 CHARGES = {
     "equity": {"stt_sell": 0.00025, "txn": 0.0000297, "stamp_buy": 0.00003},
-    "futures": {"stt_sell": 0.0005, "txn": 0.0000173, "stamp_buy": 0.00002},
     "options": {"stt_sell": 0.0015, "txn": 0.0003503, "stamp_buy": 0.00003},
 }

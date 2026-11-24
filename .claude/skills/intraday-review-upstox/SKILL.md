@@ -15,7 +15,7 @@ description: End-of-day accuracy check of the predictions saved by the UPSTOX-da
 > the Upstox developer console, Analytics tab) or a daily `python -m tradingbro.upstox login` token is valid, it is
 > sent as well. If the run prints `Upstox: <symbol> failed`, report which symbols had no data.
 
-Every **live** run of `tradingbro.up stocks`, `tradingbro.up futures` or `tradingbro.up options` saves its picks to
+Every **live** run of `tradingbro.up stocks` or `tradingbro.up options` saves its picks to
 `output_upstox/<YYYY-MM-DD>/<kind>_<HHMM>.json` (turn this off with `--no-save`). This skill checks those saved
 predictions against what the market actually did.
 
@@ -45,7 +45,7 @@ It writes `output_upstox/<date>/review.md` and `review.json` next to the saved p
 Always show the per-pick verdict list (at least for the "first per symbol" picks), then the summary.
 
 ## 3. Present
-1. **Accuracy summary**: per segment (stocks / futures / options), then overall. Show picks, targets hit, stops hit, square-offs, Win%, RightDir%, AvgR, profit factor and total P&L.
+1. **Accuracy summary**: per segment (stocks / options), then overall. Show picks, targets hit, stops hit, square-offs, Win%, RightDir%, AvgR, profit factor and total P&L.
 2. **By strategy agreement**: 5/5 vs 4/5 vs 3/5. This tells you whether stronger agreement predicted better.
 3. **Notable picks**: biggest winner, biggest loser, and any trade that reached a high BestR but still closed at a loss (the target may be too far away).
 4. **Overlap**: if the same symbol was predicted in several scans, the "first per symbol" row is the realistic one (you'd trade it once). "ALL saved predictions" counts every scan.

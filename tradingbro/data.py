@@ -5,6 +5,7 @@ Source is chosen by config.SOURCE: Yahoo Finance (default) or the Upstox candle 
 days, which is what the backtests use, and NSE quotes on Yahoo can lag by a few
 minutes. Upstox serves the same periods from the broker's own feed.
 """
+import os
 import time
 import warnings
 from datetime import datetime
@@ -42,18 +43,23 @@ def _clean(df: pd.DataFrame, intraday: bool) -> pd.DataFrame:
     return df[~df.index.duplicated(keep="last")].sort_index()
 
 
-def _cache_path(ticker, interval):
+STANDARD_PERIODS = {"60d", "1y", "7d"}
+
+
+def _cache_path(ticker, interval, period=None):
     safe = ticker.replace("^", "IDX_").replace("&", "and")
-    return CACHE_DIR / f"{interval}_{safe}.pkl"
+    tag = "" if period in (None, *STANDARD_PERIODS) else f"_{period}"
+    return CACHE_DIR / f"{interval}{tag}_{safe}.pkl"
 
 
 def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
     """Return {ticker: DataFrame}. Tickers that fail to download are omitted."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     ttl = 240 if market_is_open() else 6 * 3600
+    ttl = int(os.environ.get("TRADINGBRO_CACHE_TTL", ttl))   # the personal scan reuses the main scan's bars
     out, missing = {}, []
     for t in tickers:
-        p = _cache_path(t, interval)
+        p = _cache_path(t, interval, period)
         if not refresh and p.exists() and time.time() - p.stat().st_mtime < ttl:
             out[t] = pd.read_pickle(p)
         else:
@@ -64,7 +70,7 @@ def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
         for t, df in fetch_raw(missing, interval, period).items():
             df = _clean(df, intraday=interval.endswith("m"))
             if len(df):
-                df.to_pickle(_cache_path(t, interval))
+                df.to_pickle(_cache_path(t, interval, period))
                 out[t] = df
         return out
 
@@ -100,7 +106,12 @@ def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
 def fetch_universe(instruments, refresh=False):
     """5-minute bars (60d) + daily bars (1y) for a list of Instrument objects."""
     tickers = [i.yahoo for i in instruments]
-    intraday = fetch(tickers, "5m", "60d", refresh)
+    # TRADINGBRO_HISTORY_SESSIONS (Upstox only; Yahoo caps 5-minute data at 60 days) =
+    # how many past sessions of 5-minute bars the per-symbol backtests see.
+    hist = os.environ.get("TRADINGBRO_HISTORY_SESSIONS", "60")
+    if SOURCE == "yahoo" and hist != "60":
+        raise SystemExit("TRADINGBRO_HISTORY_SESSIONS > 60 needs the Upstox source")
+    intraday = fetch(tickers, "5m", f"{hist}d", refresh)
     daily = fetch(tickers, "1d", "1y", refresh)
     dropped = [i.symbol for i in instruments if i.yahoo not in intraday]
     return intraday, daily, dropped

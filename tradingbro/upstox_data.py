@@ -32,7 +32,8 @@ BASE = "https://api.upstox.com/v3/historical-candle"
 USER_AGENT = "TradingBro/1.0 (personal Upstox API app)"
 IST = timezone(timedelta(hours=5, minutes=30))
 INDEX_KEYS = {"^NSEI": "NSE_INDEX|Nifty 50", "^NSEBANK": "NSE_INDEX|Nifty Bank", "^INDIAVIX": "NSE_INDEX|India VIX"}
-CHUNK_DAYS = {"minutes": 30, "hours": 90, "days": 3650}   # Upstox max range per request (minutes: 1 month)
+CHUNK_DAYS = {"minutes": 27, "hours": 88, "days": 3650}   # Upstox max range per request is 1 calendar month for
+                                                          # minutes (Feb 27 -> Mar 28 is rejected), 1 quarter for hours
 MAX_PER_SEC = 8                                           # well under Upstox's 50/s, 500/min limits
 
 

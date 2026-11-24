@@ -19,6 +19,8 @@ from .options_math import bs_delta, bs_price, next_expiry, pick_strike, years_to
 from .strategies import add_signals
 from .universe import estimate_strike_step, filter_symbols, load_instruments
 
+OPT_MIN_MARKET_SCORE = 2
+
 
 def implied_vol(inst, daily, vix, day):
     """IV proxy known *before* `day`: India VIX for NIFTY, else 1.1 x 20-day historical vol."""
@@ -69,6 +71,12 @@ def analyze(a):
     against = 0
     risk_budget = a.capital * a.risk_pct / 100
 
+    # Loss filters (1-year Upstox study, 165 + 60 sessions): only trade when price is already beyond the
+    # 15-minute opening range in the trade's direction AND at least 2 of the 3 market-trend views agree.
+    # It was the only variant profitable in both periods (avg R -0.06 -> +0.05 and +0.21 -> +0.38).
+    strong_market = mtrend is None or abs(mtrend.get("score", 0)) >= OPT_MIN_MARKET_SCORE or a.classic
+    weak_filtered = orb_filtered = 0
+
     rows, rejected, unaffordable = [], 0, 0
     for inst in universe:
         df = intraday.get(inst.yahoo)
@@ -81,6 +89,12 @@ def analyze(a):
             against += 1
             continue
         if sig is None:
+            continue
+        if not a.classic and not strong_market:
+            weak_filtered += 1
+            continue
+        if not a.classic and "orb" not in sig.agreeing:
+            orb_filtered += 1
             continue
         kind = "CE" if sig.direction == 1 else "PE"
         step = inst.strike_step or estimate_strike_step(sig.price)
@@ -150,6 +164,10 @@ def analyze(a):
         "Expiries: NSE Tuesday schedule shifted for holidays in config.NSE_HOLIDAYS; on expiry day the next expiry is used unless --expiry-day. Confirm the contract exists.",
         f"{rejected} signal(s) rejected for weak backtest edge; {unaffordable} skipped (1 lot over capital/premium limit).",
     ]
+    if not a.classic:
+        notes.append(f"Loss filters: {orb_filtered} signal(s) skipped because price was not beyond the 15-min opening range "
+                     f"in the trade direction; {weak_filtered} skipped because the market trend score was below "
+                     f"{OPT_MIN_MARKET_SCORE}/3. Use --classic to turn these filters off.")
     if mtrend:
         notes.append(f"{against} signal(s) skipped for going against the market trend "
                      f"({mtrend['label']}; SIDEWAYS = no trades). Use --no-trend to disable.")
@@ -157,7 +175,7 @@ def analyze(a):
     if mtrend and not a.json:
         print(describe(mtrend))
     payload = dict(kind="options", mode=mode, market=mtrend, asof=str(asof), capital=a.capital, params=p.to_dict(),
-                   otm=a.otm, picks=rows, rejected=rejected, unaffordable=unaffordable, dropped=dropped)
+                   otm=a.otm, classic=a.classic, picks=rows, rejected=rejected, unaffordable=unaffordable, dropped=dropped)
     finish("options", a, payload, rows, cols, notes)
     return payload
 
@@ -168,6 +186,8 @@ def main(argv=None):
     ap.add_argument("--expiry-day", action="store_true",
                     help="Allow contracts expiring today (default: roll to the next expiry on expiry day)")
     ap.add_argument("--max-premium", type=float, default=0, help="Skip options whose premium per unit exceeds this (0 = no limit)")
+    ap.add_argument("--classic", action="store_true",
+                    help="Turn off the loss filters (opening-range agreement + market score >= 2), i.e. the original rules")
     analyze(ap.parse_args(argv))
 
 

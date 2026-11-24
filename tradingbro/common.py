@@ -75,7 +75,7 @@ def print_table(rows, cols):
             print("  ".join("-" * x for x in w))
 
 
-def header(kind, a, asof, mode, p, universe_n, dropped):
+def header(kind, a, asof, mode, p, universe_n, dropped, rules=None):
     if getattr(a, "json", False):
         return
     print(f"\n=== TradingBro | {kind.upper()} intraday | {SOURCE_LABEL} data | capital Rs {a.capital:,.0f} ===")
@@ -85,7 +85,7 @@ def header(kind, a, asof, mode, p, universe_n, dropped):
     else:
         print(f"REPLAY of {asof:%Y-%m-%d} at {asof:%H:%M} IST - market is closed or a past date was "
               f"requested; 'Actual' columns show what really happened after that time.")
-    print(f"Rules: >= {p.min_votes}/5 strategies agree | stop {p.sl_atr_mult} x ATR(5m) | target {p.rr}R | "
+    print(rules or f"Rules: >= {p.min_votes}/5 strategies agree | stop {p.sl_atr_mult} x ATR(5m) | target {p.rr}R | "
           f"entries {p.entry_start}-{p.entry_end} | square-off {p.squareoff}")
     print(f"Universe: {universe_n} instruments" + (f" (no data: {', '.join(dropped)})" if dropped else ""))
 

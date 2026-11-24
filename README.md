@@ -1,15 +1,16 @@
-# TradingBro – intraday analysis agent (NIFTY 50 · Futures · Options)
+# TradingBro – intraday analysis agent (NIFTY 50 stocks · Options)
 
 Buy-first, sell-same-day analysis. For a given capital it returns the **top 10** trades with
 entry, **stop-loss**, **target**, **quantity / lots**, and the backtested expected profit.
 Ties go to the cheaper instrument; use `--max-price` (stocks) or `--max-premium` (options) to cap price.
 
-## Three separate Claude Code skills
+## Claude Code skills
 | Skill | Command | Covers |
 |---|---|---|
-| `intraday-stocks` | `python -m tradingbro.stocks --capital 50000` | NIFTY 50 cash stocks (optional `--max-price`) |
-| `intraday-futures` | `python -m tradingbro.futures --capital 300000` | NIFTY 50 stock futures + NIFTY/BANKNIFTY futures |
+| `intraday-stocks` | `python -m tradingbro.stocks --capital 50000` | NIFTY 50 cash stocks, ORB-30 + relative volume (optional `--max-price`) |
 | `intraday-options` | `python -m tradingbro.options --capital 20000` | CE on up-trend / PE on down-trend, index + stock options |
+
+Futures are not part of this agent.
 
 In Claude Code, open this folder and ask, e.g. *"give me intraday stock picks for ₹50,000"*
 or *"which CE/PE should I buy with ₹20k today?"*. The matching skill in `.claude/skills/`
@@ -34,11 +35,18 @@ target and stop hits, win rate, direction accuracy, R-multiples, P&L, and a brea
 python -m tradingbro.upstox setup       # once: creates upstox_credentials.json (put the API key and secret in it)
 python -m tradingbro.upstox login       # once a day
 python -m tradingbro.upstox orders      # Review & place page for the latest saved picks
-python -m tradingbro.upstox sync-lots   # refresh F&O lot sizes from Upstox's official instruments file
+python -m tradingbro.upstox sync-lots   # refresh option lot sizes from Upstox's official instruments file
 ```
 The app's redirect URL must be `http://127.0.0.1:8765/callback`. Orders are only ever placed by you, on Upstox's confirmation screen.
 
-## Method (popular intraday strategies, 5-minute bars)
+## Method – stocks: ORB-30 + relative volume
+Buy when the scan bar closes above the 09:15–09:45 high, today's volume so far is ≥ 1.5× normal for that time of day,
+and the market is BULLISH. Stop = opening-range low, target = 2R, square-off 15:15 (`tradingbro/stock_orb.py`).
+In a 1-year Upstox study of 50 stocks it was the only one of 11 well-known methods that beat the original ensemble in
+both the older 165 sessions (≈ break-even after costs vs −0.18%/trade) and the latest 60 (+0.32%/trade, PF 1.93).
+`--method ensemble` brings back the original vote for stocks.
+
+## Method – options: 5-strategy ensemble + loss filters (5-minute bars)
 1. VWAP + EMA 9/21 trend
 2. Opening Range Breakout (first 15 min)
 3. Supertrend (10, 3)
@@ -50,6 +58,10 @@ Stop = 2.5 × ATR(14), target = 2R, square-off 15:15.
 Each instrument is backtested on its own last ~60 sessions. Only instruments with a positive
 historical edge after charges are shown, ordered by strategy agreement, then max gain.
 
+**Loss filters** (from the same 1-year study; `--classic` turns them off): an option is only bought when the price is
+already beyond the 15-minute opening range in the trade's direction **and** at least 2 of the 3 market-trend views
+agree. That was the only change profitable in both periods (avg −0.06R → +0.05R older, +0.21R → +0.38R recent).
+
 ## Market-trend filter (on by default)
 Before picking anything, the scanner reads the overall market trend at the scan time from three views:
 1. NIFTY's own 5-strategy intraday vote
@@ -57,8 +69,8 @@ Before picking anything, the scanner reads the overall market trend at the scan 
 3. Yesterday's NIFTY close vs its 20-day EMA
 
 The majority lean decides the trend: **BULLISH**, **BEARISH** or **SIDEWAYS** (a tie). Only trades in the market's direction qualify:
-- **BULLISH:** buy stocks or futures, buy CE.
-- **BEARISH:** buy PE. Buy-first stock and futures trades are skipped; suggest the options scanner (PE) instead.
+- **BULLISH:** buy stocks, buy CE.
+- **BEARISH:** buy PE. Buy-first stock trades are skipped; suggest the options scanner (PE) instead.
 - **SIDEWAYS:** no trades.
 
 The backtest per symbol also uses this filter. Always report the `Market trend:` line, and how many signals were skipped for going against the trend. Use `--no-trend` to switch the filter off.
@@ -80,8 +92,8 @@ It is a trial: after 1–2 weeks, compare the two and keep the better one.
 
 | | Yahoo (original) | Upstox (trial) |
 |---|---|---|
-| Run a scanner | `python -m tradingbro.stocks …` | `python -m tradingbro.up stocks …` (also `futures`, `options`, `review`, `validate`, `orders`) |
-| Claude Code skills | `intraday-stocks/-futures/-options/-review` | `intraday-stocks-upstox`, `-futures-upstox`, `-options-upstox`, `-review-upstox` |
+| Run a scanner | `python -m tradingbro.stocks …` | `python -m tradingbro.up stocks …` (also `options`, `review`, `validate`, `orders`) |
+| Claude Code skills | `intraday-stocks/-options/-review` | `intraday-stocks-upstox`, `-options-upstox`, `-review-upstox` |
 | GitHub workflow | `TradingBro daily` ([daily.yml](.github/workflows/daily.yml)) | `TradingBro daily (Upstox data)` ([daily_upstox.yml](.github/workflows/daily_upstox.yml)) |
 | Saved picks & reviews | `output/` | `output_upstox/` |
 | Results / phone page | [Result.md](Result.md), [Picks.md](Picks.md) | [Result_upstox.md](Result_upstox.md), [Picks_upstox.md](Picks_upstox.md) |
@@ -92,12 +104,38 @@ final review, and shows per-segment win %, avg R, profit factor and P&L, a day-b
 that only one source made turned out.
 
 Notes:
-- Both scans run at 10:10 IST so the comparison is fair. 5-minute history is the last 60 sessions on both sources.
+- Both scans run at 10:10 IST and both use the last 60 sessions of 5-minute history, so the comparison is fair.
 - The Upstox candle API currently answers without a login. Optionally create the free 1-year read-only
   **Analytics Token** (Upstox developer console → Analytics tab) and add it as the repository secret
   `UPSTOX_ANALYTICS_TOKEN` (locally: environment variable). Then the pipeline keeps working if Upstox starts requiring auth.
 - Under the hood it is one switch, `TRADINGBRO_SOURCE=upstox` (`tradingbro/config.py`); `tradingbro.up` just sets it.
   Dropping either pipeline later means deleting its workflow, skills and output folder.
+
+## Personal P&L: 2 picks per segment, capital in one segment
+The standard pages size **every** pick on the full capital and add all picks up. The personal pages answer
+"what if I put my capital into ONE segment and take its best 2 picks":
+
+- the 10:10 scan keeps the top **2** stocks and top 2 options;
+- each pick is sized on **half the capital** (₹1,00,000 → ₹50,000 per pick; with one pick the other half stays unused);
+- stocks and options are tracked as **two separate accounts**: P&L, return on capital, up/down days, best/worst
+  day and drawdown per segment, never added together.
+
+| | Yahoo | Upstox |
+|---|---|---|
+| Today's picks | [Picks_personal.md](Picks_personal.md) | [Picks_upstox_personal.md](Picks_upstox_personal.md) |
+| Track record | [Result_personal.md](Result_personal.md) | [Result_upstox_personal.md](Result_upstox_personal.md) |
+| Saved picks & reviews | `output_personal/` | `output_upstox_personal/` |
+
+Comparison: [Compare_personal.md](Compare_personal.md). Both workflows run it as an extra step right after the standard
+scan, on the same bars (it can never block the standard results). By hand: set `TRADINGBRO_PROFILE=personal` before any
+`python -m tradingbro.daily …` / `python -m tradingbro.up daily …` command.
+
+Replay past days in either mode (writes to its own folder, never the live pages):
+```bash
+python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23                       # standard -> backtest/
+python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23 --profile personal \
+       --out backtest_personal                                                          # personal
+```
 
 ## Setup
 ```bash
@@ -111,7 +149,6 @@ Tunables (stop/target, vote threshold, entry window, charges) are in `tradingbro
 ## Limitations – read before trading
 - Option premiums are **Black-Scholes estimates**, not live quotes. Use the live option chain
   and manage trades by the spot stop and target.
-- Futures prices are spot + estimated carry, and margins are estimates.
 - 60 days is a short sample, so edges are small and can disappear. Re-run `validate` regularly.
 - Educational tool, **not investment advice**. Intraday and F&O trading carry a high risk of loss.
 

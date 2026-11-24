@@ -1,6 +1,6 @@
 """Daily jobs for the scheduled GitHub workflow (all times IST, Mon-Fri).
 
-    python -m tradingbro.daily scan      # 10:10 - stocks + futures + options scans, picks saved to output/<date>/
+    python -m tradingbro.daily scan      # 10:10 - stocks + options scans, picks saved to output/<date>/
     python -m tradingbro.daily midday    # 13:30 - provisional check, saved to output/<date>/review_1330.*
     python -m tradingbro.daily final     # 15:40 - final review (output/<date>/review.*) + rebuild Result.md
     python -m tradingbro.daily results   # rebuild Result.md only
@@ -15,23 +15,32 @@ from collections import defaultdict
 import pandas as pd
 
 from .common import DISCLAIMER, fmt
-from .config import NSE_HOLIDAYS, OUTPUT_DIR, PICKS_MD, RESULT_MD, SOURCE, SOURCE_LABEL
+from .config import NSE_HOLIDAYS, OUTPUT_DIR, PERSONAL_SLOTS, PICKS_MD, PROFILE, RESULT_MD, SOURCE, SOURCE_LABEL
 from .data import now_ist
 
-TITLE_SFX = "" if SOURCE == "yahoo" else f" ({SOURCE_LABEL} data)"
-KINDS = ("stocks", "futures", "options")
+TITLE_SFX = ("" if SOURCE == "yahoo" else f" ({SOURCE_LABEL} data)") + \
+    (f" – personal ({PERSONAL_SLOTS} picks per segment)" if PROFILE else "")
+KINDS = ("stocks", "options")          # futures are not traded by this agent
 
 
 def trading_day(d) -> bool:
     return d.weekday() < 5 and d.isoformat() not in NSE_HOLIDAYS
 
 
+def scan_argv(capital):
+    """Scanner arguments for the active profile. Personal: the top PERSONAL_SLOTS picks
+    per segment, each sized on capital / PERSONAL_SLOTS (the capital goes into one segment)."""
+    if PROFILE == "personal":
+        return ["--capital", f"{float(capital) / PERSONAL_SLOTS:g}", "--top", str(PERSONAL_SLOTS)]
+    return ["--capital", str(capital)]
+
+
 def scan():
     cap = os.environ.get("CAPITAL", "100000")
-    from . import futures, options, stocks
-    for mod in (stocks, futures, options):
+    from . import options, stocks
+    for mod in (stocks, options):
         print(f"\n######## {mod.__name__.split('.')[-1]} ########", flush=True)
-        mod.main(["--capital", cap])
+        mod.main(scan_argv(cap))
 
 
 def review(name):
@@ -69,7 +78,7 @@ def load_days(output_dir=None):
         rv = json.loads(f.read_text())
         if rv.get("status") != "final":
             continue
-        picks = _first_per_symbol(rv["predictions"])
+        picks = _first_per_symbol([r for r in rv["predictions"] if r["kind"] in KINDS])
         trend = _market_label(folder)
         for p in picks:
             p["market"] = trend
@@ -100,6 +109,9 @@ def _icon(v):
 
 
 def build_results():
+    if PROFILE == "personal":
+        from .personal import build_personal_results
+        return build_personal_results()
     from .review import summarise
     days = load_days()
     allp = [p for d in days for p in d["picks"]]
@@ -184,9 +196,10 @@ def write_picks(day=None):
     first = json.loads(files[0].read_text())
     m = first.get("market") or {}
     cap = first.get("capital", 0)
-    md += [f"**{day}** · scan at {str(first['asof'])[11:16]} IST · market **{m.get('label', '-')}** · "
-           f"capital ₹{cap:,.0f} per pick" + (f" · status as of **{status_label}**" if status_label else ""), "",
-           "How to trade: tap **Open in Upstox** → stocks: Buy · futures: F&O tab, pick the expiry · "
+    md += [f"**{day}** · scan at {str(first['asof'])[11:16]} IST · market **{m.get('label', '-')}** · " +
+           (f"capital ₹{cap * PERSONAL_SLOTS:,.0f} → ₹{cap:,.0f} per pick, trade ONE segment" if PROFILE else
+            f"capital ₹{cap:,.0f} per pick") + (f" · status as of **{status_label}**" if status_label else ""), "",
+           "How to trade: tap **Open in Upstox** → stocks: Buy · "
            "options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; "
            "square off by 15:15. Options: exit on the **spot** stop/target.", ""]
     total = 0
@@ -200,16 +213,11 @@ def write_picks(day=None):
             continue
         st = lambda r: status.get((f.name, kind, r["symbol"]), "")
         if kind == "stocks":
-            cols = ["Stock", "Side", "Buy at", "Stop", "Target", "Qty", "Max loss", "Max gain", "Votes", "Upstox"]
+            cols = ["Stock", "Side", "Buy at", "Stop", "Target", "Qty", "Max loss", "Max gain",
+                    "RVOL" if "rvol" in rows[0] else "Votes", "Upstox"]
             body = [[r["symbol"], r["side"], f"{r['price']:,.2f}", f"{r['stop']:,.2f}", f"{r['target']:,.2f}",
-                     str(r["units"]), f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}", r["votes"],
-                     _link(r.get("upstox"))] for r in rows]
-        elif kind == "futures":
-            cols = ["Contract", "Side", "Buy at ~", "Stop", "Target", "Lots × lot", "Margin ~", "Max loss",
-                    "Max gain", "Upstox"]
-            body = [[f"{r['symbol']} {r['expiry']}", r["side"], f"{r['fut_price']:,.1f}", f"{r['stop']:,.1f}",
-                     f"{r['target']:,.1f}", f"{r['lots']} × {r['lot']}", f"₹{r['margin']:,.0f}",
-                     f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}", _link(r.get("upstox"))] for r in rows]
+                     str(r["units"]), f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}",
+                     f"{r['rvol']:.1f}×" if "rvol" in r else r["votes"], _link(r.get("upstox"))] for r in rows]
         else:
             cols = ["Option", "Premium ~", "Spot stop", "Spot target", "Lots × lot", "Invest", "Max loss",
                     "Max gain", "Votes", "Upstox"]
@@ -221,8 +229,11 @@ def write_picks(day=None):
             for r, b in zip(rows, body):
                 b.insert(1, st(r) or "-")
         md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
-    md += [f"_{total} pick(s). Each row is sized on the full capital – split it if you take several. "
-           "Premiums/futures prices are estimates: use the live Upstox price. "
+    sizing = (f"Each row uses 1/{PERSONAL_SLOTS} of your capital: choose ONE segment (stocks or options) "
+              f"and take its picks; with a single pick the rest stays unused. " if PROFILE else
+              "Each row is sized on the full capital – split it if you take several. ")
+    md += [f"_{total} pick(s). " + sizing +
+           "Option premiums are estimates: use the live Upstox price. "
            f"Full history: [{RESULT_MD.name}]({RESULT_MD.name})._", "", f"> {DISCLAIMER}"]
     PICKS_MD.write_text(chr(10).join(md), encoding="utf-8")
     print(f"{PICKS_MD.name} updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
