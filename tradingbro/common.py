@@ -6,7 +6,7 @@ import sys
 
 import pandas as pd
 
-from .config import OUTPUT_DIR, REPORT_DIR, StrategyParams, TZ
+from .config import OUTPUT_DIR, REPORT_DIR, SOURCE, SOURCE_LABEL, StrategyParams, TZ
 from .data import market_is_open, now_ist, parse_date
 
 DISCLAIMER = ("Educational tool, not investment advice. Backtests on ~60 days of data do not "
@@ -78,9 +78,10 @@ def print_table(rows, cols):
 def header(kind, a, asof, mode, p, universe_n, dropped):
     if getattr(a, "json", False):
         return
-    print(f"\n=== TradingBro | {kind.upper()} intraday | capital Rs {a.capital:,.0f} ===")
+    print(f"\n=== TradingBro | {kind.upper()} intraday | {SOURCE_LABEL} data | capital Rs {a.capital:,.0f} ===")
     if mode == "live":
-        print(f"LIVE signals as of {asof:%Y-%m-%d %H:%M} IST (Yahoo data may lag a few minutes)")
+        lag = " (Yahoo data may lag a few minutes)" if SOURCE == "yahoo" else " (Upstox data, last completed 5-min bar)"
+        print(f"LIVE signals as of {asof:%Y-%m-%d %H:%M} IST{lag}")
     else:
         print(f"REPLAY of {asof:%Y-%m-%d} at {asof:%H:%M} IST - market is closed or a past date was "
               f"requested; 'Actual' columns show what really happened after that time.")
@@ -102,7 +103,7 @@ def save_prediction(kind, payload, quiet=False):
     """Save picks to output/<date>/<kind>_<HHMM>.json for the end-of-day review
     (python -m tradingbro.review). Re-running in the same minute overwrites."""
     asof = pd.Timestamp(payload["asof"])
-    payload = dict(payload, saved_at=str(now_ist()))
+    payload = dict(payload, saved_at=str(now_ist()), source=SOURCE)
     d = OUTPUT_DIR / f"{asof:%Y-%m-%d}"
     d.mkdir(parents=True, exist_ok=True)
     path = d / f"{kind}_{asof:%H%M}.json"

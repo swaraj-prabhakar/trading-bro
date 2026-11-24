@@ -1,7 +1,9 @@
-"""Market data from Yahoo Finance with a small on-disk cache.
+"""Market data with a small on-disk cache.
 
-Yahoo limits 5-minute history to the last ~60 calendar days, which is what the
-backtests use. NSE quotes on Yahoo can lag by a few minutes during market hours.
+Source is chosen by config.SOURCE: Yahoo Finance (default) or the Upstox candle API
+(tradingbro/upstox_data.py). Yahoo limits 5-minute history to the last ~60 calendar
+days, which is what the backtests use, and NSE quotes on Yahoo can lag by a few
+minutes. Upstox serves the same periods from the broker's own feed.
 """
 import time
 import warnings
@@ -9,7 +11,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from .config import CACHE_DIR, TZ, MARKET_OPEN, MARKET_CLOSE
+from .config import CACHE_DIR, SOURCE, TZ, MARKET_OPEN, MARKET_CLOSE
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -47,8 +49,6 @@ def _cache_path(ticker, interval):
 
 def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
     """Return {ticker: DataFrame}. Tickers that fail to download are omitted."""
-    import yfinance as yf
-
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     ttl = 240 if market_is_open() else 6 * 3600
     out, missing = {}, []
@@ -59,6 +59,16 @@ def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
         else:
             missing.append(t)
 
+    if SOURCE == "upstox":
+        from .upstox_data import fetch_raw
+        for t, df in fetch_raw(missing, interval, period).items():
+            df = _clean(df, intraday=interval.endswith("m"))
+            if len(df):
+                df.to_pickle(_cache_path(t, interval))
+                out[t] = df
+        return out
+
+    import yfinance as yf
     for attempt in range(3):                      # cloud runners get throttled: retry the empty ones
         if not missing:
             break

@@ -74,11 +74,37 @@ python -m pytest -q                           # offline unit tests (incl. no-loo
 Outside market hours, every scanner automatically replays the last session and shows the
 **actual** outcome, so each run is also a test.
 
+## Trial: Upstox data vs Yahoo data (side by side)
+A second, separate pipeline runs the **same strategies on Upstox's own candle feed** (no Yahoo lag).
+It is a trial: after 1–2 weeks, compare the two and keep the better one.
+
+| | Yahoo (original) | Upstox (trial) |
+|---|---|---|
+| Run a scanner | `python -m tradingbro.stocks …` | `python -m tradingbro.up stocks …` (also `futures`, `options`, `review`, `validate`, `orders`) |
+| Claude Code skills | `intraday-stocks/-futures/-options/-review` | `intraday-stocks-upstox`, `-futures-upstox`, `-options-upstox`, `-review-upstox` |
+| GitHub workflow | `TradingBro daily` ([daily.yml](.github/workflows/daily.yml)) | `TradingBro daily (Upstox data)` ([daily_upstox.yml](.github/workflows/daily_upstox.yml)) |
+| Saved picks & reviews | `output/` | `output_upstox/` |
+| Results / phone page | [Result.md](Result.md), [Picks.md](Picks.md) | [Result_upstox.md](Result_upstox.md), [Picks_upstox.md](Picks_upstox.md) |
+
+**Comparison:** [Compare.md](Compare.md) is rebuilt by the Upstox workflow after each final review
+(15:55 IST), or by hand with `python -m tradingbro.compare`. It only counts days where both pipelines have a
+final review, and shows per-segment win %, avg R, profit factor and P&L, a day-by-day winner, and how the picks
+that only one source made turned out.
+
+Notes:
+- Both scans run at 10:10 IST so the comparison is fair. 5-minute history is the last 60 sessions on both sources.
+- The Upstox candle API currently answers without a login. Optionally create the free 1-year read-only
+  **Analytics Token** (Upstox developer console → Analytics tab) and add it as the repository secret
+  `UPSTOX_ANALYTICS_TOKEN` (locally: environment variable). Then the pipeline keeps working if Upstox starts requiring auth.
+- Under the hood it is one switch, `TRADINGBRO_SOURCE=upstox` (`tradingbro/config.py`); `tradingbro.up` just sets it.
+  Dropping either pipeline later means deleting its workflow, skills and output folder.
+
 ## Setup
 ```bash
 pip install -r requirements.txt
 ```
-Data comes from Yahoo Finance: 5-minute bars, last 60 days, which can lag live by a few minutes.
+Data comes from Yahoo Finance: 5-minute bars, last 60 days, which can lag live by a few minutes
+(or from Upstox in the trial pipeline above).
 Edit `data/instruments.json` when NSE changes the NIFTY 50 constituents or F&O lot sizes.
 Tunables (stop/target, vote threshold, entry window, charges) are in `tradingbro/config.py`.
 

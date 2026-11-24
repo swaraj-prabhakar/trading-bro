@@ -1,13 +1,28 @@
 """Central configuration. Every number here is a tunable assumption - change it, re-run
 `python -m tradingbro.validate`, and see if the backtest improves."""
+import os
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
-CACHE_DIR = ROOT / ".cache"
-REPORT_DIR = ROOT / "reports"
-OUTPUT_DIR = ROOT / "output"   # saved predictions (per day) + end-of-day reviews
+
+# Market-data source: "yahoo" (default, the original pipeline) or "upstox".
+# Each source keeps its own cache, predictions, reviews and result pages so the two can
+# run side by side and be compared (python -m tradingbro.compare). Set it with the
+# TRADINGBRO_SOURCE environment variable, or run commands through `python -m tradingbro.up`.
+SOURCE = os.environ.get("TRADINGBRO_SOURCE", "yahoo").strip().lower()
+if SOURCE not in ("yahoo", "upstox"):
+    raise SystemExit(f"TRADINGBRO_SOURCE must be 'yahoo' or 'upstox', not {SOURCE!r}")
+SOURCE_LABEL = "Upstox" if SOURCE == "upstox" else "Yahoo"
+_SFX = "" if SOURCE == "yahoo" else "_" + SOURCE
+
+CACHE_DIR = ROOT / ".cache" if SOURCE == "yahoo" else ROOT / ".cache" / SOURCE
+REPORT_DIR = ROOT / ("reports" + ("" if SOURCE == "yahoo" else "/" + SOURCE))
+OUTPUT_DIR = ROOT / ("output" + _SFX)    # saved predictions (per day) + end-of-day reviews
+RESULT_MD = ROOT / f"Result{_SFX}.md"
+PICKS_MD = ROOT / f"Picks{_SFX}.md"
+OUTPUT_DIRS = {"yahoo": ROOT / "output", "upstox": ROOT / "output_upstox"}   # for the comparison report
 
 TZ = "Asia/Kolkata"
 MARKET_OPEN = "09:15"

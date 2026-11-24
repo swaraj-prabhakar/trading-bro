@@ -15,10 +15,10 @@ from collections import defaultdict
 import pandas as pd
 
 from .common import DISCLAIMER, fmt
-from .config import NSE_HOLIDAYS, OUTPUT_DIR, ROOT
+from .config import NSE_HOLIDAYS, OUTPUT_DIR, PICKS_MD, RESULT_MD, SOURCE, SOURCE_LABEL
 from .data import now_ist
 
-RESULT_MD = ROOT / "Result.md"
+TITLE_SFX = "" if SOURCE == "yahoo" else f" ({SOURCE_LABEL} data)"
 KINDS = ("stocks", "futures", "options")
 
 
@@ -60,9 +60,9 @@ def _market_label(folder):
     return "-"
 
 
-def load_days():
+def load_days(output_dir=None):
     days = []
-    for folder in sorted(OUTPUT_DIR.glob("20??-??-??"), reverse=True):
+    for folder in sorted((output_dir or OUTPUT_DIR).glob("20??-??-??"), reverse=True):
         f = folder / "review.json"
         if not f.exists():
             continue
@@ -103,7 +103,7 @@ def build_results():
     from .review import summarise
     days = load_days()
     allp = [p for d in days for p in d["picks"]]
-    md = ["# TradingBro – intraday prediction results", "",
+    md = [f"# TradingBro – intraday prediction results{TITLE_SFX}", "",
           f"_Updated {now_ist():%Y-%m-%d %H:%M} IST · scans at 10:10 IST, final review at 15:40 IST "
           f"(Mon–Fri) · capital ₹{float(os.environ.get('CAPITAL', '100000')):,.0f} per pick._", "",
           f"> {DISCLAIMER}", "", "## Overall summary", ""]
@@ -138,14 +138,13 @@ def build_results():
         for p in d["picks"]:
             rows.append(dict(p, at=str(p["signal_ts"])[11:16], verdict=_icon(p.get("verdict"))))
         md += (_table(rows, PICK_COLS) if rows else ["No picks this day."]) + [
-            "", f"Files: {', '.join(f'[{n}](output/{d['date']}/{n})' for n in d['files'])} · "
-                f"[full review](output/{d['date']}/review.md)", ""]
+            "", f"Files: {', '.join(f'[{n}]({OUTPUT_DIR.name}/{d['date']}/{n})' for n in d['files'])} · "
+                f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
     RESULT_MD.write_text("\n".join(md), encoding="utf-8")
-    print(f"Result.md updated: {len(days)} day(s), {len(allp)} picks")
+    print(f"{RESULT_MD.name} updated: {len(days)} day(s), {len(allp)} picks")
 
 
 # ------------------------------------------------------------------ Picks.md (phone view)
-PICKS_MD = ROOT / "Picks.md"
 
 
 def _latest_scan_files(folder):
@@ -175,11 +174,11 @@ def write_picks(day=None):
     day = day or now_ist().date().isoformat()
     folder = OUTPUT_DIR / day
     files = _latest_scan_files(folder) if folder.exists() else []
-    md = ["# TradingBro – today's picks", ""]
+    md = [f"# TradingBro – today's picks{TITLE_SFX}", ""]
     if not files:
         md += [f"No scan saved for **{day}** (holiday, weekend, or the 10:10 scan has not run yet).", ""]
         PICKS_MD.write_text(chr(10).join(md + [f"> {DISCLAIMER}"]), encoding="utf-8")
-        print("Picks.md: no scan for", day)
+        print(f"{PICKS_MD.name}: no scan for", day)
         return
     status_label, status = _status_map(folder)
     first = json.loads(files[0].read_text())
@@ -224,9 +223,9 @@ def write_picks(day=None):
         md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
     md += [f"_{total} pick(s). Each row is sized on the full capital – split it if you take several. "
            "Premiums/futures prices are estimates: use the live Upstox price. "
-           "Full history: [Result.md](Result.md)._", "", f"> {DISCLAIMER}"]
+           f"Full history: [{RESULT_MD.name}]({RESULT_MD.name})._", "", f"> {DISCLAIMER}"]
     PICKS_MD.write_text(chr(10).join(md), encoding="utf-8")
-    print(f"Picks.md updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
+    print(f"{PICKS_MD.name} updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
 
 
 def main(argv=None):
@@ -250,8 +249,11 @@ def main(argv=None):
         build_results()
     elif job == "picks":
         write_picks(argv[1] if len(argv) > 1 else None)
+    elif job == "compare":
+        from .compare import build_compare
+        build_compare()
     else:
-        sys.exit("usage: python -m tradingbro.daily scan|midday|final|results|picks [date]")
+        sys.exit("usage: python -m tradingbro.daily scan|midday|final|results|picks|compare [date]")
 
 
 if __name__ == "__main__":
