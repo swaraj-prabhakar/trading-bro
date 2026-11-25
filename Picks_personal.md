@@ -1,6 +1,6 @@
 # TradingBro – today's picks – personal (2 picks per segment)
 
-**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment · status as of **mid-day 13:30**
+**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment · status as of **final 15:40**
 
 How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; square off by 15:15. Options: exit on the **spot** stop/target.
 
@@ -8,7 +8,7 @@ How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry
 
 | Stock | Status | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TATACONSUM | PENDING - open, now -0.14R | BUY | 1,174.40 | 1,153.40 | 1,216.40 | 42 | ₹934 | ₹1,712 | 5.2× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
+| TATACONSUM | ➖ NEITHER - closed 15:14 at +0.27R | BUY | 1,174.40 | 1,153.40 | 1,216.40 | 42 | ₹934 | ₹1,712 | 5.2× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
 | HDFCLIFE | ❌ NO - hit STOP LOSS at 12:49 | BUY | 605.85 | 590.30 | 636.95 | 64 | ₹1,036 | ₹1,949 | 4.7× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
 
 ## Options (2)
