@@ -1,6 +1,6 @@
 # TradingBro – personal P&L – personal (2 picks per segment)
 
-_Updated 2026-11-25 15:40 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
+_Updated 2026-11-25 15:59 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
 
 Each segment below is a separate account: read the row for the segment you trade. The segments are **not** added together.
 
@@ -27,11 +27,20 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 
 ### 2026-11-25 · market BULLISH
 
-| Segment | Pick | Signal | Votes | Entry | Stop | Target | Result | R | P&L ₹ |
-|---|---|---|---|---|---|---|---|---|---|
-| options | NIFTY 01Dec 25800 CE | 10:20 | 5/5 | 25,786.90 | 25,673.22 | 26,014.26 | ❌ NO - hit STOP LOSS at 13:06 | -1.00 | -3,765 |
-| options | ETERNAL 29Dec 370 CE | 10:20 | 5/5 | 369.55 | 366.49 | 375.67 | ✅ YES - reached TARGET at 11:48 | 2.00 | 8,385 |
-| stocks | TATACONSUM BUY | 10:20 | ORB-30 + RVOL | 1,174.40 | 1,153.40 | 1,216.40 | ➖ NEITHER - closed 15:14 at +0.27R | 0.27 | 183 |
-| stocks | HDFCLIFE BUY | 10:20 | ORB-30 + RVOL | 605.85 | 590.30 | 636.95 | ❌ NO - hit STOP LOSS at 12:49 | -1.00 | -1,036 |
+**Stocks**
+
+| Stock | Signal | Entry | Stop | Target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|
+| TATACONSUM BUY | 10:20 | 1,174.40 | 1,153.40 | 1,216.40 | ➖ NEITHER - closed 15:14 at +0.27R | 0.27 | 183 |
+| HDFCLIFE BUY | 10:20 | 605.85 | 590.30 | 636.95 | ❌ NO - hit STOP LOSS at 12:49 | -1.00 | -1,036 |
+
+**Options**
+
+| Option | Signal | Votes | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Exit premium ~ | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NIFTY 01Dec 25800 CE | 10:20 | 5/5 | 245.3 | 190.3 | 378.5 | 188.7 | 25,786.90 | 25,673.22 | 26,014.26 | ❌ NO - hit STOP LOSS at 13:06 | -1.00 | -3,765 |
+| ETERNAL 29Dec 370 CE | 10:20 | 5/5 | 14.1 | 12.5 | 17.6 | 17.6 | 369.55 | 366.49 | 375.67 | ✅ YES - reached TARGET at 11:48 | 2.00 | 8,385 |
+
+_Options: premiums are Black-Scholes estimates (Buy at = at the signal, Exit = at the exit time); target/stop hits are judged on the exact spot price._
 
 [full review](output_personal/2026-11-25/review.md)
