@@ -1,6 +1,6 @@
 ---
 name: tradingbro-picks
-description: Shows today's TradingBro intraday picks (NIFTY 50 stocks and CE/PE options) from both data sources, Yahoo and Upstox, with entry, stop-loss, target, quantity, max loss/gain and an "Open in Upstox" link for each, plus their live status, the track record, the personal 2-picks-per-segment pages and the Yahoo-vs-Upstox comparison. Use when the user asks for today's picks, intraday trades, what to buy today, "my picks" / personal picks, TradingBro results, how the picks performed, or which data source is doing better.
+description: Shows today's TradingBro intraday picks (NIFTY 50 stocks and CE/PE options) from both data sources, Yahoo and Upstox, with entry, stop-loss, target, quantity, max loss/gain and an "Open in Upstox" link for each, plus their live status, the track record, the personal 2-picks-per-segment pages and the Yahoo-vs-Upstox comparison. Use when the user asks for today's picks, intraday trades, what to buy today, a mid-day update / how the picks are doing now, today's result / end-of-day result, "my picks" / personal picks, TradingBro results, how the picks performed, or which data source is doing better.
 ---
 
 # TradingBro picks (read-only, for phone use)
@@ -28,13 +28,44 @@ Base: `https://raw.githubusercontent.com/swaraj-prabhakar/trading-bro/main/`
 | Track record, personal | `Result_personal.md` | `Result_upstox_personal.md` |
 
 Comparisons (Yahoo vs Upstox): `Compare.md` (standard) and `Compare_personal.md` (personal).
+
+Day reports (`<date>` = YYYY-MM-DD in IST):
+
+| | Yahoo | Upstox |
+|---|---|---|
+| Mid-day update (13:30), standard | `output/<date>/review_1330.md` | `output_upstox/<date>/review_1330.md` |
+| Mid-day update (13:30), personal | `output_personal/<date>/review_1330.md` | `output_upstox_personal/<date>/review_1330.md` |
+| Day result (after 15:35), standard | `output/<date>/review.md` | `output_upstox/<date>/review.md` |
+| Day result (after 15:35), personal | `output_personal/<date>/review.md` | `output_upstox_personal/<date>/review.md` |
 Pages to open on the phone: `https://github.com/swaraj-prabhakar/trading-bro/blob/main/<file>` (for example `Picks.md`).
 
 ## Which view to show
 - "my picks", "personal", "2 picks", "which 2 should I take", or the user says they trade one segment → **personal** pages.
 - Otherwise → **standard** pages. Mention in one line that a personal (2 per segment) view exists.
 
-## Steps
+## What the user can ask for
+| User says | Show |
+|---|---|
+| "today's picks", "what to buy" | the Picks pages (Steps below) |
+| "mid-day update", "how are the picks doing", "status" | **Mid-day update** (below) |
+| "today's result", "how did today go", "end of day", "final" | **Day result** (below) |
+| "overall performance", "track record" | the Result pages (Step 7) |
+| "which source is better" | the Compare pages (Step 8) |
+
+If the user is unsure what to ask for, offer these options in one short line, for example: *Picks · Mid-day update · Today's result · Track record · Yahoo vs Upstox*.
+
+### Mid-day update
+1. Use today's IST date. Fetch `review_1330.md` for the chosen view from both sources. If neither exists, say the mid-day check runs after 13:30 and is not published yet. Before 13:30, show the picks instead.
+2. Per source, give the **Accuracy summary** rows for stocks and options: picks, ✅ target, ❌ stop, still open, not filled, and P&L so far. Say clearly that this is **provisional**, with open trades valued at the 13:30 price.
+3. List every pick from "Every prediction" in a short table: Pick · Result (✅ target at HH:MM / ❌ stop at HH:MM / ⏳ open +x.xR / ⛔ not filled) · P&L. Put picks that are still **open** first: those are the ones the user still has to watch. Remind the user to square off by 15:15.
+
+### Day result
+1. Fetch `review.md` for today from both sources. If it is missing, say the final review runs after 15:35 (before then, offer the mid-day update). Before 09:15 the next day, "today's result" means the latest finished trading day: use that date.
+2. Per source, give the final summary: picks, win %, average R, profit factor and **P&L for the day**, for stocks and options separately (for personal: each segment is its own account; never add them together).
+3. Then list each pick: ✅ target / ❌ stop / squared off at 15:15 (exit price, R) / ⛔ not filled, with its P&L.
+4. Close with one line from the Result page for context (for example "Upstox stocks: 8 days, 54% win, +₹12,300 so far"), if the Result page exists.
+
+## Steps (today's picks)
 1. Fetch the chosen view from **both** sources (for example `Picks_upstox.md` and `Picks.md`). If one fails, show the other and say which source is missing. If both fail, give the GitHub page links and stop.
 2. **Check the date** in each file against today's date in IST.
    - If a file is for an older day, say so clearly. Do not present old picks as today's.
