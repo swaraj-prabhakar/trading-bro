@@ -1,22 +1,22 @@
 # TradingBro – today's picks – personal (2 picks per segment)
 
-**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment
+**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment · status as of **mid-day 13:30**
 
 How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; square off by 15:15. Options: exit on the **spot** stop/target.
 
 ## Stocks (2)
 
-| Stock | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
-|---|---|---|---|---|---|---|---|---|---|
-| TATACONSUM | BUY | 1,174.40 | 1,153.40 | 1,216.40 | 42 | ₹934 | ₹1,712 | 5.2× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
-| HDFCLIFE | BUY | 605.85 | 590.30 | 636.95 | 64 | ₹1,036 | ₹1,949 | 4.7× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
+| Stock | Status | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TATACONSUM | PENDING - open, now -0.14R | BUY | 1,174.40 | 1,153.40 | 1,216.40 | 42 | ₹934 | ₹1,712 | 5.2× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
+| HDFCLIFE | ❌ NO - hit STOP LOSS at 12:49 | BUY | 605.85 | 590.30 | 636.95 | 64 | ₹1,036 | ₹1,949 | 4.7× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
 
 ## Options (2)
 
-| Option | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| NIFTY 01Dec 25800 CE | BUY | 245.3 | 190.3 | 378.5 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
-| ETERNAL 29Dec 370 CE | BUY | 14.1 | 12.5 | 17.6 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| Option | Status | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NIFTY 01Dec 25800 CE | ❌ NO - hit STOP LOSS at 13:06 | BUY | 245.3 | 190.3 | 378.5 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
+| ETERNAL 29Dec 370 CE | ✅ YES - reached TARGET at 11:48 | BUY | 14.1 | 12.5 | 17.6 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
 
 Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or spot target (the premium stop/target are estimates of where the premium will be then).
 
