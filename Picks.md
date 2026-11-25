@@ -21,18 +21,20 @@ How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry
 
 ## Options (10)
 
-| Option | Premium ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
-|---|---|---|---|---|---|---|---|---|---|
-| ICICIBANK 29Dec 1640 CE | 74.8 | 1,630.6 | 1,671.2 | 1 × 700 | ₹52,347 | ₹5,295 | ₹10,866 | 5/5 | [Option chain](https://upstox.com/option-chain/icici-bank-ltd/) |
-| NIFTY 01Dec 25800 CE | 245.3 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
-| ETERNAL 29Dec 370 CE | 14.1 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
-| HINDUNILVR 29Dec 2080 CE | 73.5 | 2,053.6 | 2,123.9 | 1 × 300 | ₹22,053 | ₹3,710 | ₹8,203 | 5/5 | [Option chain](https://upstox.com/option-chain/hindustan-unilever-ltd/) |
-| HDFCLIFE 29Dec 610 CE | 24.5 | 599.5 | 618.6 | 1 × 1100 | ₹26,943 | ₹3,626 | ₹7,725 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
-| TRENT 29Dec 3300 CE | 126.1 | 3,255.5 | 3,346.9 | 1 × 225 | ₹28,363 | ₹3,608 | ₹7,617 | 5/5 | [Option chain](https://upstox.com/option-chain/trent-ltd/) |
-| NESTLEIND 29Dec 1320 CE | 56.6 | 1,319.8 | 1,349.3 | 1 × 500 | ₹28,297 | ₹2,889 | ₹5,859 | 5/5 | [Option chain](https://upstox.com/option-chain/nestle-india-limited/) |
-| SBILIFE 29Dec 1860 CE | 61.0 | 1,838.4 | 1,880.6 | 1 × 375 | ₹22,887 | ₹2,791 | ₹5,822 | 5/5 | [Option chain](https://upstox.com/option-chain/sbi-life-insurance-co-ltd/) |
-| BAJAJFINSV 29Dec 1920 CE | 65.8 | 1,905.4 | 1,945.2 | 1 × 300 | ₹19,745 | ₹2,198 | ₹4,484 | 5/5 | [Option chain](https://upstox.com/option-chain/bajaj-finserv-ltd/) |
-| ITC 29Dec 310 CE | 8.6 | 305.8 | 312.6 | 1 × 1725 | ₹14,907 | ₹2,020 | ₹4,247 | 5/5 | [Option chain](https://upstox.com/option-chain/itc-ltd/) |
+| Option | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ICICIBANK 29Dec 1640 CE | BUY | 74.8 | 67.5 | 90.5 | 1,630.6 | 1,671.2 | 1 × 700 | ₹52,347 | ₹5,295 | ₹10,866 | 5/5 | [Option chain](https://upstox.com/option-chain/icici-bank-ltd/) |
+| NIFTY 01Dec 25800 CE | BUY | 245.3 | 190.3 | 378.5 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
+| ETERNAL 29Dec 370 CE | BUY | 14.1 | 12.5 | 17.6 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| HINDUNILVR 29Dec 2080 CE | BUY | 73.5 | 61.5 | 101.2 | 2,053.6 | 2,123.9 | 1 × 300 | ₹22,053 | ₹3,710 | ₹8,203 | 5/5 | [Option chain](https://upstox.com/option-chain/hindustan-unilever-ltd/) |
+| HDFCLIFE 29Dec 610 CE | BUY | 24.5 | 21.3 | 31.6 | 599.5 | 618.6 | 1 × 1100 | ₹26,943 | ₹3,626 | ₹7,725 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
+| TRENT 29Dec 3300 CE | BUY | 126.1 | 110.5 | 160.4 | 3,255.5 | 3,346.9 | 1 × 225 | ₹28,363 | ₹3,608 | ₹7,617 | 5/5 | [Option chain](https://upstox.com/option-chain/trent-ltd/) |
+| NESTLEIND 29Dec 1320 CE | BUY | 56.6 | 51.0 | 68.5 | 1,319.8 | 1,349.3 | 1 × 500 | ₹28,297 | ₹2,889 | ₹5,859 | 5/5 | [Option chain](https://upstox.com/option-chain/nestle-india-limited/) |
+| SBILIFE 29Dec 1860 CE | BUY | 61.0 | 53.9 | 76.8 | 1,838.4 | 1,880.6 | 1 × 375 | ₹22,887 | ₹2,791 | ₹5,822 | 5/5 | [Option chain](https://upstox.com/option-chain/sbi-life-insurance-co-ltd/) |
+| BAJAJFINSV 29Dec 1920 CE | BUY | 65.8 | 58.8 | 81.1 | 1,905.4 | 1,945.2 | 1 × 300 | ₹19,745 | ₹2,198 | ₹4,484 | 5/5 | [Option chain](https://upstox.com/option-chain/bajaj-finserv-ltd/) |
+| ITC 29Dec 310 CE | BUY | 8.6 | 7.5 | 11.2 | 305.8 | 312.6 | 1 × 1725 | ₹14,907 | ₹2,020 | ₹4,247 | 5/5 | [Option chain](https://upstox.com/option-chain/itc-ltd/) |
+
+Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or spot target (the premium stop/target are estimates of where the premium will be then).
 
 _20 pick(s). Each row is sized on the full capital – split it if you take several. Option premiums are estimates: use the live Upstox price. Full history: [Result.md](Result.md)._
 

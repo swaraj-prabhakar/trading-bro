@@ -7,19 +7,40 @@ name: TradingBro daily (Upstox data)
 # Optional: add the free 1-year Upstox "Analytics Token" as the repository secret
 # UPSTOX_ANALYTICS_TOKEN (Settings > Secrets and variables > Actions). The candle API
 # currently works without it; the token keeps the data flowing if Upstox starts requiring auth.
+# Schedule: GitHub often starts scheduled runs late (5-10 hours on 24 Nov 2026), so there are many
+# triggers and every one runs `daily auto`, which does whatever is due right now and each step only
+# once a day: the scan inside 09:45-13:30, the mid-day check 13:30-15:35, the final review after
+# 15:35 (or after midnight for the previous session). Extra runs just print "nothing to do".
+# For on-time runs, also call workflow_dispatch with job=auto from an external scheduler (README).
+# Two minutes after the Yahoo workflow's triggers (fewer push clashes). Compare.md is rebuilt by
+# `auto` once both final reviews of a day exist.
 on:
   schedule:
-    - cron: "40 4 * * 1-5"    # 10:10 IST - scan (same minute as the Yahoo scan, for a fair comparison)
-    - cron: "0 8 * * 1-5"     # 13:30 IST - provisional check
-    - cron: "25 10 * * 1-5"   # 15:55 IST - final review + Result_upstox.md + Compare.md
-                              #             (after the Yahoo 15:40 review, so Compare.md has both)
+    - cron: "42 4 * * 1-5"        # 10:12 IST - scan window
+    - cron: "9 5 * * 1-5"         # 10:39 IST - scan window
+    - cron: "39 5 * * 1-5"        # 11:09 IST - scan window
+    - cron: "9 6 * * 1-5"         # 11:39 IST - scan window
+    - cron: "39 6 * * 1-5"        # 12:09 IST - scan window
+    - cron: "9 7 * * 1-5"         # 12:39 IST - scan window
+    - cron: "39 7 * * 1-5"        # 13:09 IST - scan window
+    - cron: "5 8 * * 1-5"         # 13:35 IST - mid-day check
+    - cron: "35 8 * * 1-5"        # 14:05 IST - mid-day check
+    - cron: "5 9 * * 1-5"         # 14:35 IST - mid-day check
+    - cron: "35 9 * * 1-5"        # 15:05 IST - mid-day check
+    - cron: "12 10 * * 1-5"       # 15:42 IST - final review
+    - cron: "42 10 * * 1-5"       # 16:12 IST - final review
+    - cron: "15 11 * * 1-5"       # 16:45 IST - final review
+    - cron: "15 12 * * 1-5"       # 17:45 IST - final review
+    - cron: "15 14 * * 1-5"       # 19:45 IST - final review
+    - cron: "15 17 * * 1-5"       # 22:45 IST - final review
+    - cron: "15 20 * * 1-5"       # 01:45 next day IST - final review
   workflow_dispatch:
     inputs:
       job:
         description: "Job to run"
         type: choice
-        options: [scan, midday, final, results, picks, compare]
-        default: scan
+        options: [auto, scan, midday, final, results, picks, compare]
+        default: auto
       force:
         description: "Run even if today is not a trading day"
         type: boolean
@@ -54,15 +75,8 @@ jobs:
       - name: Choose job
         id: job
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            JOB="${{ inputs.job }}"
-          else
-            case "${{ github.event.schedule }}" in
-              "40 4 * * 1-5") JOB=scan ;;
-              "0 8 * * 1-5")  JOB=midday ;;
-              *)              JOB=final ;;
-            esac
-          fi
+          JOB="${{ inputs.job }}"
+          if [ -z "$JOB" ]; then JOB=auto; fi          # every scheduled run is `auto`
           echo "job=$JOB" >> "$GITHUB_OUTPUT"
           echo "Running job: $JOB"
 

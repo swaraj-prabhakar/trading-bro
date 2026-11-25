@@ -13,10 +13,12 @@ How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry
 
 ## Options (2)
 
-| Option | Premium ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
-|---|---|---|---|---|---|---|---|---|---|
-| NIFTY 01Dec 25800 CE | 245.3 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
-| ETERNAL 29Dec 370 CE | 14.1 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| Option | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NIFTY 01Dec 25800 CE | BUY | 245.3 | 190.3 | 378.5 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
+| ETERNAL 29Dec 370 CE | BUY | 14.1 | 12.5 | 17.6 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+
+Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or spot target (the premium stop/target are estimates of where the premium will be then).
 
 _4 pick(s). Each row uses 1/2 of your capital: choose ONE segment (stocks or options) and take its picks; with a single pick the rest stays unused. Option premiums are estimates: use the live Upstox price. Full history: [Result_personal.md](Result_personal.md)._
 

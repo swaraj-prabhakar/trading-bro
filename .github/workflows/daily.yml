@@ -1,18 +1,38 @@
 name: TradingBro daily
 
 # All times IST (UTC+5:30), Monday-Friday. NSE holidays are skipped inside the script.
+# Schedule: GitHub often starts scheduled runs late (5-10 hours on 24 Nov 2026), so there are many
+# triggers and every one runs `daily auto`, which does whatever is due right now and each step only
+# once a day: the scan inside 09:45-13:30, the mid-day check 13:30-15:35, the final review after
+# 15:35 (or after midnight for the previous session). Extra runs just print "nothing to do".
+# For on-time runs, also call workflow_dispatch with job=auto from an external scheduler (README).
 on:
   schedule:
-    - cron: "40 4 * * 1-5"    # 10:10 IST - scan stocks and options; commit picks
-    - cron: "0 8 * * 1-5"     # 13:30 IST - provisional check -> output/<date>/review_1330.*
-    - cron: "10 10 * * 1-5"   # 15:40 IST - final review + Result.md
+    - cron: "40 4 * * 1-5"        # 10:10 IST - scan window
+    - cron: "7 5 * * 1-5"         # 10:37 IST - scan window
+    - cron: "37 5 * * 1-5"        # 11:07 IST - scan window
+    - cron: "7 6 * * 1-5"         # 11:37 IST - scan window
+    - cron: "37 6 * * 1-5"        # 12:07 IST - scan window
+    - cron: "7 7 * * 1-5"         # 12:37 IST - scan window
+    - cron: "37 7 * * 1-5"        # 13:07 IST - scan window
+    - cron: "3 8 * * 1-5"         # 13:33 IST - mid-day check
+    - cron: "33 8 * * 1-5"        # 14:03 IST - mid-day check
+    - cron: "3 9 * * 1-5"         # 14:33 IST - mid-day check
+    - cron: "33 9 * * 1-5"        # 15:03 IST - mid-day check
+    - cron: "10 10 * * 1-5"       # 15:40 IST - final review
+    - cron: "40 10 * * 1-5"       # 16:10 IST - final review
+    - cron: "13 11 * * 1-5"       # 16:43 IST - final review
+    - cron: "13 12 * * 1-5"       # 17:43 IST - final review
+    - cron: "13 14 * * 1-5"       # 19:43 IST - final review
+    - cron: "13 17 * * 1-5"       # 22:43 IST - final review
+    - cron: "13 20 * * 1-5"       # 01:43 next day IST - final review
   workflow_dispatch:
     inputs:
       job:
         description: "Job to run"
         type: choice
-        options: [scan, midday, final, results, picks]
-        default: scan
+        options: [auto, scan, midday, final, results, picks]
+        default: auto
       force:
         description: "Run even if today is not a trading day"
         type: boolean
@@ -45,15 +65,8 @@ jobs:
       - name: Choose job
         id: job
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            JOB="${{ inputs.job }}"
-          else
-            case "${{ github.event.schedule }}" in
-              "40 4 * * 1-5") JOB=scan ;;
-              "0 8 * * 1-5")  JOB=midday ;;
-              *)              JOB=final ;;
-            esac
-          fi
+          JOB="${{ inputs.job }}"
+          if [ -z "$JOB" ]; then JOB=auto; fi          # every scheduled run is `auto`
           echo "job=$JOB" >> "$GITHUB_OUTPUT"
           echo "Running job: $JOB"
 

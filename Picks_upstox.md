@@ -17,18 +17,20 @@ How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry
 
 ## Options (10)
 
-| Option | Premium ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
-|---|---|---|---|---|---|---|---|---|---|
-| ICICIBANK 29Dec 1640 CE | 74.6 | 1,628.4 | 1,670.7 | 1 × 700 | ₹52,255 | ₹5,470 | ₹11,285 | 5/5 | [Option chain](https://upstox.com/option-chain/icici-bank-ltd/) |
-| ETERNAL 29Dec 370 CE | 13.7 | 366.3 | 376.3 | 1 × 2425 | ₹33,336 | ₹4,353 | ₹9,252 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
-| HINDUNILVR 29Dec 2080 CE | 73.6 | 2,052.5 | 2,126.0 | 1 × 300 | ₹22,083 | ₹3,863 | ₹8,610 | 5/5 | [Option chain](https://upstox.com/option-chain/hindustan-unilever-ltd/) |
-| HDFCLIFE 29Dec 610 CE | 24.2 | 598.7 | 619.4 | 1 × 1100 | ₹26,602 | ₹3,874 | ₹8,373 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
-| TATACONSUM 29Dec 1180 CE | 49.8 | 1,162.8 | 1,198.8 | 1 × 550 | ₹27,405 | ₹3,479 | ₹7,333 | 5/5 | [Option chain](https://upstox.com/option-chain/tata-consumer-product-ltd/) |
-| SBILIFE 29Dec 1840 CE | 68.5 | 1,834.5 | 1,880.4 | 1 × 375 | ₹25,699 | ₹3,292 | ₹6,917 | 5/5 | [Option chain](https://upstox.com/option-chain/sbi-life-insurance-co-ltd/) |
-| NESTLEIND 29Dec 1320 CE | 57.8 | 1,319.2 | 1,351.3 | 1 × 500 | ₹28,900 | ₹3,127 | ₹6,402 | 5/5 | [Option chain](https://upstox.com/option-chain/nestle-india-limited/) |
-| ITC 29Dec 310 CE | 8.7 | 305.5 | 313.1 | 1 × 1725 | ₹15,052 | ₹2,245 | ₹4,815 | 5/5 | [Option chain](https://upstox.com/option-chain/itc-ltd/) |
-| BAJAJFINSV 29Dec 1920 CE | 64.5 | 1,903.0 | 1,945.5 | 1 × 300 | ₹19,337 | ₹2,318 | ₹4,793 | 5/5 | [Option chain](https://upstox.com/option-chain/bajaj-finserv-ltd/) |
-| POWERGRID 29Dec 265 CE | 10.5 | 263.1 | 269.6 | 1 × 1900 | ₹19,862 | ₹2,303 | ₹4,729 | 3/5 | [Option chain](https://upstox.com/option-chain/power-grid-corp-ltd/) |
+| Option | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ICICIBANK 29Dec 1640 CE | BUY | 74.6 | 67.1 | 91.0 | 1,628.4 | 1,670.7 | 1 × 700 | ₹52,255 | ₹5,470 | ₹11,285 | 5/5 | [Option chain](https://upstox.com/option-chain/icici-bank-ltd/) |
+| ETERNAL 29Dec 370 CE | BUY | 13.7 | 12.0 | 17.6 | 366.3 | 376.3 | 1 × 2425 | ₹33,336 | ₹4,353 | ₹9,252 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| HINDUNILVR 29Dec 2080 CE | BUY | 73.6 | 61.1 | 102.6 | 2,052.5 | 2,126.0 | 1 × 300 | ₹22,083 | ₹3,863 | ₹8,610 | 5/5 | [Option chain](https://upstox.com/option-chain/hindustan-unilever-ltd/) |
+| HDFCLIFE 29Dec 610 CE | BUY | 24.2 | 20.8 | 31.9 | 598.7 | 619.4 | 1 × 1100 | ₹26,602 | ₹3,874 | ₹8,373 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
+| TATACONSUM 29Dec 1180 CE | BUY | 49.8 | 43.7 | 63.4 | 1,162.8 | 1,198.8 | 1 × 550 | ₹27,405 | ₹3,479 | ₹7,333 | 5/5 | [Option chain](https://upstox.com/option-chain/tata-consumer-product-ltd/) |
+| SBILIFE 29Dec 1840 CE | BUY | 68.5 | 60.0 | 87.3 | 1,834.5 | 1,880.4 | 1 × 375 | ₹25,699 | ₹3,292 | ₹6,917 | 5/5 | [Option chain](https://upstox.com/option-chain/sbi-life-insurance-co-ltd/) |
+| NESTLEIND 29Dec 1320 CE | BUY | 57.8 | 51.8 | 70.8 | 1,319.2 | 1,351.3 | 1 × 500 | ₹28,900 | ₹3,127 | ₹6,402 | 5/5 | [Option chain](https://upstox.com/option-chain/nestle-india-limited/) |
+| ITC 29Dec 310 CE | BUY | 8.7 | 7.5 | 11.6 | 305.5 | 313.1 | 1 × 1725 | ₹15,052 | ₹2,245 | ₹4,815 | 5/5 | [Option chain](https://upstox.com/option-chain/itc-ltd/) |
+| BAJAJFINSV 29Dec 1920 CE | BUY | 64.5 | 57.0 | 80.7 | 1,903.0 | 1,945.5 | 1 × 300 | ₹19,337 | ₹2,318 | ₹4,793 | 5/5 | [Option chain](https://upstox.com/option-chain/bajaj-finserv-ltd/) |
+| POWERGRID 29Dec 265 CE | BUY | 10.5 | 9.3 | 13.0 | 263.1 | 269.6 | 1 × 1900 | ₹19,862 | ₹2,303 | ₹4,729 | 3/5 | [Option chain](https://upstox.com/option-chain/power-grid-corp-ltd/) |
+
+Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or spot target (the premium stop/target are estimates of where the premium will be then).
 
 _16 pick(s). Each row is sized on the full capital – split it if you take several. Option premiums are estimates: use the live Upstox price. Full history: [Result_upstox.md](Result_upstox.md)._
 

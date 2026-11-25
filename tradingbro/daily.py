@@ -4,6 +4,8 @@
     python -m tradingbro.daily midday    # 13:30 - provisional check, saved to output/<date>/review_1330.*
     python -m tradingbro.daily final     # 15:40 - final review (output/<date>/review.*) + rebuild Result.md
     python -m tradingbro.daily results   # rebuild Result.md only
+    python -m tradingbro.daily auto      # whatever is due now (scan / midday / final), each once a day -
+                                         # what the frequent schedule and any external trigger call
 
 Capital comes from the CAPITAL environment variable (default 100000).
 """
@@ -43,9 +45,9 @@ def scan():
         mod.main(scan_argv(cap))
 
 
-def review(name):
+def review(name, day=None):
     from . import review as rv
-    rv.main(["--date", now_ist().date().isoformat(), "--name", name])
+    rv.main(["--date", (day or now_ist().date()).isoformat(), "--name", name])
 
 
 # ------------------------------------------------------------------ Result.md
@@ -219,9 +221,10 @@ def write_picks(day=None):
                      str(r["units"]), f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}",
                      f"{r['rvol']:.1f}×" if "rvol" in r else r["votes"], _link(r.get("upstox"))] for r in rows]
         else:
-            cols = ["Option", "Premium ~", "Spot stop", "Spot target", "Lots × lot", "Invest", "Max loss",
-                    "Max gain", "Votes", "Upstox"]
-            body = [[r["option"], f"{r['premium']:,.1f}", f"{r['spot_stop']:,.1f}", f"{r['spot_target']:,.1f}",
+            cols = ["Option", "Side", "Buy at ~ (premium)", "Premium stop ~", "Premium target ~", "Spot stop",
+                    "Spot target", "Lots × lot", "Invest", "Max loss", "Max gain", "Votes", "Upstox"]
+            body = [[r["option"], "BUY", f"{r['premium']:,.1f}", f"{r['prem_stop']:,.1f}", f"{r['prem_target']:,.1f}",
+                     f"{r['spot_stop']:,.1f}", f"{r['spot_target']:,.1f}",
                      f"{r['lots']} × {r['lot']}", f"₹{r['invest']:,.0f}", f"₹{r['max_loss']:,.0f}",
                      f"₹{r['max_gain']:,.0f}", r["votes"], _link(r.get("upstox"), "Option chain")] for r in rows]
         if status_label:
@@ -229,6 +232,10 @@ def write_picks(day=None):
             for r, b in zip(rows, body):
                 b.insert(1, st(r) or "-")
         md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
+        if kind == "options":
+            md += ["Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live "
+                   "premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or "
+                   "spot target (the premium stop/target are estimates of where the premium will be then).", ""]
         if kind == "stocks" and rows[0].get("valid_until"):
             md += [f"Stocks: place a **LIMIT buy at the 'Buy at' price** (the opening-range high) – it fills only if "
                    f"price pulls back to it. Cancel it if it has not filled by **{rows[0]['valid_until']}**.", ""]
@@ -242,23 +249,104 @@ def write_picks(day=None):
     print(f"{PICKS_MD.name} updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
 
 
+# ------------------------------------------------------------------ auto (idempotent scheduler target)
+SCAN_FROM, SCAN_UNTIL = "09:45", "13:30"     # live entries are only valid in this window
+MIDDAY_FROM = "13:30"
+FINAL_FROM = "15:35"                         # after the 15:30 close, so the day is complete
+NEXT_DAY_UNTIL = "09:00"                     # a review run after midnight belongs to the previous session
+
+
+def previous_trading_day(d):
+    from datetime import timedelta
+    for k in range(1, 10):
+        p = d - timedelta(days=k)
+        if trading_day(p):
+            return p
+    return d - timedelta(days=1)
+
+
+def session_day(now=None):
+    """The trading session a review run belongs to: today, or the previous trading day before 09:00."""
+    now = now or now_ist()
+    return previous_trading_day(now.date()) if now.strftime("%H:%M") < NEXT_DAY_UNTIL else now.date()
+
+
+def scan_done(day) -> bool:
+    folder = OUTPUT_DIR / day.isoformat()
+    return folder.exists() and any(f.stem.split("_")[0] in KINDS for f in folder.glob("*_*.json"))
+
+
+def final_done(day) -> bool:
+    f = OUTPUT_DIR / day.isoformat() / "review.json"
+    return f.exists() and json.loads(f.read_text()).get("status") == "final"
+
+
+def auto_job(now=None):
+    """(job, day) that is due now, or (None, reason). Safe to call any number of times a day:
+    each step runs once - the scan in its entry window, the mid-day check, the final review
+    (also after midnight for the previous session, if it was missed)."""
+    now = now or now_ist()
+    t, today = now.strftime("%H:%M"), now.date()
+    if t < NEXT_DAY_UNTIL:
+        day = previous_trading_day(today)
+        if scan_done(day) and not final_done(day):
+            return "final", day
+        return None, f"before {NEXT_DAY_UNTIL}; {day} needs no review"
+    if not trading_day(today):
+        return None, f"{today} is not an NSE trading day"
+    if t < SCAN_FROM:
+        return None, f"before {SCAN_FROM}"
+    if t < SCAN_UNTIL:
+        return ("scan", today) if not scan_done(today) else (None, "today's scan is already saved")
+    if not scan_done(today):
+        return None, f"no scan today and the entry window closed at {SCAN_UNTIL}"
+    if t < FINAL_FROM:
+        done = (OUTPUT_DIR / today.isoformat() / "review_1330.json").exists()
+        return ("midday", today) if not done else (None, "mid-day check already done")
+    return ("final", today) if not final_done(today) else (None, "final review already done")
+
+
+def compare_due(day) -> bool:
+    """Upstox side: both final reviews exist for `day` but Compare*.md has no row for it yet."""
+    from .config import COMPARE_MD, OUTPUT_DIRS
+    if not all((OUTPUT_DIRS[s] / day.isoformat() / "review.json").exists() for s in ("yahoo", "upstox")):
+        return False
+    return not (COMPARE_MD.exists() and f"| {day.isoformat()} |" in COMPARE_MD.read_text(encoding="utf-8"))
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     job = argv[0] if argv else ""
-    today = now_ist().date()
-    if job in ("scan", "midday", "final") and not trading_day(today) and os.environ.get("FORCE") != "1":
-        print(f"{today} is not an NSE trading day - nothing to do.")
-        return
+    day = None
+    if job == "auto":
+        job, day = auto_job()
+        if job is None:
+            print(f"auto: nothing to do ({day}).")
+            if SOURCE == "upstox":
+                d = session_day()
+                if compare_due(d):
+                    from .compare import build_compare
+                    build_compare()
+            return
+        print(f"auto: running '{job}' for {day}", flush=True)
+    elif job in ("scan", "midday", "final"):
+        day = now_ist().date() if job == "scan" else session_day()
+        if not trading_day(day) and os.environ.get("FORCE") != "1":
+            print(f"{day} is not an NSE trading day - nothing to do.")
+            return
     if job == "scan":
         scan()
         write_picks()
     elif job == "midday":
-        review("review_1330")
-        write_picks()
+        review("review_1330", day)
+        write_picks(day.isoformat())
     elif job == "final":
-        review("review")
+        review("review", day)
         build_results()
-        write_picks()
+        write_picks(day.isoformat())
+        if SOURCE == "upstox" and compare_due(day):
+            from .compare import build_compare
+            build_compare()
     elif job == "results":
         build_results()
     elif job == "picks":
@@ -267,7 +355,7 @@ def main(argv=None):
         from .compare import build_compare
         build_compare()
     else:
-        sys.exit("usage: python -m tradingbro.daily scan|midday|final|results|picks|compare [date]")
+        sys.exit("usage: python -m tradingbro.daily auto|scan|midday|final|results|picks|compare [date]")
 
 
 if __name__ == "__main__":

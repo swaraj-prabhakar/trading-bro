@@ -142,6 +142,32 @@ python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23 --profile per
        --out backtest_personal                                                          # personal
 ```
 
+## Schedule and on-time runs
+GitHub starts scheduled workflows whenever it has capacity – on 24 Nov 2026 they started 5–10 hours late. So both
+workflows have **18 triggers a day** and each one runs `python -m tradingbro.daily auto`, which looks at the IST time
+and what is already saved and does only what is due, once a day:
+
+| Time (IST) | `auto` does |
+|---|---|
+| 09:45–13:30 | the **scan**, if today's scan is not saved yet (a late scan after 13:30 is skipped: entries are closed) |
+| 13:30–15:35 | the **mid-day check** |
+| after 15:35 | the **final review** + result pages (Upstox side: `Compare*.md` once both reviews exist) |
+| 00:00–09:00 | the **previous session's** final review, if it was missed |
+
+Every other run prints `auto: nothing to do` and commits nothing. Manual runs: **Actions → workflow → Run workflow**
+(job `auto`, or a specific job).
+
+**For truly on-time runs (recommended):** GitHub starts *manually dispatched* runs within seconds, so let a free
+external scheduler dispatch `auto` every 15 minutes:
+1. GitHub → Settings → Developer settings → **Fine-grained token**: repository `trading-bro` only, permission
+   **Actions: Read and write**. Copy the token.
+2. [cron-job.org](https://cron-job.org) (free) → create a job for **each** workflow file (`daily.yml`, `daily_upstox.yml`):
+   - URL `https://api.github.com/repos/swaraj-prabhakar/trading-bro/actions/workflows/daily.yml/dispatches`
+   - Method **POST**, body `{"ref":"main","inputs":{"job":"auto"}}`
+   - Headers `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`
+   - Schedule: every 15 minutes, 09:50–16:30, Monday–Friday, time zone **Asia/Kolkata**.
+3. Keep the token only in cron-job.org (never in the repo). Extra triggers are harmless: `auto` runs each step once.
+
 ## Setup
 ```bash
 pip install -r requirements.txt

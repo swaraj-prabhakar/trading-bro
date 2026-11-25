@@ -205,3 +205,38 @@ def test_market_trend_filter_blocks_counter_trend_trades():
     for hhmm in ("10:00", "10:30", "11:00", "12:00"):
         sig = signal_at(up, pd.Timestamp(f"{d} {hhmm}").tz_localize(TZ), p, market_dir=-1)
         assert sig is None or sig == "against_trend" or sig.direction == -1
+
+
+# ---------------------------------------------------------------- daily auto scheduler
+def _ist(s):
+    return pd.Timestamp(s).tz_localize(TZ)
+
+
+def test_auto_job_runs_each_step_once(tmp_path, monkeypatch):
+    import json as _json
+    from tradingbro import daily
+    monkeypatch.setattr(daily, "OUTPUT_DIR", tmp_path)
+    d = tmp_path / "2026-11-25"
+    assert daily.auto_job(_ist("2026-11-25 09:30"))[0] is None              # before the entry window
+    assert daily.auto_job(_ist("2026-11-25 10:20")) == ("scan", date(2026, 11, 25))
+    assert daily.auto_job(_ist("2026-11-25 14:00"))[0] is None              # missed the window: no late scan
+    d.mkdir()
+    (d / "stocks_1020.json").write_text("{}")
+    assert daily.auto_job(_ist("2026-11-25 11:00"))[0] is None              # scan already saved
+    assert daily.auto_job(_ist("2026-11-25 14:00")) == ("midday", date(2026, 11, 25))
+    (d / "review_1330.json").write_text("{}")
+    assert daily.auto_job(_ist("2026-11-25 14:30"))[0] is None
+    assert daily.auto_job(_ist("2026-11-25 16:00")) == ("final", date(2026, 11, 25))
+    # a run after midnight reviews the previous session if its final review was missed
+    assert daily.auto_job(_ist("2026-11-26 02:00")) == ("final", date(2026, 11, 25))
+    (d / "review.json").write_text(_json.dumps({"status": "final"}))
+    assert daily.auto_job(_ist("2026-11-25 16:30"))[0] is None
+    assert daily.auto_job(_ist("2026-11-26 02:00"))[0] is None
+
+
+def test_auto_job_skips_holidays_and_maps_monday_night_to_friday(tmp_path, monkeypatch):
+    from tradingbro import daily
+    monkeypatch.setattr(daily, "OUTPUT_DIR", tmp_path)
+    assert daily.auto_job(_ist("2026-11-24 10:20"))[0] is None              # Guru Nanak Jayanti
+    assert daily.session_day(_ist("2026-11-30 02:00")) == date(2026, 11, 27)  # Mon 02:00 -> Fri
+    assert daily.session_day(_ist("2026-11-25 02:00")) == date(2026, 11, 23)  # skips the 24th holiday
