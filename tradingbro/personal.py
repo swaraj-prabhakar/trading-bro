@@ -14,7 +14,7 @@ import os
 
 from .common import DISCLAIMER, fmt
 from .config import OUTPUT_DIR, PERSONAL_SLOTS, RESULT_MD
-from .daily import KINDS, PICK_COLS, TITLE_SFX, _icon, _table, load_days
+from .daily import KINDS, TITLE_SFX, _table, load_days, pick_tables
 from .data import now_ist
 
 
@@ -94,8 +94,7 @@ def build_personal_results():
         md += lines[::-1] + ["", "## Daily picks", ""]
         for d in reversed(days):
             md += [f"### {d['date']} · market {d['trend']}", ""]
-            rows = [dict(p, at=str(p["signal_ts"])[11:16], verdict=_icon(p.get("verdict"))) for p in d["picks"]]
-            md += (_table(rows, PICK_COLS) if rows else ["No picks this day."]) + [
-                "", f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
+            md += pick_tables(d["picks"]) + [
+                f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
     RESULT_MD.write_text("\n".join(md), encoding="utf-8")
     print(f"{RESULT_MD.name} updated: {len(days)} day(s)")

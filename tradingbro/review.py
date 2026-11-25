@@ -52,7 +52,8 @@ def normalise(kind, r, day, source):
     else:
         p.update(direction=1 if r["type"] == "CE" else -1, entry=r["spot"], stop=r["spot_stop"],
                  target=r["spot_target"], label=r["option"], opt_type=r["type"], strike=r["strike"],
-                 expiry=r["expiry"], iv=r["iv_pct"] / 100, premium=r["premium"])
+                 expiry=r["expiry"], iv=r["iv_pct"] / 100, premium=r["premium"],
+                 prem_stop=r.get("prem_stop"), prem_target=r.get("prem_target"))
     return p
 
 

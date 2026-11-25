@@ -84,6 +84,7 @@ def load_days(output_dir=None):
         trend = _market_label(folder)
         for p in picks:
             p["market"] = trend
+        _add_premium_levels(folder, picks)
         days.append(dict(date=folder.name, trend=trend, files=rv.get("files", []), picks=picks))
     return days
 
@@ -92,9 +93,45 @@ SUMMARY_COLS = [("Group", "group", 0), ("Picks", "picks", 0), ("Not filled", "no
                 ("✅ Target", "targets", 0), ("❌ Stop", "stops", 0), ("➖ 15:15 close", "sqoff", 0),
                 ("Win %", "win_pct", 0), ("Avg R", "avg_r", 2), ("Profit factor", "pf", 2),
                 ("Total P&L ₹", "total_pnl", 0)]
-PICK_COLS = [("Segment", "kind", 0), ("Pick", "label", 0), ("Signal", "at", 0), ("Votes", "votes", 0),
-             ("Entry", "entry", 2), ("Stop", "stop", 2), ("Target", "target", 2),
-             ("Result", "verdict", 0), ("R", "r", 2), ("P&L ₹", "pnl", 0)]
+STOCK_COLS = [("Stock", "label", 0), ("Signal", "at", 0), ("Entry", "entry", 2), ("Stop", "stop", 2),
+              ("Target", "target", 2), ("Result", "verdict", 0), ("R", "r", 2), ("P&L ₹", "pnl", 0)]
+OPTION_COLS = [("Option", "label", 0), ("Signal", "at", 0), ("Votes", "votes", 0),
+               ("Buy at ~ (premium)", "premium", 1), ("Premium stop ~", "prem_stop", 1),
+               ("Premium target ~", "prem_target", 1), ("Exit premium ~", "premium_exit_est", 1),
+               ("Spot entry", "entry", 2), ("Spot stop", "stop", 2), ("Spot target", "target", 2),
+               ("Result", "verdict", 0), ("R", "r", 2), ("P&L ₹", "pnl", 0)]
+
+
+def _add_premium_levels(folder, picks):
+    """Older review.json files lack the premium stop/target: take them from the saved scan file."""
+    cache = {}
+    for p in picks:
+        if p["kind"] != "options" or p.get("prem_target") is not None:
+            continue
+        src = p.get("source")
+        if src not in cache:
+            f = folder / src if src else None
+            cache[src] = json.loads(f.read_text()).get("picks", []) if f and f.exists() else []
+        for r in cache[src]:
+            if r.get("option") == p.get("label"):
+                p["prem_stop"], p["prem_target"] = r.get("prem_stop"), r.get("prem_target")
+                break
+
+
+def pick_tables(picks):
+    """Markdown for one day's picks: a stocks table and an options table (premium + spot levels)."""
+    rows = [dict(p, at=str(p["signal_ts"])[11:16], verdict=_icon(p.get("verdict"))) for p in picks]
+    if not rows:
+        return ["No picks this day."]
+    md = []
+    for kind, title, cols in (("stocks", "Stocks", STOCK_COLS), ("options", "Options", OPTION_COLS)):
+        part = [r for r in rows if r["kind"] == kind]
+        if part:
+            md += [f"**{title}**", ""] + _table(part, cols) + [""]
+    if any(r["kind"] == "options" for r in rows):
+        md += ["_Options: premiums are Black-Scholes estimates (Buy at = at the signal, Exit = at the exit time); "
+               "target/stop hits are judged on the exact spot price._", ""]
+    return md
 
 
 def _table(rows, cols):
@@ -148,11 +185,8 @@ def build_results():
                f"➖ {s.get('sqoff', 0)} closed 15:15 · ⛔ {s.get('not_filled', 0)} not filled · "
                f"win {fmt(s.get('win_pct'), 0)}% · avg {fmt(s.get('avg_r'), 2)}R · "
                f"P&L ₹{fmt(s.get('total_pnl'), 0)}", ""]
-        rows = []
-        for p in d["picks"]:
-            rows.append(dict(p, at=str(p["signal_ts"])[11:16], verdict=_icon(p.get("verdict"))))
-        md += (_table(rows, PICK_COLS) if rows else ["No picks this day."]) + [
-            "", f"Files: {', '.join(f'[{n}]({OUTPUT_DIR.name}/{d['date']}/{n})' for n in d['files'])} · "
+        md += pick_tables(d["picks"]) + [
+            f"Files: {', '.join(f'[{n}]({OUTPUT_DIR.name}/{d['date']}/{n})' for n in d['files'])} · "
                 f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
     RESULT_MD.write_text("\n".join(md), encoding="utf-8")
     print(f"{RESULT_MD.name} updated: {len(days)} day(s), {len(allp)} picks")
