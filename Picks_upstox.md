@@ -1,5 +1,35 @@
 # TradingBro – today's picks (Upstox data)
 
-No scan saved for **2026-11-24** (holiday, weekend, or the 10:10 scan has not run yet).
+**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 per pick
+
+How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; square off by 15:15. Options: exit on the **spot** stop/target.
+
+## Stocks (6)
+
+| Stock | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
+|---|---|---|---|---|---|---|---|---|---|
+| TATACONSUM | BUY | 1,174.80 | 1,153.40 | 1,217.60 | 85 | ₹1,901 | ₹3,556 | 4.8× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
+| HDFCLIFE | BUY | 605.60 | 582.30 | 652.20 | 85 | ₹2,035 | ₹3,906 | 3.9× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
+| CIPLA | BUY | 1,433.50 | 1,404.60 | 1,491.30 | 69 | ₹2,076 | ₹3,906 | 3.0× | [Open in Upstox](https://upstox.com/stocks/cipla-ltd-share-price/) |
+| HINDUNILVR | BUY | 2,077.00 | 2,027.00 | 2,177.00 | 40 | ₹2,076 | ₹3,924 | 3.0× | [Open in Upstox](https://upstox.com/stocks/hindustan-unilever-ltd-share-price/) |
+| SBILIFE | BUY | 1,849.80 | 1,808.80 | 1,931.80 | 48 | ₹2,046 | ₹3,858 | 2.8× | [Open in Upstox](https://upstox.com/stocks/sbi-life-insurance-co-ltd-share-price/) |
+| ITC | BUY | 308.05 | 300.50 | 323.15 | 264 | ₹2,069 | ₹3,911 | 2.5× | [Open in Upstox](https://upstox.com/stocks/itc-ltd-share-price/) |
+
+## Options (10)
+
+| Option | Premium ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|
+| ICICIBANK 29Dec 1640 CE | 74.6 | 1,628.4 | 1,670.7 | 1 × 700 | ₹52,255 | ₹5,470 | ₹11,285 | 5/5 | [Option chain](https://upstox.com/option-chain/icici-bank-ltd/) |
+| ETERNAL 29Dec 370 CE | 13.7 | 366.3 | 376.3 | 1 × 2425 | ₹33,336 | ₹4,353 | ₹9,252 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| HINDUNILVR 29Dec 2080 CE | 73.6 | 2,052.5 | 2,126.0 | 1 × 300 | ₹22,083 | ₹3,863 | ₹8,610 | 5/5 | [Option chain](https://upstox.com/option-chain/hindustan-unilever-ltd/) |
+| HDFCLIFE 29Dec 610 CE | 24.2 | 598.7 | 619.4 | 1 × 1100 | ₹26,602 | ₹3,874 | ₹8,373 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
+| TATACONSUM 29Dec 1180 CE | 49.8 | 1,162.8 | 1,198.8 | 1 × 550 | ₹27,405 | ₹3,479 | ₹7,333 | 5/5 | [Option chain](https://upstox.com/option-chain/tata-consumer-product-ltd/) |
+| SBILIFE 29Dec 1840 CE | 68.5 | 1,834.5 | 1,880.4 | 1 × 375 | ₹25,699 | ₹3,292 | ₹6,917 | 5/5 | [Option chain](https://upstox.com/option-chain/sbi-life-insurance-co-ltd/) |
+| NESTLEIND 29Dec 1320 CE | 57.8 | 1,319.2 | 1,351.3 | 1 × 500 | ₹28,900 | ₹3,127 | ₹6,402 | 5/5 | [Option chain](https://upstox.com/option-chain/nestle-india-limited/) |
+| ITC 29Dec 310 CE | 8.7 | 305.5 | 313.1 | 1 × 1725 | ₹15,052 | ₹2,245 | ₹4,815 | 5/5 | [Option chain](https://upstox.com/option-chain/itc-ltd/) |
+| BAJAJFINSV 29Dec 1920 CE | 64.5 | 1,903.0 | 1,945.5 | 1 × 300 | ₹19,337 | ₹2,318 | ₹4,793 | 5/5 | [Option chain](https://upstox.com/option-chain/bajaj-finserv-ltd/) |
+| POWERGRID 29Dec 265 CE | 10.5 | 263.1 | 269.6 | 1 × 1900 | ₹19,862 | ₹2,303 | ₹4,729 | 3/5 | [Option chain](https://upstox.com/option-chain/power-grid-corp-ltd/) |
+
+_16 pick(s). Each row is sized on the full capital – split it if you take several. Option premiums are estimates: use the live Upstox price. Full history: [Result_upstox.md](Result_upstox.md)._
 
 > Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.
