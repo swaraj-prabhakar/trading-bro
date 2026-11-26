@@ -42,7 +42,11 @@ from .options_math import next_expiry
 from .universe import load_instruments
 
 DECISION = "10:05"           # label of the last 5-minute bar the 10:10 scan sees
-HIST = os.environ.get("TRADINGBRO_HISTORY_SESSIONS", "320")
+HIST = os.environ.get("TRADINGBRO_HISTORY_SESSIONS", "60")     # research runs set 320
+
+# Shadow-mode check (research/conditions/FINDINGS.md). It flags CAUTION but changes no picks.
+VIX_PCTL = 0.8          # 5-day India VIX change in the top 20% of the past year -> weak option days in all 4 periods
+BREADTH_LOW = 0.44      # <= 44% of NIFTY 50 stocks on the trade's side of VWAP = bottom 20% of the Dec 2025-Nov 2026 days
 
 
 def _adx(d, n=14):
@@ -73,11 +77,12 @@ class Data:
         self.or_width = (g.high.max() - g.low.min())            # NIFTY opening-range width per day (points)
 
 
-def features(D: Data, day) -> dict:
+def features(D: Data, day, decision=DECISION) -> dict:
+    """Features known at the `decision` bar (HH:MM label of the last closed 5-minute bar)."""
     day = pd.Timestamp(day).date()
     b = D.n5[D.n5.index.date == day]
     t = b.index.strftime("%H:%M")
-    upto = b[t <= DECISION]
+    upto = b[t <= decision]
     prev = D.nd[D.nd.index.date < day]
     pv = D.vix[D.vix.index.date < day]
     if len(upto) < 6 or len(prev) < 60:
@@ -116,7 +121,7 @@ def features(D: Data, day) -> dict:
     ups, above_pc, above_vwap, rets = [], [], [], []
     for df in D.s5.values():
         sb = df[df.index.date == day]
-        sb = sb[sb.index.strftime("%H:%M") <= DECISION]
+        sb = sb[sb.index.strftime("%H:%M") <= decision]
         sp = df[df.index.date < day]
         if len(sb) < 6 or not len(sp):
             continue
@@ -136,6 +141,45 @@ def features(D: Data, day) -> dict:
              cal_to_expiry=len(sessions) if exp <= D.nd.index.date[-1] else (exp - day).days * 5 / 7,
              cal_results=float(day.month in (1, 4, 7, 10) and day.day >= 10 or day.month in (2, 5, 8, 11) and day.day <= 15))
     return f
+
+
+def assess(day, market_trend, decision=DECISION, D=None) -> dict:
+    """Shadow-mode market-conditions check for `day` at the scan's decision bar.
+    CAUTION when the 5-day VIX change is in the top 20% of the past year, or breadth opposes the trade."""
+    D = D or Data()
+    day = pd.Timestamp(day).date()
+    f = features(D, day, decision)
+    if not f:
+        return dict(date=str(day), decision=decision, verdict="UNKNOWN", reasons=["not enough data"], features={})
+    v = D.vix[D.vix.index.date < day]["close"]
+    chg5 = ((v / v.shift(5) - 1) * 100).dropna().iloc[-250:]
+    thr = float(chg5.quantile(VIX_PCTL)) if len(chg5) >= 60 else None
+    reasons = []
+    vc = f.get("vix_chg5")
+    if vc is not None and thr is not None and vc >= thr:
+        reasons.append(f"India VIX up {vc:+.1f}% in 5 days (top 20% of the past year, threshold {thr:+.1f}%)")
+    bw = None
+    if market_trend and "br_above_vwap" in f:
+        bw = f["br_above_vwap"] if market_trend > 0 else 1 - f["br_above_vwap"]
+        if bw <= BREADTH_LOW:
+            reasons.append(f"only {bw:.0%} of NIFTY 50 stocks are on the trade's side of VWAP")
+    return dict(date=str(day), decision=decision, verdict="CAUTION" if reasons else "OK", reasons=reasons,
+                vix_chg5=vc, vix_threshold=thr, breadth_with_trend=bw, market_trend=market_trend,
+                features={k: (None if pd.isna(x) else float(x)) for k, x in f.items()})
+
+
+def save_assessment(folder):
+    """Write <folder>/conditions.json for the day's saved scan (market trend and decision bar from it)."""
+    folder = Path(folder)
+    scans = sorted(p for p in folder.glob("*_*.json") if not p.name.startswith("review"))
+    if not scans:
+        return None
+    pl = json.loads(scans[0].read_text())
+    asof = pd.Timestamp(pl["asof"])
+    out = assess(asof.date(), (pl.get("market") or {}).get("trend", 0), asof.strftime("%H:%M"))
+    (folder / "conditions.json").write_text(json.dumps(out, indent=2))
+    print(f"Market conditions: {out['verdict']}" + (" - " + "; ".join(out["reasons"]) if out["reasons"] else ""))
+    return out
 
 
 def follow(D: Data, day, direction):
@@ -204,9 +248,12 @@ def main(argv=None):
         return
     ap = argparse.ArgumentParser(description="Market-condition features known at 10:05")
     ap.add_argument("--date", required=True)
+    ap.add_argument("--trend", type=int, default=1, help="market trend of the day: 1, -1 or 0")
     a = ap.parse_args(argv)
-    for k, v in features(Data(), a.date).items():
-        print(f"{k:18s} {v:,.3f}")
+    r = assess(a.date, a.trend)
+    print(f"Verdict: {r['verdict']}" + (" - " + "; ".join(r["reasons"]) if r["reasons"] else ""))
+    for k, v in r["features"].items():
+        print(f"{k:18s} {v if v is None else round(v, 3)}")
 
 
 if __name__ == "__main__":

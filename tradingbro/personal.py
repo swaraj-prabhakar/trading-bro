@@ -14,7 +14,8 @@ import os
 
 from .common import DISCLAIMER, fmt
 from .config import OUTPUT_DIR, PERSONAL_SLOTS, RESULT_MD, monthly_md
-from .daily import KINDS, TITLE_SFX, _table, by_month, data_note, load_days, month_title, pick_tables, write_monthly
+from .daily import (KINDS, TITLE_SFX, _table, by_month, conditions_table, data_note, load_days, month_title,
+                    pick_tables, write_monthly)
 from .data import now_ist
 
 
@@ -87,6 +88,7 @@ def render_personal(days, month=None):
                       f"{fmt(op['total_pnl'], 0)} | {fmt(op['ret_pct'], 1)} | "
                       f"[{m}]({monthly_md(m).parent.name}/{monthly_md(m).name}) |")
         md += [""]
+    md += conditions_table(days)
     md += ["## Per segment" if not month else f"## {month_title(month)} per segment", ""]
     if not days:
         md += ["No final reviews yet.", ""]

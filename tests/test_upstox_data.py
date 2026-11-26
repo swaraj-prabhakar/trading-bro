@@ -98,3 +98,12 @@ def test_monthly_pages_and_replay_note():
     assert monthly_md("2026-09").parent.name == "monthly" and monthly_md("2026-09").name == "2026-09.md"
     note = data_note(days)
     assert "2 day(s) 2026-10-31 → 2026-11-03 are a BACKTEST REPLAY" in note and "1 live day(s)" in note
+
+
+def test_conditions_line_is_advice_only():
+    from tradingbro.daily import conditions_line
+    c = conditions_line(dict(verdict="CAUTION", reasons=["India VIX up +13.9% in 5 days"]))
+    assert "CAUTION" in c and "half size" in c and "unchanged" in c
+    ok = conditions_line(dict(verdict="OK", reasons=[], vix_chg5=2.0, breadth_with_trend=0.64))
+    assert "OK" in ok and "+2.0%" in ok and "64%" in ok
+    assert "not available" in conditions_line(dict(verdict="UNKNOWN", reasons=[]))

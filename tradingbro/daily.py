@@ -43,6 +43,11 @@ def scan():
     for mod in (stocks, options):
         print(f"\n######## {mod.__name__.split('.')[-1]} ########", flush=True)
         mod.main(scan_argv(cap))
+    try:                                   # shadow-mode market-conditions check: informs, never blocks
+        from .conditions import save_assessment
+        save_assessment(OUTPUT_DIR / now_ist().date().isoformat())
+    except Exception as e:
+        print(f"Market conditions check failed ({e})")
 
 
 def review(name, day=None):
@@ -85,8 +90,10 @@ def load_days(output_dir=None):
         for p in picks:
             p["market"] = trend
         _add_premium_levels(folder, picks)
+        cf = folder / "conditions.json"
+        cond = json.loads(cf.read_text()).get("verdict") if cf.exists() else None
         days.append(dict(date=folder.name, trend=trend, files=rv.get("files", []), picks=picks,
-                         replay=_is_replay(folder)))
+                         replay=_is_replay(folder), conditions=cond))
     return days
 
 
@@ -123,6 +130,41 @@ def data_note(days):
     if live:
         parts.append(f"{len(live)} live day(s) {live[0]} → {live[-1]}")
     return "> " + ". ".join(parts) + "." if parts else ""
+
+
+def conditions_line(c):
+    """One line for the Picks page (shadow mode: the picks are not changed)."""
+    if c.get("verdict") == "CAUTION":
+        return ("**Market conditions (trial): ⚠️ CAUTION** – " + "; ".join(c["reasons"]) +
+                ". In the 1-year study such days were weak for these picks – consider **half size**. "
+                "The picks themselves are unchanged.")
+    if c.get("verdict") == "OK":
+        bits = []
+        if c.get("vix_chg5") is not None:
+            bits.append(f"India VIX {c['vix_chg5']:+.1f}% in 5 days")
+        if c.get("breadth_with_trend") is not None:
+            bits.append(f"{c['breadth_with_trend']:.0%} of NIFTY 50 stocks on the trade's side of VWAP")
+        return "**Market conditions (trial): ✅ OK** – " + ", ".join(bits) + "."
+    return "**Market conditions (trial):** not available today."
+
+
+def conditions_table(days, label_kinds=KINDS):
+    """Shadow-mode scorecard: how CAUTION vs OK days actually went (days that have a conditions check)."""
+    from .review import summarise
+    rows = []
+    for v in ("OK", "CAUTION"):
+        dd = [d for d in days if d.get("conditions") == v]
+        for k in label_kinds:
+            s = summarise([p for d in dd for p in d["picks"] if p["kind"] == k], f"{v} · {k}")
+            rows.append(dict(s, days=len(dd)))
+    if not any(r["days"] for r in rows):
+        return []
+    cols = [("Verdict · segment", "group", 0), ("Days", "days", 0), ("Picks", "picks", 0), ("Win %", "win_pct", 0),
+            ("Avg R", "avg_r", 2), ("Total P&L ₹", "total_pnl", 0)]
+    return (["## Market conditions check (trial)", "",
+             "A shadow-mode flag shown on the Picks page since 27 Nov 2026 (it changes no picks): CAUTION when India "
+             "VIX rose sharply over 5 days or breadth opposes the trade. This scorecard decides whether it should "
+             "start cutting position size.", ""] + _table(rows, cols) + [""])
 
 
 def write_monthly(days, render):
@@ -233,6 +275,7 @@ def render_results(days, month=None):
                       f"{fmt(s.get('avg_r'), 2)} | {fmt(s.get('pf'), 2)} | {fmt(s.get('total_pnl'), 0)} | "
                       f"[{m}]({monthly_md(m).parent.name}/{monthly_md(m).name}) |")
         md += [""]
+    md += conditions_table(days)
     md += ["## Overall summary" if not month else f"## {month_title(month)} summary", ""]
     if not days:
         md += ["No final reviews yet.", ""]
@@ -305,6 +348,7 @@ def write_picks(day=None):
         print(f"{PICKS_MD.name}: no scan for", day)
         return
     status_label, status = _status_map(folder)
+    cond = json.loads((folder / "conditions.json").read_text()) if (folder / "conditions.json").exists() else None
     first = json.loads(files[0].read_text())
     m = first.get("market") or {}
     cap = first.get("capital", 0)
@@ -314,6 +358,8 @@ def write_picks(day=None):
            "How to trade: tap **Open in Upstox** → stocks: Buy · "
            "options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; "
            "square off by 15:15. Options: exit on the **spot** stop/target.", ""]
+    if cond:
+        md += [conditions_line(cond), ""]
     total = 0
     for f in files:
         pl = json.loads(f.read_text())

@@ -86,6 +86,14 @@ agree. That was the only change profitable in both periods (avg −0.06R → +0.
 Optional, off by default (tested but not reliably better): `--rr 3` (3R target: slightly better in the study, mixed in
 a 30-day replay) and `--cooldown` (skip a symbol for 5 sessions after its setup hit the stop).
 
+## Market conditions check (trial, shadow mode)
+After each scan, `tradingbro/conditions.py` writes `output_upstox/<date>/conditions.json` and the Picks page shows a
+**Market conditions** line. It says **⚠️ CAUTION – consider half size** when India VIX rose sharply over 5 days (the
+top 20% of the past year) or when ≤ 44% of NIFTY 50 stocks are on the trade's side of VWAP. In a 1-year replay
+(Dec 2025 – Nov 2026), option picks on the high-VIX days averaged −0.39R against +0.20R on the other days
+(`research/conditions/FINDINGS.md`). It **changes no picks**. The Result pages score CAUTION vs OK days, to decide
+after a few weeks whether it should cut position size.
+
 ## Market-trend filter (on by default)
 Before picking anything, the scanner reads the overall market trend at the scan time from three views:
 1. NIFTY's own 5-strategy intraday vote

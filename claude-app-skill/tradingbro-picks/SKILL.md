@@ -55,8 +55,9 @@ If the user is unsure what to ask for, offer these options in one short line: *P
 4. Column meanings:
    - Stocks are ORB-30 breakouts. **RVOL** is today's volume compared with normal (higher is stronger).
    - Options: **"Buy at (premium)"** is the contract's **real last traded premium on Upstox** at the scan. The user places a **limit buy** at it (the price may have moved since; check the option chain). A value marked **~** is an estimate (no real price was available). Manage the trade by the **spot stop / spot target**; the premium stop/target show roughly where the premium will be then.
-5. If a **Status** column is present, show it (the header says whether it is the mid-day or the final status).
-6. After 13:30 IST, warn the user that new entries are no longer valid (entry window 09:45–13:30) and that every position must be squared off by 15:15.
+5. If the page has a **Market conditions (trial)** line, show it right after the market trend. On **⚠️ CAUTION**, tell the user that such days were weak for these picks in the 1-year study and that it suggests **half size**; the picks themselves are unchanged. It is a trial and may be wrong.
+6. If a **Status** column is present, show it (the header says whether it is the mid-day or the final status).
+7. After 13:30 IST, warn the user that new entries are no longer valid (entry window 09:45–13:30) and that every position must be squared off by 15:15.
 
 ### Mid-day update
 1. Use today's IST date. Fetch `output_upstox_personal/<date>/review_1330.md`. If it doesn't exist, say the mid-day check runs after 13:30 and is not published yet. Before 13:30, show the picks instead.
