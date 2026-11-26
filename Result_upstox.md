@@ -1,8 +1,8 @@
 # TradingBro – intraday prediction results (Upstox data)
 
-_Updated 2026-11-26 15:31 IST · scans at 10:10 IST, final review after 15:35 IST (Mon–Fri) · capital ₹100,000 per pick._
+_Updated 2026-11-26 15:40 IST · scans at 10:10 IST, final review after 15:35 IST (Mon–Fri) · capital ₹100,000 per pick._
 
-> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 1 live day(s) 2026-11-25 → 2026-11-25.
+> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 2 live day(s) 2026-11-25 → 2026-11-26.
 
 > Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.
 
@@ -10,27 +10,27 @@ _Updated 2026-11-26 15:31 IST · scans at 10:10 IST, final review after 15:35 IS
 
 | Month | Days | Picks | Win % | Avg R | Profit factor | Total P&L ₹ | Details |
 |---|---|---|---|---|---|---|---|
-| November 2026 | 16 | 127 | 55 | 0.26 | 1.60 | 93,456 | [2026-11](monthly/2026-11.md) |
+| November 2026 | 17 | 136 | 54 | 0.23 | 1.52 | 86,802 | [2026-11](monthly/2026-11.md) |
 | October 2026 | 20 | 77 | 61 | 0.44 | 3.42 | 92,681 | [2026-10](monthly/2026-10.md) |
 | September 2026 | 21 | 48 | 48 | 0.09 | 1.31 | 12,490 | [2026-09](monthly/2026-09.md) |
 
 ## Overall summary
 
-**57 trading day(s)** · 2026-09-01 → 2026-11-25 · 252 picks · 252 filled
+**58 trading day(s)** · 2026-09-01 → 2026-11-26 · 261 picks · 261 filled
 
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
-| All picks | 252 | 0 | 50 | 77 | 125 | 56 | 0.28 | 1.85 | 198,627 |
-| Stocks | 65 | 0 | 3 | 3 | 59 | 62 | 0.18 | 1.68 | 12,820 |
-| Options | 187 | 0 | 47 | 74 | 66 | 53 | 0.31 | 1.87 | 185,807 |
+| All picks | 261 | 0 | 51 | 81 | 129 | 55 | 0.27 | 1.78 | 191,973 |
+| Stocks | 68 | 0 | 3 | 4 | 61 | 59 | 0.15 | 1.47 | 10,064 |
+| Options | 193 | 0 | 48 | 77 | 68 | 53 | 0.31 | 1.82 | 181,909 |
 
 **By strategy agreement**
 
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
-| Votes ORB-30 + RVOL | 65 | 0 | 3 | 3 | 59 | 62 | 0.18 | 1.68 | 12,820 |
-| Votes 5/5 | 181 | 0 | 46 | 70 | 65 | 54 | 0.33 | 1.93 | 189,275 |
-| Votes 4/5 | 5 | 0 | 1 | 3 | 1 | 40 | -0.06 | 0.87 | -1,142 |
+| Votes ORB-30 + RVOL | 68 | 0 | 3 | 4 | 61 | 59 | 0.15 | 1.47 | 10,064 |
+| Votes 5/5 | 186 | 0 | 47 | 73 | 66 | 54 | 0.32 | 1.87 | 185,306 |
+| Votes 4/5 | 6 | 0 | 1 | 3 | 2 | 50 | 0.14 | 0.88 | -1,071 |
 | Votes 3/5 | 1 | 0 | 0 | 1 | 0 | 0 | -1.00 | 0.00 | -2,326 |
 
 **By market trend at scan time**
@@ -38,11 +38,38 @@ _Updated 2026-11-26 15:31 IST · scans at 10:10 IST, final review after 15:35 IS
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
 | BEARISH | 81 | 0 | 25 | 28 | 28 | 56 | 0.45 | 2.69 | 105,190 |
-| BULLISH | 171 | 0 | 25 | 49 | 97 | 56 | 0.20 | 1.55 | 93,437 |
+| BULLISH | 180 | 0 | 26 | 53 | 101 | 54 | 0.18 | 1.48 | 86,783 |
 
 _Win % = P&L > 0 after charges (filled picks). R = result in multiples of the planned risk. Each pick is sized on the full capital, so totals are a sum of independent trades. Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices. A pick is "not filled" if price never traded back to the entry before 13:30._
 
 ## Daily results
+
+### 2026-11-26 · market BULLISH
+
+9 picks · ✅ 1 target · ❌ 4 stop · ➖ 4 closed 15:15 · ⛔ 0 not filled · win 33% · avg -0.11R · P&L ₹-6,653
+
+**Stocks**
+
+| Stock | Signal | Entry | Stop | Target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|
+| HDFCLIFE BUY | 10:05 | 607.60 | 599.00 | 624.80 | ❌ NO - hit STOP LOSS at 11:46 | -1.00 | -1,493 |
+| BEL BUY | 10:05 | 408.75 | 403.05 | 420.15 | ➖ NEITHER - closed 15:15 at -0.57R | -0.57 | -875 |
+| CIPLA BUY | 10:05 | 1,450.00 | 1,427.70 | 1,494.60 | ➖ NEITHER - closed 15:15 at -0.20R | -0.20 | -388 |
+
+**Options**
+
+| Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| HDFCLIFE 29Dec 610 CE | 10:05 | 5/5 | 26.8~ | 20.8 | 23.9~ | 33.3~ | 17.5 | 607.60 | 601.84 | 619.13 | ❌ NO - hit STOP LOSS at 10:37 | -1.00 | -3,747 |
+| SUNPHARMA 29Dec 1920 CE | 10:05 | 5/5 | 55.1~ | 48.1 | 48.7~ | 69.2~ | 42.4 | 1,917.80 | 1,905.61 | 1,942.19 | ❌ NO - hit STOP LOSS at 13:56 | -1.00 | -2,105 |
+| HDFCBANK 29Dec 860 CE | 10:05 | 5/5 | 33.3~ | 26.1 | 29.9~ | 40.7~ | 32.7 | 856.75 | 850.14 | 869.98 | ✅ YES - reached TARGET at 10:51 | 2.00 | 4,224 |
+| BEL 29Dec 410 CE | 10:05 | 5/5 | 13.7~ | 12.6 | 12.1~ | 17.0~ | 10.8 | 408.75 | 405.77 | 414.71 | ❌ NO - hit STOP LOSS at 11:17 | -1.00 | -2,658 |
+| COALINDIA 29Dec 390 CE | 10:05 | 5/5 | 12.8~ | 8.7 | 11.7~ | 15.0~ | 8.9 | 387.70 | 385.64 | 391.82 | ➖ NEITHER - closed 15:15 at +0.63R | 0.63 | 317 |
+| SBILIFE 29Dec 1840 CE | 10:10 | 4/5 | 56.5~ | 50.0 | 49.7~ | 71.6~ | 50.4 | 1,831.00 | 1,817.48 | 1,858.05 | ➖ NEITHER - closed 15:15 at +1.15R | 1.15 | 72 |
+
+_Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
+
+Files: [options_1010.json](output_upstox/2026-11-26/options_1010.json), [stocks_1010.json](output_upstox/2026-11-26/stocks_1010.json) · [full review](output_upstox/2026-11-26/review.md)
 
 ### 2026-11-25 · market BULLISH
 

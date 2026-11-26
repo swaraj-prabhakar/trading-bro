@@ -1,23 +1,23 @@
 # TradingBro – personal P&L (Upstox data) – personal (2 picks per segment) – November 2026
 
-_Updated 2026-11-26 15:31 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
+_Updated 2026-11-26 15:40 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
 
 [← All results](../Result_upstox_personal.md)
 
 Each segment below is a separate account: read the row for the segment you trade. The segments are **not** added together.
 
-> **15 day(s) 2026-11-02 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 1 live day(s) 2026-11-25 → 2026-11-25.
+> **15 day(s) 2026-11-02 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 2 live day(s) 2026-11-25 → 2026-11-26.
 
 > Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.
 
 ## November 2026 per segment
 
-**16 trading day(s)** · 2026-11-02 → 2026-11-25
+**17 trading day(s)** · 2026-11-02 → 2026-11-26
 
 | Segment | Days traded | Picks | ✅ Target | ❌ Stop | ➖ 15:15 | Win % | Up / down days | Total P&L ₹ | Return on capital % | Avg / traded day ₹ | Best day ₹ | Worst day ₹ | Max drawdown ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Stocks | 10 | 16 | 3 | 0 | 13 | 62 | 8 / 2 | 4,619 | 4.6 | 462 | 1,680 | -629 | -629 |
-| Options | 12 | 24 | 4 | 11 | 9 | 50 | 5 / 7 | 17,387 | 17.4 | 1,449 | 17,808 | -7,683 | -19,132 |
+| Stocks | 11 | 18 | 3 | 1 | 14 | 56 | 8 / 3 | 3,411 | 3.4 | 310 | 1,680 | -1,207 | -1,207 |
+| Options | 13 | 26 | 4 | 13 | 9 | 46 | 5 / 8 | 11,535 | 11.5 | 887 | 17,808 | -7,683 | -19,132 |
 
 _Days traded = days the segment had at least one pick. Return on capital = total P&L ÷ ₹100,000. Max drawdown = deepest fall of the running P&L from its high. Win % counts filled picks, after charges. Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices._
 
@@ -25,6 +25,7 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 
 | Date | Market | Stocks | Options |
 |---|---|---|---|
+| 2026-11-26 | BULLISH | -1,207 (3,411) | -5,852 (11,535) |
 | 2026-11-25 | BULLISH | 30 (4,619) | 17,808 (17,387) |
 | 2026-11-23 (replay) | BEARISH | - | - |
 | 2026-11-20 (replay) | BULLISH | 1,680 (4,589) | -1,087 (-421) |
@@ -43,6 +44,26 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 | 2026-11-02 (replay) | BULLISH | 378 (378) | 569 (569) |
 
 ## Daily picks
+
+### 2026-11-26 · market BULLISH
+
+**Stocks**
+
+| Stock | Signal | Entry | Stop | Target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|
+| HDFCLIFE BUY | 10:05 | 607.60 | 599.00 | 624.80 | ❌ NO - hit STOP LOSS at 11:46 | -1.00 | -758 |
+| BEL BUY | 10:05 | 408.75 | 403.05 | 420.15 | ➖ NEITHER - closed 15:15 at -0.57R | -0.57 | -449 |
+
+**Options**
+
+| Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| HDFCLIFE 29Dec 610 CE | 10:05 | 5/5 | 26.8~ | 20.8 | 23.9~ | 33.3~ | 17.5 | 607.60 | 601.84 | 619.13 | ❌ NO - hit STOP LOSS at 10:37 | -1.00 | -3,747 |
+| SUNPHARMA 29Dec 1920 CE | 10:05 | 5/5 | 55.1~ | 48.1 | 48.7~ | 69.2~ | 42.4 | 1,917.80 | 1,905.61 | 1,942.19 | ❌ NO - hit STOP LOSS at 13:56 | -1.00 | -2,105 |
+
+_Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
+
+[full review](../output_upstox_personal/2026-11-26/review.md)
 
 ### 2026-11-25 · market BULLISH
 
