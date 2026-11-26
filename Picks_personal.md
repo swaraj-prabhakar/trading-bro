@@ -1,22 +1,22 @@
 # TradingBro – today's picks – personal (2 picks per segment)
 
-**2026-11-25** · scan at 10:20 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment · status as of **final 15:40**
+**2026-11-26** · scan at 10:10 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment
 
 How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; square off by 15:15. Options: exit on the **spot** stop/target.
 
 ## Stocks (2)
 
-| Stock | Status | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
-|---|---|---|---|---|---|---|---|---|---|---|
-| TATACONSUM | ➖ NEITHER - closed 15:14 at +0.27R | BUY | 1,174.40 | 1,153.40 | 1,216.40 | 42 | ₹934 | ₹1,712 | 5.2× | [Open in Upstox](https://upstox.com/stocks/tata-consumer-product-ltd-share-price/) |
-| HDFCLIFE | ❌ NO - hit STOP LOSS at 12:49 | BUY | 605.85 | 590.30 | 636.95 | 64 | ₹1,036 | ₹1,949 | 4.7× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
+| Stock | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
+|---|---|---|---|---|---|---|---|---|---|
+| HDFCLIFE | BUY | 607.40 | 600.30 | 621.60 | 82 | ₹635 | ₹1,112 | 2.3× | [Open in Upstox](https://upstox.com/stocks/hdfc-life-ins-co-ltd-share-price/) |
+| BEL | BUY | 408.70 | 403.05 | 420.00 | 122 | ₹742 | ₹1,326 | 2.0× | [Open in Upstox](https://upstox.com/stocks/bharat-electronics-ltd-share-price/) |
 
 ## Options (2)
 
-| Option | Status | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| NIFTY 01Dec 25800 CE | ❌ NO - hit STOP LOSS at 13:06 | BUY | 245.3 | 190.3 | 378.5 | 25,673.2 | 26,014.3 | 1 × 65 | ₹15,947 | ₹3,665 | ₹8,572 | 5/5 | [Option chain](https://upstox.com/option-chain/nifty/) |
-| ETERNAL 29Dec 370 CE | ✅ YES - reached TARGET at 11:48 | BUY | 14.1 | 12.5 | 17.6 | 366.5 | 375.7 | 1 × 2425 | ₹34,248 | ₹4,019 | ₹8,396 | 5/5 | [Option chain](https://upstox.com/option-chain/eternal-limited/) |
+| Option | Side | Buy at ~ (premium) | Premium stop ~ | Premium target ~ | Spot stop | Spot target | Lots × lot | Invest | Max loss | Max gain | Votes | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| JSWSTEEL 29Dec 1320 CE | BUY | 40.5 | 36.0 | 50.4 | 1,302.2 | 1,329.5 | 1 × 675 | ₹27,337 | ₹3,173 | ₹6,599 | 5/5 | [Option chain](https://upstox.com/option-chain/jsw-steel-limited/) |
+| HDFCLIFE 29Dec 610 CE | BUY | 27.0 | 24.5 | 32.5 | 602.5 | 617.3 | 1 × 1100 | ₹29,736 | ₹2,925 | ₹5,915 | 5/5 | [Option chain](https://upstox.com/option-chain/hdfc-life-ins-co-ltd/) |
 
 Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or spot target (the premium stop/target are estimates of where the premium will be then).
 
