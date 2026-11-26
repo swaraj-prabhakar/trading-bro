@@ -1,6 +1,7 @@
 # TradingBro – intraday analysis agent (NIFTY 50 stocks · Options)
 
-Buy-first, sell-same-day analysis. For a given capital it returns the **top 10** trades with
+Buy-first, sell-same-day analysis on **Upstox market data** (the broker's own feed). For a given capital it
+returns the **top 10** trades with
 entry, **stop-loss**, **target**, **quantity / lots**, and the backtested expected profit.
 Ties go to the cheaper instrument; use `--max-price` (stocks) or `--max-premium` (options) to cap price.
 
@@ -8,7 +9,8 @@ Ties go to the cheaper instrument; use `--max-price` (stocks) or `--max-premium`
 | Skill | Command | Covers |
 |---|---|---|
 | `intraday-stocks` | `python -m tradingbro.stocks --capital 50000` | NIFTY 50 cash stocks, ORB-30 + relative volume (optional `--max-price`) |
-| `intraday-options` | `python -m tradingbro.options --capital 20000` | CE on up-trend / PE on down-trend, index + stock options |
+| `intraday-options` | `python -m tradingbro.options --capital 20000` | CE on up-trend / PE on down-trend, index + stock options, real Upstox premiums |
+| `intraday-review` | `python -m tradingbro.review` | end-of-day check of the saved picks |
 
 Futures are not part of this agent.
 
@@ -17,18 +19,20 @@ or *"which CE/PE should I buy with ₹20k today?"*. The matching skill in `.clau
 runs the scanner and explains the output.
 
 ## On your phone
-- **[Picks.md](Picks.md)**: today's picks with an *Open in Upstox* link on every row. It's rewritten at 10:10, and gets status updates at 13:30 and 15:40 IST.
-- **[Result.md](Result.md)**: the track record (overall summary first, then each day).
-- **Claude app skill:** upload `claude-app-skill/tradingbro-picks.zip` once in Claude (Customize → Skills → Upload a skill). Then ask *"today's picks"* in the Claude phone app. It reads Picks.md and shows the table with tappable Upstox links.
+- **[Picks_upstox.md](Picks_upstox.md)**: today's picks with an *Open in Upstox* link on every row. It's rewritten at about 10:10, and gets status updates at 13:30 and after 15:35 IST.
+- **[Result_upstox.md](Result_upstox.md)**: the track record (overall summary first, then each day).
+- **Claude app skill:** upload `claude-app-skill/tradingbro-picks.zip` once in Claude (Customize → Skills → Upload a skill). Then ask *"today's picks"*, *"mid-day update"* or *"today's result"* in the Claude phone app. It reads the **personal** pages (2 picks per segment, see below) and shows them with tappable Upstox links.
 
 ## Save picks and review them at the end of the day
-Every live scan saves its picks to `output/<date>/<kind>_<HHMM>.json` (turn off with `--no-save`).
+Every live scan saves its picks to `output_upstox/<date>/<kind>_<HHMM>.json` (turn off with `--no-save`).
 After 15:30, run the `intraday-review` skill or:
 ```bash
 python -m tradingbro.review                    # today; add --date YYYY-MM-DD for another day
 ```
-It checks every saved pick against the actual 1-minute prices and writes `output/<date>/review.md` with
+It checks every saved pick against the actual 1-minute prices and writes `output_upstox/<date>/review.md` with
 target and stop hits, win rate, direction accuracy, R-multiples, P&L, and a breakdown by strategy agreement.
+Options are checked on the contract's **real premium**: filled when it traded at or below the pick's premium
+(limit buy), exit when the spot price hits the stop or target, P&L from the real premium at entry and exit.
 
 ## Upstox: one-click review and place
 ```bash
@@ -57,7 +61,12 @@ both the older 165 sessions (≈ break-even after costs vs −0.18%/trade) and t
 5. CPR (previous-day Central Pivot Range)
 
 A signal needs at least 3 of the 5 strategies to agree, inside 09:45–13:30.
-Stop = 2.5 × ATR(14), target = 2R, square-off 15:15.
+Stop = 2.5 × ATR(14), target = 2R, square-off 15:15 (on the underlying's spot price).
+
+**Premium:** the contract's **real last traded price on Upstox** at the scan, from its 1-minute candles
+(`tradingbro/option_quotes.py`). Lots are sized on it, and the premium stop/target are priced from it at the spot
+stop/target using its implied volatility. Only if no real price is found does it fall back to a Black-Scholes
+estimate, marked `~` on the pages. (Until 26 Nov 2026 every premium was an estimate, and those were 7–55% too high.)
 Each instrument is backtested on its own last ~60 sessions. Only instruments with a positive
 historical edge after charges are shown, ordered by strategy agreement, then max gain.
 
@@ -91,31 +100,6 @@ python -m pytest -q                           # offline unit tests (incl. no-loo
 Outside market hours, every scanner automatically replays the last session and shows the
 **actual** outcome, so each run is also a test.
 
-## Trial: Upstox data vs Yahoo data (side by side)
-A second, separate pipeline runs the **same strategies on Upstox's own candle feed** (no Yahoo lag).
-It is a trial: after 1–2 weeks, compare the two and keep the better one.
-
-| | Yahoo (original) | Upstox (trial) |
-|---|---|---|
-| Run a scanner | `python -m tradingbro.stocks …` | `python -m tradingbro.up stocks …` (also `options`, `review`, `validate`, `orders`) |
-| Claude Code skills | `intraday-stocks/-options/-review` | `intraday-stocks-upstox`, `-options-upstox`, `-review-upstox` |
-| GitHub workflow | `TradingBro daily` ([daily.yml](.github/workflows/daily.yml)) | `TradingBro daily (Upstox data)` ([daily_upstox.yml](.github/workflows/daily_upstox.yml)) |
-| Saved picks & reviews | `output/` | `output_upstox/` |
-| Results / phone page | [Result.md](Result.md), [Picks.md](Picks.md) | [Result_upstox.md](Result_upstox.md), [Picks_upstox.md](Picks_upstox.md) |
-
-**Comparison:** [Compare.md](Compare.md) is rebuilt by the Upstox workflow after each final review
-(15:55 IST), or by hand with `python -m tradingbro.compare`. It only counts days where both pipelines have a
-final review, and shows per-segment win %, avg R, profit factor and P&L, a day-by-day winner, and how the picks
-that only one source made turned out.
-
-Notes:
-- Both scans run at 10:10 IST and both use the last 60 sessions of 5-minute history, so the comparison is fair.
-- The Upstox candle API currently answers without a login. Optionally create the free 1-year read-only
-  **Analytics Token** (Upstox developer console → Analytics tab) and add it as the repository secret
-  `UPSTOX_ANALYTICS_TOKEN` (locally: environment variable). Then the pipeline keeps working if Upstox starts requiring auth.
-- Under the hood it is one switch, `TRADINGBRO_SOURCE=upstox` (`tradingbro/config.py`); `tradingbro.up` just sets it.
-  Dropping either pipeline later means deleting its workflow, skills and output folder.
-
 ## Personal P&L: 2 picks per segment, capital in one segment
 The standard pages size **every** pick on the full capital and add all picks up. The personal pages answer
 "what if I put my capital into ONE segment and take its best 2 picks":
@@ -125,15 +109,14 @@ The standard pages size **every** pick on the full capital and add all picks up.
 - stocks and options are tracked as **two separate accounts**: P&L, return on capital, up/down days, best/worst
   day and drawdown per segment, never added together.
 
-| | Yahoo | Upstox |
-|---|---|---|
-| Today's picks | [Picks_personal.md](Picks_personal.md) | [Picks_upstox_personal.md](Picks_upstox_personal.md) |
-| Track record | [Result_personal.md](Result_personal.md) | [Result_upstox_personal.md](Result_upstox_personal.md) |
-| Saved picks & reviews | `output_personal/` | `output_upstox_personal/` |
+| | |
+|---|---|
+| Today's picks | [Picks_upstox_personal.md](Picks_upstox_personal.md) |
+| Track record | [Result_upstox_personal.md](Result_upstox_personal.md) |
+| Saved picks & reviews | `output_upstox_personal/` |
 
-Comparison: [Compare_personal.md](Compare_personal.md). Both workflows run it as an extra step right after the standard
-scan, on the same bars (it can never block the standard results). By hand: set `TRADINGBRO_PROFILE=personal` before any
-`python -m tradingbro.daily …` / `python -m tradingbro.up daily …` command.
+The workflow runs it as an extra step right after the standard scan, on the same bars (it can never block the
+standard results). By hand: set `TRADINGBRO_PROFILE=personal` before any `python -m tradingbro.daily …` command.
 
 Replay past days in either mode (writes to its own folder, never the live pages):
 ```bash
@@ -143,15 +126,16 @@ python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23 --profile per
 ```
 
 ## Schedule and on-time runs
-GitHub starts scheduled workflows whenever it has capacity – on 24 Nov 2026 they started 5–10 hours late. So both
-workflows have **18 triggers a day** and each one runs `python -m tradingbro.daily auto`, which looks at the IST time
+The workflow is `TradingBro daily` ([daily_upstox.yml](.github/workflows/daily_upstox.yml)).
+GitHub starts scheduled workflows whenever it has capacity – on 24 Nov 2026 they started 5–10 hours late. So the
+workflow has **18 triggers a day** and each one runs `python -m tradingbro.daily auto`, which looks at the IST time
 and what is already saved and does only what is due, once a day:
 
 | Time (IST) | `auto` does |
 |---|---|
 | 09:45–13:30 | the **scan**, if today's scan is not saved yet (a late scan after 13:30 is skipped: entries are closed) |
 | 13:30–15:35 | the **mid-day check** |
-| after 15:35 | the **final review** + result pages (Upstox side: `Compare*.md` once both reviews exist) |
+| after 15:35 | the **final review** + result pages |
 | 00:00–09:00 | the **previous session's** final review, if it was missed |
 
 Every other run prints `auto: nothing to do` and commits nothing. Manual runs: **Actions → workflow → Run workflow**
@@ -161,8 +145,8 @@ Every other run prints `auto: nothing to do` and commits nothing. Manual runs: *
 external scheduler dispatch `auto` every 15 minutes:
 1. GitHub → Settings → Developer settings → **Fine-grained token**: repository `trading-bro` only, permission
    **Actions: Read and write**. Copy the token.
-2. [cron-job.org](https://cron-job.org) (free) → create a job for **each** workflow file (`daily.yml`, `daily_upstox.yml`):
-   - URL `https://api.github.com/repos/swaraj-prabhakar/trading-bro/actions/workflows/daily.yml/dispatches`
+2. [cron-job.org](https://cron-job.org) (free) → create a job:
+   - URL `https://api.github.com/repos/swaraj-prabhakar/trading-bro/actions/workflows/daily_upstox.yml/dispatches`
    - Method **POST**, body `{"ref":"main","inputs":{"job":"auto"}}`
    - Headers `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`
    - Schedule: every 15 minutes, 09:50–16:30, Monday–Friday, time zone **Asia/Kolkata**.
@@ -172,14 +156,19 @@ external scheduler dispatch `auto` every 15 minutes:
 ```bash
 pip install -r requirements.txt
 ```
-Data comes from Yahoo Finance: 5-minute bars, last 60 days, which can lag live by a few minutes
-(or from Upstox in the trial pipeline above).
+Data comes from the Upstox V3 candle API: 5-minute bars of the last 60 sessions for the backtests, 1-minute bars
+for the reviews and the real option premiums. It currently answers without a login. Optionally create the free
+1-year read-only **Analytics Token** (Upstox developer console → Analytics tab) and add it as the repository secret
+`UPSTOX_ANALYTICS_TOKEN` (locally: environment variable), so the pipeline keeps working if Upstox starts requiring auth.
+(Yahoo Finance was used until 26 Nov 2026 and has been removed. Internally, instruments are still keyed by their
+old ticker names, the `yahoo` field in `data/instruments.json`.)
 Edit `data/instruments.json` when NSE changes the NIFTY 50 constituents or F&O lot sizes.
 Tunables (stop/target, vote threshold, entry window, charges) are in `tradingbro/config.py`.
 
 ## Limitations – read before trading
-- Option premiums are **Black-Scholes estimates**, not live quotes. Use the live option chain
-  and manage trades by the spot stop and target.
+- Option premiums are the **last traded price at the scan**; the live price moves and the bid-ask spread costs a
+  little. Place a limit order, and manage trades by the spot stop and target. The option *backtest* filter still
+  re-prices past underlying trades with Black-Scholes, so treat it as indicative.
 - 60 days is a short sample, so edges are small and can disappear. Re-run `validate` regularly.
 - Educational tool, **not investment advice**. Intraday and F&O trading carry a high risk of loss.
 

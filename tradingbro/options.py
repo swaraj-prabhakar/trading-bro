@@ -10,7 +10,7 @@ from dataclasses import replace
 import numpy as np
 import pandas as pd
 
-from . import charges
+from . import charges, option_quotes as oq
 from .common import base_parser, finish, header, params_from_args, resolve_asof, symbols_arg
 from .data import fetch_universe, fetch_vix
 from .market import describe, market_trend, trend_at
@@ -22,9 +22,9 @@ from .universe import estimate_strike_step, filter_symbols, load_instruments
 
 OPT_MIN_MARKET_SCORE = 2
 OPT_RR = 2.0              # target = 2 x risk. --rr 3 was tested: slightly better in the 1-year study, mixed in a
-                          # 30-day replay (Yahoo +12% with a deeper drawdown, Upstox -6%), so 2R stays the default
+                          # 30-day replay (-6%), so 2R stays the default
 COOLDOWN_SESSIONS = 5     # --cooldown: skip a symbol for 5 sessions after its setup hit the stop (opt-in: helped
-                          # the 1-year study but cut Yahoo profit in the 30-day replay)
+                          # the 1-year study but cut profit in a 30-day replay)
 
 
 def recent_stop(df, asof, p, mkt, sessions=COOLDOWN_SESSIONS):
@@ -153,12 +153,25 @@ def analyze(a):
         iv = implied_vol(inst, daily, vix, asof.date())
         T = years_to_expiry(sig.ts, exp)
         T_exit = years_to_expiry(sig.ts + pd.Timedelta(hours=1), exp)
-        prem = bs_price(sig.price, K, T, iv, kind)
+        prem_model = bs_price(sig.price, K, T, iv, kind)
+        # Real premium of the exact contract at the scan (close of the signal bar), from Upstox 1-minute
+        # candles. Its implied volatility then prices the premium stop/target at the spot stop/target.
+        okey = oq.contract_key(inst.symbol, kind, K, exp)
+        obars = oq.day_bars(okey, asof.date())
+        live = oq.price_at(obars, sig.ts + pd.Timedelta(minutes=5))
+        if live is not None and live > 0:
+            prem = live
+            iv = oq.implied_vol(live, sig.price, K, T, kind) or iv
+        else:
+            prem = prem_model
         if prem < 0.5 or (a.max_premium and prem > a.max_premium):
             unaffordable += 1
             continue
         prem_stop = bs_price(sig.stop, K, T_exit, iv, kind)
         prem_tgt = bs_price(sig.target, K, T_exit, iv, kind)
+        if live is not None:                    # keep them consistent with the real entry premium
+            shift = prem - bs_price(sig.price, K, T, iv, kind)
+            prem_stop, prem_tgt = max(prem_stop + shift, 0.05), max(prem_tgt + shift, 0.05)
         lot_cost = prem * inst.lot
         lots_cap = math.floor(a.capital / lot_cost)
         if lots_cap < 1:
@@ -180,6 +193,7 @@ def analyze(a):
             symbol=inst.symbol, upstox=inst.upstox_oc, option=f"{inst.symbol} {exp:%d%b} {K:g} {kind}", type=kind, strike=K,
             expiry=str(exp), signal_time=f"{sig.ts:%H:%M}", spot=sig.price, iv_pct=iv * 100,
             delta=bs_delta(sig.price, K, T, iv, kind), premium=prem, prem_stop=prem_stop, prem_target=prem_tgt,
+            premium_source="live" if live is not None else "estimate", premium_model=prem_model, option_key=okey,
             spot_stop=sig.stop, spot_target=sig.target, lot=inst.lot, lots=lots, qty=qty, invest=prem * qty,
             max_loss=max_loss, risk_pct=max_loss / a.capital * 100,
             max_gain=(prem_tgt - prem) * qty - cost, exp_profit=expected, charges=cost, bt_trades=n,
@@ -190,13 +204,16 @@ def analyze(a):
         if sig.outcome:
             o = sig.outcome
             exit_ts = pd.Timestamp(f"{asof.date()} {o['exit_time']}").tz_localize(asof.tz)
-            p_out = bs_price(o["exit"], K, years_to_expiry(exit_ts, exp), iv, kind)
+            p_out = oq.price_at(obars, exit_ts + pd.Timedelta(minutes=1))
+            if p_out is None:
+                p_out = bs_price(o["exit"], K, years_to_expiry(exit_ts, exp), iv, kind)
             row.update(actual=f"{o['reason']}@{o['exit_time']}", actual_pnl=(p_out - prem) * qty - cost)
         rows.append(row)
 
     rows.sort(key=lambda r: (-int(r["votes"].split("/")[0]), -r["max_gain"]))  # most strategies agreeing, then max gain
     rows = rows[: a.top]
-    cols = [("Option", "option", 0), ("At", "signal_time", 0), ("Spot", "spot", 1), ("Prem~", "premium", 1),
+    cols = [("Option", "option", 0), ("At", "signal_time", 0), ("Spot", "spot", 1), ("Premium", "premium", 1),
+            ("Src", "premium_source", 0),
             ("SL prem", "prem_stop", 1), ("Tgt prem", "prem_target", 1), ("Spot SL", "spot_stop", 1),
             ("Spot Tgt", "spot_target", 1), ("Lot", "lot", 0), ("Lots", "lots", 0), ("Invest", "invest", 0),
             ("MaxLoss", "max_loss", 0), ("MaxGain", "max_gain", 0), ("ExpRs", "exp_profit", 0), ("BT#", "bt_trades", 0),
@@ -204,9 +221,9 @@ def analyze(a):
     if mode == "replay":
         cols += [("Actual", "actual", 0), ("ActualRs~", "actual_pnl", 0)]
     notes = [
-        "Premiums are Black-Scholes ESTIMATES (IV = India VIX for NIFTY, 1.1 x 20d hist-vol otherwise). "
-        "Check the live option chain: use the real premium, and manage the trade with the SPOT stop/target "
-        "(exit the option when spot hits them).",
+        "Premium = the contract's real last traded price on Upstox at the signal (Src=live); premium stop/target are "
+        "priced from it at the spot stop/target with its implied volatility. Src=estimate means no real price was "
+        "found and Black-Scholes was used. Manage the trade with the SPOT stop/target.",
         "Backtest = underlying trades re-priced as options (no IV change, no bid-ask spread) - treat as indicative.",
         "Expiries: NSE Tuesday schedule shifted for holidays in config.NSE_HOLIDAYS; on expiry day the next expiry is used unless --expiry-day. Confirm the contract exists.",
         f"{rejected} signal(s) rejected for weak backtest edge; {unaffordable} skipped (1 lot over capital/premium limit).",

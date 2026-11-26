@@ -1,9 +1,9 @@
 """Daily jobs for the scheduled GitHub workflow (all times IST, Mon-Fri).
 
-    python -m tradingbro.daily scan      # 10:10 - stocks + options scans, picks saved to output/<date>/
-    python -m tradingbro.daily midday    # 13:30 - provisional check, saved to output/<date>/review_1330.*
-    python -m tradingbro.daily final     # 15:40 - final review (output/<date>/review.*) + rebuild Result.md
-    python -m tradingbro.daily results   # rebuild Result.md only
+    python -m tradingbro.daily scan      # 10:10 - stocks + options scans, picks saved to output_upstox/<date>/
+    python -m tradingbro.daily midday    # 13:30 - provisional check -> output_upstox/<date>/review_1330.*
+    python -m tradingbro.daily final     # 15:40 - final review (review.*) + rebuild Result_upstox.md
+    python -m tradingbro.daily results   # rebuild Result_upstox.md only
     python -m tradingbro.daily auto      # whatever is due now (scan / midday / final), each once a day -
                                          # what the frequent schedule and any external trigger call
 
@@ -17,10 +17,10 @@ from collections import defaultdict
 import pandas as pd
 
 from .common import DISCLAIMER, fmt
-from .config import NSE_HOLIDAYS, OUTPUT_DIR, PERSONAL_SLOTS, PICKS_MD, PROFILE, RESULT_MD, SOURCE, SOURCE_LABEL
+from .config import NSE_HOLIDAYS, OUTPUT_DIR, PERSONAL_SLOTS, PICKS_MD, PROFILE, RESULT_MD, SOURCE_LABEL
 from .data import now_ist
 
-TITLE_SFX = ("" if SOURCE == "yahoo" else f" ({SOURCE_LABEL} data)") + \
+TITLE_SFX = f" ({SOURCE_LABEL} data)" + \
     (f" – personal ({PERSONAL_SLOTS} picks per segment)" if PROFILE else "")
 KINDS = ("stocks", "options")          # futures are not traded by this agent
 
@@ -96,8 +96,8 @@ SUMMARY_COLS = [("Group", "group", 0), ("Picks", "picks", 0), ("Not filled", "no
 STOCK_COLS = [("Stock", "label", 0), ("Signal", "at", 0), ("Entry", "entry", 2), ("Stop", "stop", 2),
               ("Target", "target", 2), ("Result", "verdict", 0), ("R", "r", 2), ("P&L ₹", "pnl", 0)]
 OPTION_COLS = [("Option", "label", 0), ("Signal", "at", 0), ("Votes", "votes", 0),
-               ("Buy at ~ (premium)", "premium", 1), ("Premium stop ~", "prem_stop", 1),
-               ("Premium target ~", "prem_target", 1), ("Exit premium ~", "premium_exit_est", 1),
+               ("Buy at (premium)", "c_buy", 0), ("Filled at", "c_fill", 0), ("Premium stop", "c_stop", 0),
+               ("Premium target", "c_tgt", 0), ("Exit premium", "c_exit", 0),
                ("Spot entry", "entry", 2), ("Spot stop", "stop", 2), ("Spot target", "target", 2),
                ("Result", "verdict", 0), ("R", "r", 2), ("P&L ₹", "pnl", 0)]
 
@@ -121,6 +121,12 @@ def _add_premium_levels(folder, picks):
 def pick_tables(picks):
     """Markdown for one day's picks: a stocks table and an options table (premium + spot levels)."""
     rows = [dict(p, at=str(p["signal_ts"])[11:16], verdict=_icon(p.get("verdict"))) for p in picks]
+    for r in rows:
+        if r["kind"] == "options":                     # "~" marks a Black-Scholes estimate, no mark = real Upstox price
+            est = "" if r.get("premium_source") == "live" else "~"
+            r["c_buy"], r["c_stop"], r["c_tgt"] = (_prem(r.get(k), est) for k in ("premium", "prem_stop", "prem_target"))
+            r["c_fill"] = _prem(r.get("premium_entry"), "") if r.get("premium_entry") is not None else                 ("-" if r.get("outcome") == "not filled" else r["c_buy"])
+            r["c_exit"] = _prem(r["premium_exit"], "") if r.get("premium_exit") is not None else                 _prem(r.get("premium_exit_est"), "~")
     if not rows:
         return ["No picks this day."]
     md = []
@@ -129,9 +135,14 @@ def pick_tables(picks):
         if part:
             md += [f"**{title}**", ""] + _table(part, cols) + [""]
     if any(r["kind"] == "options" for r in rows):
-        md += ["_Options: premiums are Black-Scholes estimates (Buy at = at the signal, Exit = at the exit time); "
-               "target/stop hits are judged on the exact spot price._", ""]
+        md += ["_Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry "
+               "and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. "
+               "picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._", ""]
     return md
+
+
+def _prem(v, mark):
+    return "-" if v is None else f"{v:,.1f}{mark}"
 
 
 def _table(rows, cols):
@@ -255,9 +266,11 @@ def write_picks(day=None):
                      str(r["units"]), f"₹{r['max_loss']:,.0f}", f"₹{r['max_gain']:,.0f}",
                      f"{r['rvol']:.1f}×" if "rvol" in r else r["votes"], _link(r.get("upstox"))] for r in rows]
         else:
-            cols = ["Option", "Side", "Buy at ~ (premium)", "Premium stop ~", "Premium target ~", "Spot stop",
+            cols = ["Option", "Side", "Buy at (premium)", "Premium stop", "Premium target", "Spot stop",
                     "Spot target", "Lots × lot", "Invest", "Max loss", "Max gain", "Votes", "Upstox"]
-            body = [[r["option"], "BUY", f"{r['premium']:,.1f}", f"{r['prem_stop']:,.1f}", f"{r['prem_target']:,.1f}",
+            mk = lambda r: "" if r.get("premium_source") == "live" else "~"
+            body = [[r["option"], "BUY", _prem(r["premium"], mk(r)), _prem(r["prem_stop"], mk(r)),
+                     _prem(r["prem_target"], mk(r)),
                      f"{r['spot_stop']:,.1f}", f"{r['spot_target']:,.1f}",
                      f"{r['lots']} × {r['lot']}", f"₹{r['invest']:,.0f}", f"₹{r['max_loss']:,.0f}",
                      f"₹{r['max_gain']:,.0f}", r["votes"], _link(r.get("upstox"), "Option chain")] for r in rows]
@@ -267,9 +280,10 @@ def write_picks(day=None):
                 b.insert(1, st(r) or "-")
         md += ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(b) + " |" for b in body] + [""]
         if kind == "options":
-            md += ["Options: **Buy at ~** is an *estimated* premium (no free live option prices) – check the live "
-                   "premium in the option chain before buying. Exit when the **spot** price reaches the spot stop or "
-                   "spot target (the premium stop/target are estimates of where the premium will be then).", ""]
+            md += ["Options: **Buy at** is the contract's real last traded premium on Upstox at the scan – place a "
+                   "**limit buy** at it (it may have moved since; check the option chain). Exit when the **spot** price "
+                   "reaches the spot stop or spot target; the premium stop/target show roughly where the premium will "
+                   "be then. A value marked ~ is an estimate (no real price was available).", ""]
         if kind == "stocks" and rows[0].get("valid_until"):
             md += [f"Stocks: place a **LIMIT buy at the 'Buy at' price** (the opening-range high) – it fills only if "
                    f"price pulls back to it. Cancel it if it has not filled by **{rows[0]['valid_until']}**.", ""]
@@ -277,7 +291,7 @@ def write_picks(day=None):
               f"and take its picks; with a single pick the rest stays unused. " if PROFILE else
               "Each row is sized on the full capital – split it if you take several. ")
     md += [f"_{total} pick(s). " + sizing +
-           "Option premiums are estimates: use the live Upstox price. "
+           "Option premiums are real Upstox prices at the scan time (~ = estimate). "
            f"Full history: [{RESULT_MD.name}]({RESULT_MD.name})._", "", f"> {DISCLAIMER}"]
     PICKS_MD.write_text(chr(10).join(md), encoding="utf-8")
     print(f"{PICKS_MD.name} updated: {total} pick(s) for {day}" + (f" (status: {status_label})" if status_label else ""))
@@ -340,14 +354,6 @@ def auto_job(now=None):
     return ("final", today) if not final_done(today) else (None, "final review already done")
 
 
-def compare_due(day) -> bool:
-    """Upstox side: both final reviews exist for `day` but Compare*.md has no row for it yet."""
-    from .config import COMPARE_MD, OUTPUT_DIRS
-    if not all((OUTPUT_DIRS[s] / day.isoformat() / "review.json").exists() for s in ("yahoo", "upstox")):
-        return False
-    return not (COMPARE_MD.exists() and f"| {day.isoformat()} |" in COMPARE_MD.read_text(encoding="utf-8"))
-
-
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     job = argv[0] if argv else ""
@@ -356,11 +362,6 @@ def main(argv=None):
         job, day = auto_job()
         if job is None:
             print(f"auto: nothing to do ({day}).")
-            if SOURCE == "upstox":
-                d = session_day()
-                if compare_due(d):
-                    from .compare import build_compare
-                    build_compare()
             return
         print(f"auto: running '{job}' for {day}", flush=True)
     elif job in ("scan", "midday", "final"):
@@ -378,18 +379,12 @@ def main(argv=None):
         review("review", day)
         build_results()
         write_picks(day.isoformat())
-        if SOURCE == "upstox" and compare_due(day):
-            from .compare import build_compare
-            build_compare()
     elif job == "results":
         build_results()
     elif job == "picks":
         write_picks(argv[1] if len(argv) > 1 else None)
-    elif job == "compare":
-        from .compare import build_compare
-        build_compare()
     else:
-        sys.exit("usage: python -m tradingbro.daily auto|scan|midday|final|results|picks|compare [date]")
+        sys.exit("usage: python -m tradingbro.daily auto|scan|midday|final|results|picks [date]")
 
 
 if __name__ == "__main__":

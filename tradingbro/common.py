@@ -80,7 +80,7 @@ def header(kind, a, asof, mode, p, universe_n, dropped, rules=None):
         return
     print(f"\n=== TradingBro | {kind.upper()} intraday | {SOURCE_LABEL} data | capital Rs {a.capital:,.0f} ===")
     if mode == "live":
-        lag = " (Yahoo data may lag a few minutes)" if SOURCE == "yahoo" else " (Upstox data, last completed 5-min bar)"
+        lag = " (Upstox data, last completed 5-min bar)"
         print(f"LIVE signals as of {asof:%Y-%m-%d %H:%M} IST{lag}")
     else:
         print(f"REPLAY of {asof:%Y-%m-%d} at {asof:%H:%M} IST - market is closed or a past date was "

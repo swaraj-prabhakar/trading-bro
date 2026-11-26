@@ -1,9 +1,15 @@
 ---
 name: intraday-stocks
-description: Intraday (buy first, sell same day) analysis of NIFTY 50 cash stocks using the 30-minute Opening Range Breakout with relative volume (ORB-30 + RVOL). Gives the top 10 picks with entry, stop-loss, target and how many shares to buy for the user's capital, strongest relative volume first. Use when the user asks for intraday stock picks, which NIFTY stock to buy today, target/stop-loss for a stock, or how many shares to buy with an amount.
+description: Intraday (buy first, sell same day) analysis of NIFTY 50 cash stocks using the 30-minute Opening Range Breakout with relative volume (ORB-30 + RVOL), on Upstox market data. Gives the top 10 picks with entry, stop-loss, target and how many shares to buy for the user's capital, strongest relative volume first. Use when the user asks for intraday stock picks, which NIFTY stock to buy today, target/stop-loss for a stock, or how many shares to buy with an amount.
 ---
 
 # Intraday NIFTY 50 stock picks
+
+> **Data: Upstox** (the broker's own candle feed; the last completed 5-minute bar). Saved picks and reviews go to
+> `output_upstox/`, results to `Result_upstox.md` / `Picks_upstox.md`, reports to `reports/upstox/`.
+> No login is needed for the candle data. If `UPSTOX_ANALYTICS_TOKEN` is set (the free 1-year read-only token from
+> the Upstox developer console, Analytics tab) or a daily `python -m tradingbro.upstox login` token is valid, it is
+> sent as well. If the run prints `Upstox: <symbol> failed`, report which symbols had no data.
 
 The analysis is done by the Python engine in this repo. Do not invent prices or levels yourself. Always run the scanner and report what it prints.
 

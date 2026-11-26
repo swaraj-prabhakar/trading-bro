@@ -54,16 +54,8 @@ def test_fetch_one_chunks_and_keeps_n_sessions(monkeypatch):
     for u in hist:                                       # every minute chunk within Upstox's 1-month cap
         to, frm = u.rsplit("/", 2)[-2:]
         assert (pd.Timestamp(to) - pd.Timestamp(frm)).days < 28   # stays inside 1 calendar month, even in Feb
-    assert len(set(df.index.date)) == 60                 # 60 sessions, like Yahoo's "60d"
+    assert len(set(df.index.date)) == 60                 # 60 sessions, the backtest history
     assert df.index[-1].date() == date(2026, 11, 25)     # today's intraday bars appended
-
-
-def test_source_switch_separates_outputs():
-    code = "from tradingbro import config as c; print(c.SOURCE, c.OUTPUT_DIR.name, c.RESULT_MD.name, c.PICKS_MD.name)"
-    run = lambda src: subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True,
-                                     env=dict(os.environ, TRADINGBRO_SOURCE=src)).stdout.split()
-    assert run("yahoo") == ["yahoo", "output", "Result.md", "Picks.md"]
-    assert run("upstox") == ["upstox", "output_upstox", "Result_upstox.md", "Picks_upstox.md"]
 
 
 def _cfg(env, code):
@@ -71,21 +63,25 @@ def _cfg(env, code):
                           env=dict(os.environ, **env)).stdout.split()
 
 
-def test_personal_profile_has_own_files_and_split_capital():
+def test_upstox_is_the_only_source_and_profiles_have_own_files():
     code = ("from tradingbro import config as c, daily as d; "
-            "print(c.OUTPUT_DIR.name, c.RESULT_MD.name, c.PICKS_MD.name, c.COMPARE_MD.name, *d.scan_argv(100000))")
-    assert _cfg({"TRADINGBRO_SOURCE": "yahoo", "TRADINGBRO_PROFILE": ""}, code) == \
-        ["output", "Result.md", "Picks.md", "Compare.md", "--capital", "100000"]
-    assert _cfg({"TRADINGBRO_SOURCE": "upstox", "TRADINGBRO_PROFILE": "personal"}, code) == \
-        ["output_upstox_personal", "Result_upstox_personal.md", "Picks_upstox_personal.md", "Compare_personal.md",
+            "print(c.SOURCE, c.OUTPUT_DIR.name, c.RESULT_MD.name, c.PICKS_MD.name, *d.scan_argv(100000))")
+    assert _cfg({"TRADINGBRO_PROFILE": ""}, code) ==         ["upstox", "output_upstox", "Result_upstox.md", "Picks_upstox.md", "--capital", "100000"]
+    assert _cfg({"TRADINGBRO_PROFILE": "personal"}, code) ==         ["upstox", "output_upstox_personal", "Result_upstox_personal.md", "Picks_upstox_personal.md",
          "--capital", "50000", "--top", "2"]
 
 
-def test_up_launcher_uses_same_history_as_yahoo():
-    code = ("import os; import tradingbro.up as u; "
-            "u.importlib.import_module = lambda n: type('M', (), {'main': staticmethod("
-            "lambda a: print(os.environ['TRADINGBRO_SOURCE'], os.environ.get('TRADINGBRO_HISTORY_SESSIONS', '60')))}); "
-            "u.main(['stocks'])")
-    env = {k: v for k, v in os.environ.items() if k not in ("TRADINGBRO_HISTORY_SESSIONS", "TRADINGBRO_SOURCE")}
-    out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, env=env).stdout.split()
-    assert out == ["upstox", "60"]
+def test_implied_vol_round_trip_and_price_at():
+    from tradingbro.option_quotes import first_fill, implied_vol, price_at
+    from tradingbro.options_math import bs_price
+    px = bs_price(607.6, 610, 0.09, 0.22, "CE")
+    assert abs(implied_vol(px, 607.6, 610, 0.09, "CE") - 0.22) < 1e-4
+    assert implied_vol(0.0, 607.6, 610, 0.09, "CE") is None
+    idx = pd.date_range("2026-11-26 10:10", periods=4, freq="1min", tz="Asia/Kolkata")
+    bars = pd.DataFrame({"open": [20.8, 20.5, 20.1, 19.0], "high": [20.8, 20.55, 20.25, 19.0],
+                         "low": [20.5, 20.0, 19.05, 18.6], "close": [20.7, 20.2, 19.1, 18.85]}, index=idx)
+    assert price_at(bars, idx[0]) is None                       # the 10:10 candle has not closed yet at 10:10
+    assert price_at(bars, idx[1]) == 20.7                        # at 10:11 the 10:10 close is known
+    assert first_fill(bars, idx[0], 27.0, "13:30") == (idx[0], 20.8)   # limit above the market fills at the open
+    assert first_fill(bars, idx[0], 19.5, "13:30") == (idx[2], 19.5)
+    assert first_fill(bars, idx[0], 10.0, "13:30") is None

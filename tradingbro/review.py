@@ -5,10 +5,11 @@ market actually did, and write an accuracy summary.
     python -m tradingbro.review --date 2026-11-23
 
 Each pick is walked forward from the end of its signal bar on 1-minute bars (5-minute
-if 1-minute data is no longer available - Yahoo keeps ~7 days), with the same rules the
+if 1-minute data is missing), with the same rules the
 scanner uses: stop or target, whichever is touched first (stop wins a tie inside one bar),
-otherwise square-off at 15:15. Option P&L is re-priced with Black-Scholes from the saved
-strike / expiry / IV, so it is an estimate; the spot-based verdict is exact.
+otherwise square-off at 15:15. Options are filled when the contract's real premium (Upstox
+1-minute candles) trades at or below the pick's premium; the spot price decides target/stop, and
+the P&L uses the real premium at entry and exit (Black-Scholes estimate only if no candles).
 """
 import argparse
 import json
@@ -17,7 +18,7 @@ from datetime import date as Date
 import numpy as np
 import pandas as pd
 
-from . import charges as chg
+from . import charges as chg, option_quotes as oq
 from .common import DISCLAIMER, print_table
 from .config import OUTPUT_DIR, TZ, StrategyParams
 from .data import fetch, now_ist, parse_date
@@ -53,7 +54,8 @@ def normalise(kind, r, day, source):
         p.update(direction=1 if r["type"] == "CE" else -1, entry=r["spot"], stop=r["spot_stop"],
                  target=r["spot_target"], label=r["option"], opt_type=r["type"], strike=r["strike"],
                  expiry=r["expiry"], iv=r["iv_pct"] / 100, premium=r["premium"],
-                 prem_stop=r.get("prem_stop"), prem_target=r.get("prem_target"))
+                 prem_stop=r.get("prem_stop"), prem_target=r.get("prem_target"),
+                 premium_source=r.get("premium_source", "estimate"), option_key=r.get("option_key"))
     return p
 
 
@@ -106,13 +108,26 @@ def verdict(r):
     return "NO DATA"
 
 
-def evaluate(p, bars, interval, day_complete):
+def evaluate(p, bars, interval, day_complete, obars=None):
+    """Stocks: limit buy at the entry, then the stop/target on the price. Options with real premium candles
+    (obars): limit buy at the premium shown in the pick, then the SPOT stop/target decide the exit, and the
+    P&L uses the real premium at entry and exit. Without obars, options fall back to spot fill + estimates."""
     start = p["signal_ts"] + pd.Timedelta(minutes=5)          # signal bar closes 5 minutes after its label
     b = bars[bars.index >= start]
     d, e, s, tg = p["direction"], p["entry"], p["stop"], p["target"]
     risk = abs(e - s)
     res = dict(outcome="no data", exit_time=None, exit=None)
-    if len(b):
+    live = p["kind"] == "options" and obars is not None
+    entry_prem = None
+    if len(b) and live:
+        got = oq.first_fill(obars, start, p["premium"], p.get("valid_until") or ENTRY_DEADLINE)
+        if got is None:
+            out = dict(p, outcome="not filled", exit_time=None, exit=None, interval=interval, fill_time=None)
+            out["verdict"] = verdict(out)
+            return out
+        fill_time, entry_prem = got
+        b = b.iloc[max(0, b.index.searchsorted(fill_time, side="right") - 1):]   # spot bar holding the fill
+    elif len(b):
         fi = find_fill(b, d, e, p.get("valid_until"))
         if fi is None:
             out = dict(p, outcome="not filled", exit_time=None, exit=None, interval=interval, fill_time=None)
@@ -149,7 +164,11 @@ def evaluate(p, bars, interval, day_complete):
 
     move = d * (res["exit"] - e)
     r_mult = move / risk if risk else 0.0
-    if p["kind"] == "options":
+    prem_exit = oq.price_at(obars, res["exit_time"] + pd.Timedelta(minutes=1)) if live else None
+    if live and prem_exit is not None:
+        pnl = (prem_exit - entry_prem) * p["qty"] - p["charges"]
+        extra = dict(premium_entry=entry_prem, premium_exit=prem_exit, premium_data="live")
+    elif p["kind"] == "options":
         exp = parse_date(p["expiry"])
         prem_exit = bs_price(res["exit"], p["strike"], years_to_expiry(res["exit_time"], exp), p["iv"], p["opt_type"])
         pnl = (prem_exit - p["premium"]) * p["qty"] - p["charges"]
@@ -206,7 +225,11 @@ def main(argv=None):
         if t not in bars:
             rows.append(dict(p, outcome="no data", verdict="NO DATA"))
             continue
-        rows.append(evaluate(p, *bars[t], day_complete))
+        obars = None
+        if p["kind"] == "options":
+            key = p.get("option_key") or oq.contract_key(p["symbol"], p["opt_type"], p["strike"], p["expiry"])
+            obars = oq.day_bars(key, day)
+        rows.append(evaluate(p, *bars[t], day_complete, obars))
 
     # first prediction per (kind, symbol) = what you would actually have traded
     seen, unique = set(), []
@@ -227,7 +250,8 @@ def main(argv=None):
     print(f"Files: {', '.join(f.name for f in files)}")
     detail_cols = [("Kind", "kind", 0), ("Pick", "label", 0), ("At", "at", 0), ("Votes", "votes", 0),
                    ("Entry", "entry", 2), ("Stop", "stop", 2), ("Target", "target", 2), ("Filled@", "fill_at", 0),
-                   ("Reached target or stop?", "verdict", 0), ("Exit", "exit", 2), ("R", "r", 2),
+                   ("Reached target or stop?", "verdict", 0), ("Exit", "exit", 2),
+                   ("Option buy", "premium_entry", 2), ("Option exit", "premium_exit", 2), ("R", "r", 2),
                    ("BestR", "best_r", 2), ("P&L Rs", "pnl", 0), ("Data", "interval", 0)]
     for r in rows:
         r["at"] = f"{r['signal_ts']:%H:%M}"
@@ -248,7 +272,8 @@ def main(argv=None):
     print("* An order counts as placed only if price traded back to the entry level after the signal (before "
           f"{ENTRY_DEADLINE}); target/stop are then checked from that fill onwards. Win%, RightDir% and AvgR count filled picks only.")
     print("* Each P&L uses the quantity/lots from the scan (each pick sized on the full capital).")
-    print("* Option P&L is a Black-Scholes estimate at the exit spot price; spot results are exact.")
+    print("* Options: filled when the real premium traded at or below the pick's premium; target/stop on the spot "
+          "price; P&L from the real Upstox premium at entry and exit (Black-Scholes estimate only if no candles).")
 
     out = dict(date=str(day), status=status, files=[f.name for f in files], summary=summary, by_votes=by_votes,
                predictions=rows)

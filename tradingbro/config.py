@@ -7,18 +7,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 
-# Market-data source: "yahoo" (default, the original pipeline) or "upstox".
-# Each source keeps its own cache, predictions, reviews and result pages so the two can
-# run side by side and be compared (python -m tradingbro.compare). Set it with the
-# TRADINGBRO_SOURCE environment variable, or run commands through `python -m tradingbro.up`.
-SOURCE = os.environ.get("TRADINGBRO_SOURCE", "yahoo").strip().lower()
-if SOURCE not in ("yahoo", "upstox"):
-    raise SystemExit(f"TRADINGBRO_SOURCE must be 'yahoo' or 'upstox', not {SOURCE!r}")
-SOURCE_LABEL = "Upstox" if SOURCE == "upstox" else "Yahoo"
-_SFX = "" if SOURCE == "yahoo" else "_" + SOURCE
+# Market data: the Upstox V3 candle API (tradingbro/upstox_data.py), the only source since 26 Nov 2026
+# (Yahoo Finance was dropped). File names keep the "_upstox" suffix so the history stays in one place.
+SOURCE = "upstox"
+SOURCE_LABEL = "Upstox"
+_SFX = "_upstox"
 
-CACHE_DIR = ROOT / ".cache" if SOURCE == "yahoo" else ROOT / ".cache" / SOURCE
-REPORT_DIR = ROOT / ("reports" + ("" if SOURCE == "yahoo" else "/" + SOURCE))
+CACHE_DIR = ROOT / ".cache" / SOURCE
+REPORT_DIR = ROOT / "reports" / SOURCE
 # TRADINGBRO_RUN_DIR redirects predictions, reviews and result pages (used by the
 # multi-day replay, python -m tradingbro.replay_days, so it never touches the live record)
 OUT_BASE = Path(os.environ["TRADINGBRO_RUN_DIR"]).resolve() if os.environ.get("TRADINGBRO_RUN_DIR") else ROOT
@@ -37,8 +33,6 @@ _PSFX = "_" + PROFILE if PROFILE else ""
 OUTPUT_DIR = OUT_BASE / ("output" + _SFX + _PSFX)    # saved predictions (per day) + end-of-day reviews
 RESULT_MD = OUT_BASE / f"Result{_SFX}{_PSFX}.md"
 PICKS_MD = OUT_BASE / f"Picks{_SFX}{_PSFX}.md"
-COMPARE_MD = OUT_BASE / f"Compare{_PSFX}.md"
-OUTPUT_DIRS = {"yahoo": OUT_BASE / ("output" + _PSFX), "upstox": OUT_BASE / ("output_upstox" + _PSFX)}  # comparison
 
 TZ = "Asia/Kolkata"
 MARKET_OPEN = "09:15"

@@ -1,9 +1,15 @@
 ---
 name: intraday-options
-description: Intraday option-buying analysis - picks CE (call) in an up-trend or PE (put) in a down-trend on NIFTY, BANKNIFTY and NIFTY 50 stock options. Gives the top 10 cheaper contracts with strike, expiry, estimated premium, premium stop/target, underlying stop/target, lots for the user's capital and backtested expected profit. Use when the user asks for intraday options, CE/PE picks, which strike to buy, or option trades for a given amount.
+description: Intraday option-buying analysis on Upstox data - picks CE (call) in an up-trend or PE (put) in a down-trend on NIFTY, BANKNIFTY and NIFTY 50 stock options. Gives the top 10 contracts with strike, expiry, the real premium from Upstox, premium stop/target, underlying (spot) stop/target, lots for the user's capital and backtested expected profit. Use when the user asks for intraday options, CE/PE picks, which strike to buy, or option trades for a given amount.
 ---
 
 # Intraday options (buy CE / PE, exit same day)
+
+> **Data: Upstox** (the broker's own candle feed; the last completed 5-minute bar). Saved picks and reviews go to
+> `output_upstox/`, results to `Result_upstox.md` / `Picks_upstox.md`, reports to `reports/upstox/`.
+> No login is needed for the candle data. If `UPSTOX_ANALYTICS_TOKEN` is set (the free 1-year read-only token from
+> the Upstox developer console, Analytics tab) or a daily `python -m tradingbro.upstox login` token is valid, it is
+> sent as well. If the run prints `Upstox: <symbol> failed`, report which symbols had no data.
 
 Run the engine and report its output. Never make up premiums or strikes.
 
@@ -18,13 +24,17 @@ python -m tradingbro.options --capital <AMOUNT>
 Flags: `--otm 0|1|2`, `--max-premium 150`, `--risk-pct`, `--symbols NIFTY,BANKNIFTY,SBIN`, `--date YYYY-MM-DD --time HH:MM`, `--min-votes`, `--rr`, `--sl-atr`, `--json`.
 
 Bullish signal → **buy CE**. Bearish signal → **buy PE**. Both are buy-first trades.
-When the market is closed, the tool replays the last session and shows the estimated actual P&L.
+When the market is closed, the tool replays the last session and shows the actual P&L (real premiums).
 
 ## 3. Present
-Table: Option (symbol expiry strike CE/PE), Spot, Estimated premium, Premium SL, Premium target, **Spot SL / Spot target**, Lot, Lots, Investment, Max loss, Expected ₹, Backtest win% / avg option return %.
+Table: Option (symbol expiry strike CE/PE), Spot, Premium (with its `Src`), Premium SL, Premium target, **Spot SL / Spot target**, Lot, Lots, Investment, Max loss, Expected ₹, Backtest win% / avg option return %.
 
 Must-say caveats:
-- Premiums are **Black-Scholes estimates** (IV from India VIX for NIFTY, 1.1 × 20-day historical volatility otherwise), because free historical option data is not available. Tell the user to open the live option chain, use the real premium, and manage the trade using the **spot** stop and target: exit the option when spot hits either level.
+- **Premium** is the contract's **real last traded price on Upstox** at the signal (`Src` = `live`), from its
+  1-minute candles. The premium stop/target are priced from it at the spot stop/target using its implied volatility,
+  so they are approximate. `Src` = `estimate` means no real price was found and Black-Scholes was used: say so.
+  The premium can move after the scan: the user places a **limit buy** at the shown premium (or checks the live
+  option chain) and manages the trade with the **spot** stop and target: exit the option when spot hits either level.
 - Check the strike and expiry exist. Expiries assume NSE Tuesday expiries (NIFTY weekly; BANKNIFTY and stocks monthly) with no holiday shift.
 - Option backtests ignore IV changes and bid-ask spread, so treat them as indicative only.
 - Expiry-day options decay very fast.
@@ -62,11 +72,11 @@ profitable in **both** periods (avg R -0.06 → +0.05 and +0.21 → +0.38; about
 2. **Strong market**: at least **2 of the 3** market-trend views agree (market score ≥ 2/3), not just a lean.
 
 Optional, off by default (tested, not reliably better):
-- `--rr 3`: 3R target. Slightly better in the 1-year study; in a 30-day replay Yahoo made 12% more with a deeper
-  drawdown and Upstox made 6% less. Fewer trades reach the target.
+- `--rr 3`: 3R target. Slightly better in the 1-year study; in a 30-day replay it made 6% less. Fewer trades
+  reach the target.
 - `--cooldown`: skip a symbol for 5 sessions after the same setup on it hit its stop. It helped the older period of
-  the study, but in the 30-day replay it cut Yahoo profit by 19% (the next-ranked pick that replaces a skipped one
-  was often worse).
+  the study, but it lowered profit in a 30-day replay (the next-ranked pick that replaces a skipped one was often
+  worse).
 
 The scanner prints how many signals each filter skipped (`Loss filters:` note). Report it. `--classic` switches the
 loss filters off (the original rules). Things that did **not** help in the study: breakeven stops, scanning later (10:30/11:00),

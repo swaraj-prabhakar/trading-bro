@@ -1,8 +1,8 @@
-"""Market data from the Upstox V3 candle API (used when TRADINGBRO_SOURCE=upstox).
+"""Market data from the Upstox V3 candle API (the only data source).
 
-Returns the same {yahoo_ticker: DataFrame} shape as data.fetch(), so the scanners,
-backtests and reviews run unchanged. Instruments are still identified by their Yahoo
-ticker inside the code; this module translates them to Upstox instrument keys:
+Returns {ticker: DataFrame} for data.fetch(). Instruments are identified inside the code by their
+old ticker names (the `yahoo` field of data/instruments.json, e.g. "SBIN.NS", "^NSEI", kept only as an
+internal key); this module translates them to Upstox instrument keys:
 stocks -> NSE_EQ|<ISIN>, indices -> NSE_INDEX|<name>.
 
     past days : /v3/historical-candle/{key}/{unit}/{n}/{to}/{from}   (<= 1 month per call for 1-15 min)
@@ -39,7 +39,7 @@ MAX_PER_SEC = 8                                           # well under Upstox's 
 
 @lru_cache(maxsize=1)
 def instrument_keys() -> dict:
-    """yahoo ticker -> Upstox instrument key, from data/instruments.json."""
+    """internal ticker -> Upstox instrument key, from data/instruments.json."""
     raw = json.loads((DATA_DIR / "instruments.json").read_text())
     keys = dict(INDEX_KEYS)
     for s in raw["stocks"]:
@@ -125,8 +125,7 @@ def candles_to_df(candles) -> pd.DataFrame:
 
 
 def fetch_one(key: str, interval: str, period: str, today: date = None) -> pd.DataFrame:
-    """Intraday periods mean trading sessions, like Yahoo ('60d' of 5m = the last ~60
-    sessions), so the backtests on both sources see the same history. Daily periods
+    """Intraday periods mean trading sessions ('60d' of 5m = the last 60 sessions). Daily periods
     are calendar time ('1y')."""
     unit, n = parse_interval(interval)
     today = today or datetime.now(IST).date()

@@ -1,9 +1,7 @@
 """Market data with a small on-disk cache.
 
-Source is chosen by config.SOURCE: Yahoo Finance (default) or the Upstox candle API
-(tradingbro/upstox_data.py). Yahoo limits 5-minute history to the last ~60 calendar
-days, which is what the backtests use, and NSE quotes on Yahoo can lag by a few
-minutes. Upstox serves the same periods from the broker's own feed.
+All bars come from the Upstox candle API (tradingbro/upstox_data.py), the broker's own feed.
+Instruments are still keyed by their old ticker names (e.g. "SBIN.NS", "^NSEI") internally.
 """
 import os
 import time
@@ -12,7 +10,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from .config import CACHE_DIR, SOURCE, TZ, MARKET_OPEN, MARKET_CLOSE
+from .config import CACHE_DIR, TZ, MARKET_OPEN, MARKET_CLOSE
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -65,52 +63,20 @@ def fetch(tickers, interval="5m", period="60d", refresh=False) -> dict:
         else:
             missing.append(t)
 
-    if SOURCE == "upstox":
-        from .upstox_data import fetch_raw
-        for t, df in fetch_raw(missing, interval, period).items():
-            df = _clean(df, intraday=interval.endswith("m"))
-            if len(df):
-                df.to_pickle(_cache_path(t, interval, period))
-                out[t] = df
-        return out
-
-    import yfinance as yf
-    for attempt in range(3):                      # cloud runners get throttled: retry the empty ones
-        if not missing:
-            break
-        if attempt:
-            time.sleep(10 * attempt)
-        raw = yf.download(missing, period=period, interval=interval, group_by="ticker",
-                          auto_adjust=False, progress=False, threads=True)
-        got = []
-        for t in missing:
-            try:
-                if isinstance(raw.columns, pd.MultiIndex):
-                    if t not in raw.columns.get_level_values(0):
-                        continue
-                    df = raw[t]
-                else:
-                    df = raw
-                df = _clean(df, intraday=interval.endswith("m"))
-            except Exception:
-                continue
-            if len(df) == 0:
-                continue
-            df.to_pickle(_cache_path(t, interval))
+    from .upstox_data import fetch_raw
+    for t, df in fetch_raw(missing, interval, period).items():
+        df = _clean(df, intraday=interval.endswith("m"))
+        if len(df):
+            df.to_pickle(_cache_path(t, interval, period))
             out[t] = df
-            got.append(t)
-        missing = [t for t in missing if t not in got]
     return out
 
 
 def fetch_universe(instruments, refresh=False):
     """5-minute bars (60d) + daily bars (1y) for a list of Instrument objects."""
     tickers = [i.yahoo for i in instruments]
-    # TRADINGBRO_HISTORY_SESSIONS (Upstox only; Yahoo caps 5-minute data at 60 days) =
-    # how many past sessions of 5-minute bars the per-symbol backtests see.
+    # TRADINGBRO_HISTORY_SESSIONS = how many past sessions of 5-minute bars the per-symbol backtests see.
     hist = os.environ.get("TRADINGBRO_HISTORY_SESSIONS", "60")
-    if SOURCE == "yahoo" and hist != "60":
-        raise SystemExit("TRADINGBRO_HISTORY_SESSIONS > 60 needs the Upstox source")
     intraday = fetch(tickers, "5m", f"{hist}d", refresh)
     daily = fetch(tickers, "1d", "1y", refresh)
     dropped = [i.symbol for i in instruments if i.yahoo not in intraday]

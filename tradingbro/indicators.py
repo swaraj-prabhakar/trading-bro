@@ -29,7 +29,7 @@ def atr(df: pd.DataFrame, n: int = 14) -> pd.Series:
 
 
 def session_vwap(df: pd.DataFrame) -> pd.Series:
-    """VWAP reset every session. Indices have no volume on Yahoo, so they fall back
+    """VWAP reset every session. Indices have no traded volume, so they fall back
     to an equal-weighted running average of the typical price."""
     tp = (df["high"] + df["low"] + df["close"]) / 3
     day = df.index.date

@@ -1,9 +1,8 @@
-"""Replay the daily pipeline over past trading days, for both data sources, and build
-the result pages you would have got: backtest/Result.md, backtest/Result_upstox.md
-and backtest/Compare.md. The live record (Result.md, output/ ...) is never touched.
+"""Replay the daily pipeline over past trading days and build the result page you would
+have got: backtest/Result_upstox.md. The live record (Result_upstox.md, output_upstox/ ...)
+is never touched.
 
     python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23
-    python -m tradingbro.replay_days --from 2026-11-03 --to 2026-11-23 --sources upstox
 
 For each day: the stocks and options scanners are replayed at --time (default
 10:05 = the last 5-minute bar that has closed when the 10:10 scan runs, so nothing
@@ -11,8 +10,7 @@ after 10:10 is used), their picks are saved exactly like the live scan saves the
 the normal end-of-day review grades them, and Result*.md is rebuilt.
 
 Differences from live, stated on the result pages:
-- reviews use 5-minute bars for every day (live uses 1-minute bars on the day itself);
-  both sources are graded the same way so the comparison stays fair
+- reviews use 5-minute bars for every day (live uses 1-minute bars on the day itself)
 - the per-symbol backtest filter sees only sessions before each replayed day inside the
   ~60-session download, so early days have less history than a live scan
 - one scan per day (live may rescan if the workflow is re-run)
@@ -33,7 +31,7 @@ VARIANTS = {"current": {},
 
 
 def run_source(a):
-    """Runs inside a subprocess with TRADINGBRO_SOURCE / TRADINGBRO_RUN_DIR already set."""
+    """Runs inside a subprocess with TRADINGBRO_RUN_DIR already set."""
     import pandas as pd
 
     from . import daily, options, review, stocks
@@ -73,20 +71,18 @@ def run_source(a):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Replay the daily pipeline over past days for Yahoo and Upstox")
+    ap = argparse.ArgumentParser(description="Replay the daily pipeline over past days")
     ap.add_argument("--from", dest="start", required=True, help="YYYY-MM-DD")
     ap.add_argument("--to", dest="end", required=True, help="YYYY-MM-DD")
     ap.add_argument("--time", default="10:05", help="Replay time HH:MM (default 10:05)")
     ap.add_argument("--capital", type=float, default=float(os.environ.get("CAPITAL", "100000")))
-    ap.add_argument("--sources", default="yahoo,upstox")
-    ap.add_argument("--history", type=int, default=None,
-                    help="Sessions of 5-minute history for backtests (default 60 on both; >60 needs Upstox)")
+    ap.add_argument("--history", type=int, default=60, help="Sessions of 5-minute history for backtests (default 60)")
     ap.add_argument("--variant", choices=sorted(VARIANTS), default="current",
                     help="rr3 = 3R option target; all_refinements = stock pullback entry + 20-day EMA "
                          "filter + option cooldown")
     ap.add_argument("--profile", default="", help="'personal' = 2 picks per segment, capital split (default: standard)")
     ap.add_argument("--out", default=str(ROOT / "backtest"), help="Folder for the replayed outputs (default backtest/)")
-    ap.add_argument("--one", help=argparse.SUPPRESS)       # internal: run one source in this process
+    ap.add_argument("--one", action="store_true", help=argparse.SUPPRESS)   # internal: run in this process
     a = ap.parse_args(argv)
     if a.one:
         return run_source(a)
@@ -95,20 +91,13 @@ def main(argv=None):
     if out == ROOT:
         sys.exit("--out must not be the repository root (it would overwrite the live record)")
     out.mkdir(parents=True, exist_ok=True)
-    procs = []
-    for src in a.sources.split(","):
-        hist = a.history or 60
-        env = dict(os.environ, TRADINGBRO_SOURCE=src, TRADINGBRO_RUN_DIR=str(out), CAPITAL=str(int(a.capital)),
-                   TRADINGBRO_HISTORY_SESSIONS=str(hist), TRADINGBRO_PROFILE=a.profile)
-        cmd = [sys.executable, "-m", "tradingbro.replay_days", "--one", src, "--from", a.start, "--to", a.end,
-               "--time", a.time, "--capital", str(a.capital), "--profile", a.profile,
-               "--variant", a.variant]
-        procs.append((src, subprocess.Popen(cmd, cwd=ROOT, env=env)))   # the two sources run in parallel
-    failed = [s for s, p in procs if p.wait() != 0]
-    if failed:
-        sys.exit(f"Replay failed for: {', '.join(failed)}")
-    env = dict(os.environ, TRADINGBRO_RUN_DIR=str(out), TRADINGBRO_PROFILE=a.profile)
-    subprocess.run([sys.executable, "-m", "tradingbro.compare"], cwd=ROOT, env=env, check=True)
+    # a fresh process, so tradingbro.config picks up the redirected output folder and profile
+    env = dict(os.environ, TRADINGBRO_RUN_DIR=str(out), CAPITAL=str(int(a.capital)),
+               TRADINGBRO_HISTORY_SESSIONS=str(a.history), TRADINGBRO_PROFILE=a.profile)
+    cmd = [sys.executable, "-m", "tradingbro.replay_days", "--one", "--from", a.start, "--to", a.end,
+           "--time", a.time, "--capital", str(a.capital), "--profile", a.profile, "--variant", a.variant]
+    if subprocess.run(cmd, cwd=ROOT, env=env).returncode != 0:
+        sys.exit("Replay failed")
     print("Done:", ", ".join(str(p) for p in sorted(out.glob("*.md"))))
 
 
