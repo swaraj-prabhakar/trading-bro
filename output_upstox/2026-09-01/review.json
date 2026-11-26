@@ -1,0 +1,121 @@
+{
+  "date": "2026-09-01",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "options",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -2460.0892799308,
+      "pf": 0.0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -2460.0892799308,
+      "pf": 0.0
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -2460.0892799308,
+      "pf": 0.0
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes 5/5",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -2460.0892799308,
+      "pf": 0.0
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "options",
+      "source": "options_1005.json",
+      "symbol": "BAJFINANCE",
+      "signal_ts": "2026-09-01 10:05:00+05:30",
+      "votes": "5/5",
+      "qty": 750,
+      "charges": 109.81512096285073,
+      "max_gain": 4930.700361452238,
+      "max_loss": 2437.517184191138,
+      "direction": -1,
+      "entry": 1051.9,
+      "stop": 1058.2955787037067,
+      "target": 1039.1088425925868,
+      "label": "BAJFINANCE 29Sep 1060 PE",
+      "opt_type": "PE",
+      "strike": 1060,
+      "expiry": "2026-09-29",
+      "iv": 0.2908663401111997,
+      "premium": 35.389750507602,
+      "prem_stop": 32.28614775663095,
+      "prem_target": 42.11043781748879,
+      "premium_source": "estimate",
+      "option_key": null,
+      "outcome": "stop",
+      "exit_time": "2026-09-01 12:30:00+05:30",
+      "exit": 1058.2955787037067,
+      "premium_exit_est": 32.25605162897807,
+      "interval": "5m",
+      "move_pct": -0.6080025386164686,
+      "r": -1.0,
+      "pnl": -2460.0892799308,
+      "direction_right": false,
+      "win": false,
+      "best_r": 0.14072221478229724,
+      "worst_r": -1.110141916615774,
+      "fill_time": "2026-09-01 10:10:00+05:30",
+      "verdict": "NO - hit STOP LOSS at 12:30",
+      "at": "10:05",
+      "exit_at": "12:30",
+      "fill_at": "10:10"
+    }
+  ]
+}

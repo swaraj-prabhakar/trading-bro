@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-13",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.31893687707641194,
+      "total_pnl": 239.630663376,
+      "pf": Infinity
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.31893687707641194,
+      "total_pnl": 239.630663376,
+      "pf": Infinity
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.31893687707641194,
+      "total_pnl": 239.630663376,
+      "pf": Infinity
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes ORB-30 + RVOL",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.31893687707641194,
+      "total_pnl": 239.630663376,
+      "pf": Infinity
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "stocks",
+      "source": "stocks_1005.json",
+      "symbol": "EICHERMOT",
+      "signal_ts": "2026-11-13 10:05:00+05:30",
+      "votes": "ORB-30 + RVOL",
+      "qty": 6,
+      "charges": 48.369336624,
+      "max_gain": 1757.630663376,
+      "max_loss": 951.369336624,
+      "direction": 1,
+      "entry": 7602.0,
+      "stop": 7451.5,
+      "target": 7903.0,
+      "label": "EICHERMOT BUY",
+      "valid_until": null,
+      "outcome": "squareoff",
+      "exit_time": "2026-11-13 15:15:00+05:30",
+      "exit": 7650.0,
+      "interval": "5m",
+      "move_pct": 0.6314127861089187,
+      "r": 0.31893687707641194,
+      "pnl": 239.630663376,
+      "direction_right": true,
+      "win": true,
+      "best_r": 0.34551495016611294,
+      "worst_r": -0.2591362126245847,
+      "fill_time": "2026-11-13 10:10:00+05:30",
+      "verdict": "NEITHER - closed 15:15 at +0.32R",
+      "at": "10:05",
+      "exit_at": "15:15",
+      "fill_at": "10:10"
+    }
+  ]
+}

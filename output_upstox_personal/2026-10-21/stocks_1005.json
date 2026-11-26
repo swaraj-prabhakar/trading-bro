@@ -1,0 +1,46 @@
+{
+  "kind": "stocks",
+  "method": "ORB-30 + RVOL",
+  "entry": "breakout",
+  "daily_trend": false,
+  "mode": "replay",
+  "market": {
+    "trend": -1,
+    "label": "BEARISH",
+    "score": -2,
+    "index_vote": 0,
+    "breadth": -0.3,
+    "daily": -1,
+    "bar": "2026-10-21 10:05:00+05:30"
+  },
+  "asof": "2026-10-21 10:05:00+05:30",
+  "capital": 50000.0,
+  "params": {
+    "min_votes": 3,
+    "entry_start": "09:45",
+    "entry_end": "13:30",
+    "squareoff": "15:15",
+    "sl_atr_mult": 2.5,
+    "atr_period": 14,
+    "rr": 2.0,
+    "ema_fast": 9,
+    "ema_slow": 21,
+    "rsi_period": 14,
+    "rsi_bull": 55.0,
+    "rsi_bear": 45.0,
+    "st_period": 10,
+    "st_mult": 3.0,
+    "or_minutes": 15
+  },
+  "picks": [],
+  "rejected": 0,
+  "unaffordable": 0,
+  "dropped": [],
+  "method_backtest": {
+    "n": 36,
+    "avg_r": 0.188697636932477,
+    "pf": 2.4986235103767966
+  },
+  "saved_at": "replay 2026-10-21 10:05",
+  "source": "upstox"
+}

@@ -33,6 +33,11 @@ _PSFX = "_" + PROFILE if PROFILE else ""
 OUTPUT_DIR = OUT_BASE / ("output" + _SFX + _PSFX)    # saved predictions (per day) + end-of-day reviews
 RESULT_MD = OUT_BASE / f"Result{_SFX}{_PSFX}.md"
 PICKS_MD = OUT_BASE / f"Picks{_SFX}{_PSFX}.md"
+MONTHLY_DIR = OUT_BASE / "monthly"                   # one result page per month: monthly/2026-11[_personal].md
+
+
+def monthly_md(month):
+    return MONTHLY_DIR / f"{month}{_PSFX}.md"
 
 TZ = "Asia/Kolkata"
 MARKET_OPEN = "09:15"

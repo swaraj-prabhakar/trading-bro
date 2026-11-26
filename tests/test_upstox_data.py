@@ -85,3 +85,16 @@ def test_implied_vol_round_trip_and_price_at():
     assert first_fill(bars, idx[0], 27.0, "13:30") == (idx[0], 20.8)   # limit above the market fills at the open
     assert first_fill(bars, idx[0], 19.5, "13:30") == (idx[2], 19.5)
     assert first_fill(bars, idx[0], 10.0, "13:30") is None
+
+
+def test_monthly_pages_and_replay_note():
+    from tradingbro.daily import by_month, data_note, month_title
+    from tradingbro.config import monthly_md
+    days = [dict(date="2026-11-25", replay=False), dict(date="2026-11-03", replay=True),
+            dict(date="2026-10-31", replay=True)]
+    assert list(by_month(days)) == ["2026-11", "2026-10"]
+    assert [d["date"] for d in by_month(days)["2026-11"]] == ["2026-11-25", "2026-11-03"]
+    assert month_title("2026-09") == "September 2026"
+    assert monthly_md("2026-09").parent.name == "monthly" and monthly_md("2026-09").name == "2026-09.md"
+    note = data_note(days)
+    assert "2 day(s) 2026-10-31 → 2026-11-03 are a BACKTEST REPLAY" in note and "1 live day(s)" in note

@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-30",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 0,
+      "not_filled": 0
+    }
+  ],
+  "by_votes": [],
+  "predictions": []
+}

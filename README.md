@@ -20,7 +20,13 @@ runs the scanner and explains the output.
 
 ## On your phone
 - **[Picks_upstox.md](Picks_upstox.md)**: today's picks with an *Open in Upstox* link on every row. It's rewritten at about 10:10, and gets status updates at 13:30 and after 15:35 IST.
-- **[Result_upstox.md](Result_upstox.md)**: the track record (overall summary first, then each day).
+- **[Result_upstox.md](Result_upstox.md)**: the track record (by month, overall summary, then each day).
+- **[monthly/](monthly/)**: one result page per month, `monthly/2026-11.md` (standard) and `monthly/2026-11_personal.md`
+  (personal), rebuilt with the result pages after every final review.
+- Days from **1 Sep 2026 to 24 Nov 2026** are a **backtest replay** (`python -m tradingbro.replay_days`): the same
+  rules replayed on Upstox data at 10:05, each day seeing only the 60 sessions before it. They are marked
+  "backtest replay" on every page. Options on contracts that have expired since use Black-Scholes premium
+  estimates (marked ~), because Upstox no longer serves their candles. Live results start on 25 Nov 2026.
 - **Claude app skill:** upload `claude-app-skill/tradingbro-picks.zip` once in Claude (Customize → Skills → Upload a skill). Then ask *"today's picks"*, *"mid-day update"* or *"today's result"* in the Claude phone app. It reads the **personal** pages (2 picks per segment, see below) and shows them with tappable Upstox links.
 
 ## Save picks and review them at the end of the day

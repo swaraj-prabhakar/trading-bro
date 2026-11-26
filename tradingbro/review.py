@@ -13,6 +13,7 @@ the P&L uses the real premium at entry and exit (Black-Scholes estimate only if 
 """
 import argparse
 import json
+import os
 from datetime import date as Date
 
 import numpy as np
@@ -70,7 +71,8 @@ def day_bars(tickers, day, bars="auto", refresh=True):
             out[t] = (df[df.index.date == day], "1m")
             continue
         if five is None:
-            five = fetch(tickers, "5m", "60d", refresh=refresh)
+            hist = os.environ.get("TRADINGBRO_HISTORY_SESSIONS", "60")    # the replay downloads more sessions
+            five = fetch(tickers, "5m", f"{hist}d", refresh=refresh)
         df = five.get(t)
         if df is not None and (df.index.date == day).any():
             out[t] = (df[df.index.date == day], "5m")

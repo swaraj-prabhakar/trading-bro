@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-30",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.03498985801216841,
+      "total_pnl": 17.75259664799637,
+      "pf": Infinity
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.03498985801216841,
+      "total_pnl": 17.75259664799637,
+      "pf": Infinity
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.03498985801216841,
+      "total_pnl": 17.75259664799637,
+      "pf": Infinity
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes ORB-30 + RVOL",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.03498985801216841,
+      "total_pnl": 17.75259664799637,
+      "pf": Infinity
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "stocks",
+      "source": "stocks_1005.json",
+      "symbol": "INDIGO",
+      "signal_ts": "2026-10-30 10:05:00+05:30",
+      "votes": "ORB-30 + RVOL",
+      "qty": 10,
+      "charges": 51.24740335199999,
+      "max_gain": 3892.7525966480143,
+      "max_loss": 2023.2474033520073,
+      "direction": 1,
+      "entry": 4832.6,
+      "stop": 4635.4,
+      "target": 5227.000000000002,
+      "label": "INDIGO BUY",
+      "valid_until": null,
+      "outcome": "squareoff",
+      "exit_time": "2026-10-30 15:15:00+05:30",
+      "exit": 4839.5,
+      "interval": "5m",
+      "move_pct": 0.1427802839051367,
+      "r": 0.03498985801216841,
+      "pnl": 17.75259664799637,
+      "direction_right": true,
+      "win": true,
+      "best_r": 0.1744421906693687,
+      "worst_r": -0.1825557809330622,
+      "fill_time": "2026-10-30 10:10:00+05:30",
+      "verdict": "NEITHER - closed 15:15 at +0.03R",
+      "at": "10:05",
+      "exit_at": "15:15",
+      "fill_at": "10:10"
+    }
+  ]
+}

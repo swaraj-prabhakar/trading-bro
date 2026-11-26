@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-29",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 1.3145539906103267,
+      "total_pnl": 2529.080707556,
+      "pf": Infinity
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 1.3145539906103267,
+      "total_pnl": 2529.080707556,
+      "pf": Infinity
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 1.3145539906103267,
+      "total_pnl": 2529.080707556,
+      "pf": Infinity
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes ORB-30 + RVOL",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 1.3145539906103267,
+      "total_pnl": 2529.080707556,
+      "pf": Infinity
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "stocks",
+      "source": "stocks_1005.json",
+      "symbol": "ADANIENT",
+      "signal_ts": "2026-10-29 10:05:00+05:30",
+      "votes": "ORB-30 + RVOL",
+      "qty": 31,
+      "charges": 74.919292444,
+      "max_gain": 3886.8807075560057,
+      "max_loss": 2055.8192924440027,
+      "direction": 1,
+      "entry": 2537.0,
+      "stop": 2473.1,
+      "target": 2664.8,
+      "label": "ADANIENT BUY",
+      "valid_until": null,
+      "outcome": "squareoff",
+      "exit_time": "2026-10-29 15:15:00+05:30",
+      "exit": 2621.0,
+      "interval": "5m",
+      "move_pct": 3.3109972408356327,
+      "r": 1.3145539906103267,
+      "pnl": 2529.080707556,
+      "direction_right": true,
+      "win": true,
+      "best_r": 1.4334898278560215,
+      "worst_r": -0.014084507042254925,
+      "fill_time": "2026-10-29 10:10:00+05:30",
+      "verdict": "NEITHER - closed 15:15 at +1.31R",
+      "at": "10:05",
+      "exit_at": "15:15",
+      "fill_at": "10:10"
+    }
+  ]
+}

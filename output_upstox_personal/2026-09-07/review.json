@@ -1,0 +1,121 @@
+{
+  "date": "2026-09-07",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "options",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.7372173185654259,
+      "total_pnl": 1070.3558148131249,
+      "pf": Infinity
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.7372173185654259,
+      "total_pnl": 1070.3558148131249,
+      "pf": Infinity
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.7372173185654259,
+      "total_pnl": 1070.3558148131249,
+      "pf": Infinity
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes 5/5",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 100.0,
+      "dir_pct": 100.0,
+      "avg_r": 0.7372173185654259,
+      "total_pnl": 1070.3558148131249,
+      "pf": Infinity
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "options",
+      "source": "options_1005.json",
+      "symbol": "SBIN",
+      "signal_ts": "2026-09-07 10:05:00+05:30",
+      "votes": "5/5",
+      "qty": 750,
+      "charges": 69.01655976356977,
+      "max_gain": 3393.9342231951728,
+      "max_loss": 1534.3294630617108,
+      "direction": -1,
+      "entry": 1008.8,
+      "stop": 1014.2258085089261,
+      "target": 997.9483829821478,
+      "label": "SBIN 29Sep 1000 PE",
+      "opt_type": "PE",
+      "strike": 1000,
+      "expiry": "2026-09-29",
+      "iv": 0.1823326111592554,
+      "premium": 12.330609525213504,
+      "prem_stop": 10.376858987482649,
+      "prem_target": 16.94787723582516,
+      "premium_source": "estimate",
+      "option_key": null,
+      "outcome": "squareoff",
+      "exit_time": "2026-09-07 15:15:00+05:30",
+      "exit": 1004.8,
+      "premium_exit_est": 13.849772691315763,
+      "interval": "5m",
+      "move_pct": 0.3965107057890563,
+      "r": 0.7372173185654259,
+      "pnl": 1070.3558148131249,
+      "direction_right": true,
+      "win": true,
+      "best_r": 1.5112955030591106,
+      "worst_r": -0.07372173185655936,
+      "fill_time": "2026-09-07 10:10:00+05:30",
+      "verdict": "NEITHER - closed 15:15 at +0.74R",
+      "at": "10:05",
+      "exit_at": "15:15",
+      "fill_at": "10:10"
+    }
+  ]
+}

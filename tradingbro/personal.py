@@ -13,8 +13,8 @@ traded); later re-scans the same day are ignored.
 import os
 
 from .common import DISCLAIMER, fmt
-from .config import OUTPUT_DIR, PERSONAL_SLOTS, RESULT_MD
-from .daily import KINDS, TITLE_SFX, _table, load_days, pick_tables
+from .config import OUTPUT_DIR, PERSONAL_SLOTS, RESULT_MD, monthly_md
+from .daily import KINDS, TITLE_SFX, _table, by_month, data_note, load_days, month_title, pick_tables, write_monthly
 from .data import now_ist
 
 
@@ -59,13 +59,35 @@ STAT_COLS = [("Segment", "group", 0), ("Days traded", "traded", 0), ("Picks", "p
 
 
 def build_personal_results():
-    capital = float(os.environ.get("CAPITAL", "100000"))
     days = personal_days()
-    md = [f"# TradingBro – personal P&L{TITLE_SFX}", "",
+    RESULT_MD.write_text("\n".join(render_personal(days)), encoding="utf-8")
+    write_monthly(days, render_personal)
+    print(f"{RESULT_MD.name} updated: {len(days)} day(s); {len(by_month(days))} monthly page(s)")
+
+
+def render_personal(days, month=None):
+    """Personal result page lines for `days` (all of them, or one month: links relative to monthly/)."""
+    capital = float(os.environ.get("CAPITAL", "100000"))
+    days = sorted(days, key=lambda d: d["date"])
+    rel = "../" if month else ""
+    md = [f"# TradingBro – personal P&L{TITLE_SFX}" + (f" – {month_title(month)}" if month else ""), "",
           f"_Updated {now_ist():%Y-%m-%d %H:%M} IST · capital ₹{capital:,.0f} put into **one segment only**, "
-          f"split between its top {PERSONAL_SLOTS} picks (₹{capital / PERSONAL_SLOTS:,.0f} each) from the 10:10 scan._", "",
-          "Each segment below is a separate account: read the row for the segment you trade. "
-          "The segments are **not** added together.", "", f"> {DISCLAIMER}", "", "## Per segment", ""]
+          f"split between its top {PERSONAL_SLOTS} picks (₹{capital / PERSONAL_SLOTS:,.0f} each) from the 10:10 scan._", ""]
+    if month:
+        md += [f"[← All results]({rel}{RESULT_MD.name})", ""]
+    md += ["Each segment below is a separate account: read the row for the segment you trade. "
+           "The segments are **not** added together.", "", data_note(days), "", f"> {DISCLAIMER}", ""]
+    if not month and days:
+        md += ["## By month (P&L ₹ and return on capital per segment)", "",
+               "| Month | Days | Stocks P&L ₹ | Stocks return % | Options P&L ₹ | Options return % | Details |",
+               "|---|---|---|---|---|---|---|"]
+        for m, mdays in by_month(sorted(days, key=lambda d: d["date"], reverse=True)).items():
+            st, op = (segment_stats(sorted(mdays, key=lambda d: d["date"]), k, capital) for k in KINDS)
+            md.append(f"| {month_title(m)} | {len(mdays)} | {fmt(st['total_pnl'], 0)} | {fmt(st['ret_pct'], 1)} | "
+                      f"{fmt(op['total_pnl'], 0)} | {fmt(op['ret_pct'], 1)} | "
+                      f"[{m}]({monthly_md(m).parent.name}/{monthly_md(m).name}) |")
+        md += [""]
+    md += ["## Per segment" if not month else f"## {month_title(month)} per segment", ""]
     if not days:
         md += ["No final reviews yet.", ""]
     else:
@@ -78,8 +100,8 @@ def build_personal_results():
         md += _table(rows, STAT_COLS)
         md += ["", "_Days traded = days the segment had at least one pick. Return on capital = total P&L ÷ "
                    f"₹{capital:,.0f}. Max drawdown = deepest fall of the running P&L from its high. Win % counts "
-                   "filled picks, after charges. Option P&L is a Black-Scholes estimate; target/stop verdicts use "
-                   "exact spot prices._", "",
+                   "filled picks, after charges. Option P&L uses the contract's real Upstox premium (~ = "
+                   "Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices._", "",
                "## Day by day (P&L ₹, running total in brackets)", "",
                "| Date | Market | Stocks | Options |", "|---|---|---|---|"]
         run = {k: 0.0 for k in KINDS}
@@ -90,11 +112,11 @@ def build_personal_results():
                 v = d["pnl"][k]
                 run[k] += v or 0.0
                 cells.append("-" if v is None else f"{fmt(v, 0)} ({fmt(run[k], 0)})")
-            lines.append(f"| {d['date']} | {d['trend']} | " + " | ".join(cells) + " |")
+            lines.append(f"| {d['date']}{' (replay)' if d.get('replay') else ''} | {d['trend']} | "
+                         + " | ".join(cells) + " |")
         md += lines[::-1] + ["", "## Daily picks", ""]
         for d in reversed(days):
-            md += [f"### {d['date']} · market {d['trend']}", ""]
+            md += [f"### {d['date']} · market {d['trend']}" + (" · backtest replay" if d.get("replay") else ""), ""]
             md += pick_tables(d["picks"]) + [
-                f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
-    RESULT_MD.write_text("\n".join(md), encoding="utf-8")
-    print(f"{RESULT_MD.name} updated: {len(days)} day(s)")
+                f"[full review]({rel}{OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
+    return md

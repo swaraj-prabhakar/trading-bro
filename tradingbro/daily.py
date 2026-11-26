@@ -17,7 +17,7 @@ from collections import defaultdict
 import pandas as pd
 
 from .common import DISCLAIMER, fmt
-from .config import NSE_HOLIDAYS, OUTPUT_DIR, PERSONAL_SLOTS, PICKS_MD, PROFILE, RESULT_MD, SOURCE_LABEL
+from .config import NSE_HOLIDAYS, OUTPUT_DIR, PERSONAL_SLOTS, PICKS_MD, PROFILE, RESULT_MD, SOURCE_LABEL, monthly_md
 from .data import now_ist
 
 TITLE_SFX = f" ({SOURCE_LABEL} data)" + \
@@ -85,8 +85,52 @@ def load_days(output_dir=None):
         for p in picks:
             p["market"] = trend
         _add_premium_levels(folder, picks)
-        days.append(dict(date=folder.name, trend=trend, files=rv.get("files", []), picks=picks))
+        days.append(dict(date=folder.name, trend=trend, files=rv.get("files", []), picks=picks,
+                         replay=_is_replay(folder)))
     return days
+
+
+def _is_replay(folder):
+    """True when the day's picks come from the backtest replay (python -m tradingbro.replay_days),
+    not from a live scan."""
+    for f in sorted(folder.glob("*_*.json")):
+        if not f.name.startswith("review"):
+            return str(json.loads(f.read_text()).get("saved_at", "")).startswith("replay")
+    return False
+
+
+def by_month(days):
+    """{'2026-11': [days of that month]} (newest month first, days keep their order)."""
+    out = {}
+    for d in days:
+        out.setdefault(d["date"][:7], []).append(d)
+    return dict(sorted(out.items(), reverse=True))
+
+
+def month_title(month):
+    return pd.Timestamp(month + "-01").strftime("%B %Y")
+
+
+def data_note(days):
+    """One line saying which days are a backtest replay and which are live."""
+    rep = sorted(d["date"] for d in days if d.get("replay"))
+    live = sorted(d["date"] for d in days if not d.get("replay"))
+    parts = []
+    if rep:
+        parts.append(f"**{len(rep)} day(s) {rep[0]} → {rep[-1]} are a BACKTEST REPLAY**: the agent's rules replayed "
+                     "on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. "
+                     "Options on contracts that have since expired use Black-Scholes premium estimates (marked ~)")
+    if live:
+        parts.append(f"{len(live)} live day(s) {live[0]} → {live[-1]}")
+    return "> " + ". ".join(parts) + "." if parts else ""
+
+
+def write_monthly(days, render):
+    """monthly/<YYYY-MM>[_personal].md for every month that has days; render(days, month) -> md lines."""
+    for month, mdays in by_month(days).items():
+        p = monthly_md(month)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text("\n".join(render(mdays, month)), encoding="utf-8")
 
 
 SUMMARY_COLS = [("Group", "group", 0), ("Picks", "picks", 0), ("Not filled", "not_filled", 0),
@@ -162,13 +206,34 @@ def build_results():
     if PROFILE == "personal":
         from .personal import build_personal_results
         return build_personal_results()
-    from .review import summarise
     days = load_days()
+    RESULT_MD.write_text("\n".join(render_results(days)), encoding="utf-8")
+    write_monthly(days, render_results)
+    print(f"{RESULT_MD.name} updated: {len(days)} day(s), {sum(len(d['picks']) for d in days)} picks; "
+          f"{len(by_month(days))} monthly page(s) in {monthly_md('x').parent.name}/")
+
+
+def render_results(days, month=None):
+    """Result page lines for `days` (all of them, or one month: then links are relative to monthly/)."""
+    from .review import summarise
+    rel = "../" if month else ""
     allp = [p for d in days for p in d["picks"]]
-    md = [f"# TradingBro – intraday prediction results{TITLE_SFX}", "",
-          f"_Updated {now_ist():%Y-%m-%d %H:%M} IST · scans at 10:10 IST, final review at 15:40 IST "
-          f"(Mon–Fri) · capital ₹{float(os.environ.get('CAPITAL', '100000')):,.0f} per pick._", "",
-          f"> {DISCLAIMER}", "", "## Overall summary", ""]
+    md = [f"# TradingBro – intraday prediction results{TITLE_SFX}" + (f" – {month_title(month)}" if month else ""), "",
+          f"_Updated {now_ist():%Y-%m-%d %H:%M} IST · scans at 10:10 IST, final review after 15:35 IST "
+          f"(Mon–Fri) · capital ₹{float(os.environ.get('CAPITAL', '100000')):,.0f} per pick._", ""]
+    if month:
+        md += [f"[← All results]({rel}{RESULT_MD.name})", ""]
+    md += [data_note(days), "", f"> {DISCLAIMER}", ""]
+    if not month and days:
+        md += ["## By month", "", "| Month | Days | Picks | Win % | Avg R | Profit factor | Total P&L ₹ | Details |",
+               "|---|---|---|---|---|---|---|---|"]
+        for m, mdays in by_month(days).items():
+            s = summarise([p for d in mdays for p in d["picks"]], m)
+            md.append(f"| {month_title(m)} | {len(mdays)} | {s.get('picks', 0)} | {fmt(s.get('win_pct'), 0)} | "
+                      f"{fmt(s.get('avg_r'), 2)} | {fmt(s.get('pf'), 2)} | {fmt(s.get('total_pnl'), 0)} | "
+                      f"[{m}]({monthly_md(m).parent.name}/{monthly_md(m).name}) |")
+        md += [""]
+    md += ["## Overall summary" if not month else f"## {month_title(month)} summary", ""]
     if not days:
         md += ["No final reviews yet.", ""]
     else:
@@ -186,21 +251,21 @@ def build_results():
                       for m in sorted({p["market"] for p in allp})], SUMMARY_COLS)
         md += ["", "_Win % = P&L > 0 after charges (filled picks). R = result in multiples of the planned risk. "
                    "Each pick is sized on the full capital, so totals are a sum of independent trades. "
-                   "Option P&L is a Black-Scholes estimate; target/stop verdicts use exact spot prices. "
+                   "Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real "
+                   "price exists); target/stop verdicts use exact spot prices. "
                    "A pick is \"not filled\" if price never traded back to the entry before 13:30._", ""]
     md += ["## Daily results", ""]
     for d in days:
         s = summarise(d["picks"], d["date"])
-        md += [f"### {d['date']} · market {d['trend']}", "",
+        md += [f"### {d['date']} · market {d['trend']}" + (" · backtest replay" if d.get("replay") else ""), "",
                f"{s.get('picks', 0)} picks · ✅ {s.get('targets', 0)} target · ❌ {s.get('stops', 0)} stop · "
                f"➖ {s.get('sqoff', 0)} closed 15:15 · ⛔ {s.get('not_filled', 0)} not filled · "
                f"win {fmt(s.get('win_pct'), 0)}% · avg {fmt(s.get('avg_r'), 2)}R · "
                f"P&L ₹{fmt(s.get('total_pnl'), 0)}", ""]
         md += pick_tables(d["picks"]) + [
-            f"Files: {', '.join(f'[{n}]({OUTPUT_DIR.name}/{d['date']}/{n})' for n in d['files'])} · "
-                f"[full review]({OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
-    RESULT_MD.write_text("\n".join(md), encoding="utf-8")
-    print(f"{RESULT_MD.name} updated: {len(days)} day(s), {len(allp)} picks")
+            f"Files: {', '.join(f'[{n}]({rel}{OUTPUT_DIR.name}/{d['date']}/{n})' for n in d['files'])} · "
+                f"[full review]({rel}{OUTPUT_DIR.name}/{d['date']}/review.md)", ""]
+    return md
 
 
 # ------------------------------------------------------------------ Picks.md (phone view)

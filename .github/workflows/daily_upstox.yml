@@ -1,7 +1,7 @@
 name: TradingBro daily
 
 # Scan, mid-day check and final review on Upstox market data (the only data source since 26 Nov 2026).
-# Writes output_upstox/, Result_upstox.md, Picks_upstox.md and the personal (_personal) versions.
+# Writes output_upstox/, Result_upstox.md, Picks_upstox.md, monthly/ and the personal (_personal) versions.
 # All times IST (UTC+5:30), Monday-Friday. NSE holidays are skipped inside the script.
 #
 # Optional: add the free 1-year Upstox "Analytics Token" as the repository secret
@@ -92,7 +92,7 @@ jobs:
           git config user.name "swaraj-prabhakar"
           git config user.email "98304110+swaraj-prabhakar@users.noreply.github.com"
           # add each path separately: one missing path makes a single `git add` add nothing at all
-          for p in output_upstox Result_upstox.md Picks_upstox.md output_upstox_personal Result_upstox_personal.md Picks_upstox_personal.md; do
+          for p in output_upstox Result_upstox.md Picks_upstox.md output_upstox_personal Result_upstox_personal.md Picks_upstox_personal.md monthly; do
             if [ -e "$p" ]; then git add "$p"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi

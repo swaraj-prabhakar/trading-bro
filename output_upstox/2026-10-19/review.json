@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-19",
+  "status": "final",
+  "files": [
+    "options_1005.json",
+    "stocks_1005.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -1734.587965312,
+      "pf": 0.0
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -1734.587965312,
+      "pf": 0.0
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -1734.587965312,
+      "pf": 0.0
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes ORB-30 + RVOL",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 1,
+      "sqoff": 0,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -1.0,
+      "total_pnl": -1734.587965312,
+      "pf": 0.0
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "stocks",
+      "source": "stocks_1005.json",
+      "symbol": "ULTRACEMCO",
+      "signal_ts": "2026-10-19 10:05:00+05:30",
+      "votes": "ORB-30 + RVOL",
+      "qty": 8,
+      "charges": 78.587965312,
+      "max_gain": 3233.412034688,
+      "max_loss": 1734.587965312,
+      "direction": 1,
+      "entry": 11132.0,
+      "stop": 10925.0,
+      "target": 11546.0,
+      "label": "ULTRACEMCO BUY",
+      "valid_until": null,
+      "outcome": "stop",
+      "exit_time": "2026-10-19 12:40:00+05:30",
+      "exit": 10925.0,
+      "interval": "5m",
+      "move_pct": -1.859504132231405,
+      "r": -1.0,
+      "pnl": -1734.587965312,
+      "direction_right": false,
+      "win": false,
+      "best_r": 0.42028985507246375,
+      "worst_r": -1.1884057971014492,
+      "fill_time": "2026-10-19 10:10:00+05:30",
+      "verdict": "NO - hit STOP LOSS at 12:40",
+      "at": "10:05",
+      "exit_at": "12:40",
+      "fill_at": "10:10"
+    }
+  ]
+}

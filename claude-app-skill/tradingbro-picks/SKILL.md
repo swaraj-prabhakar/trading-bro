@@ -30,6 +30,7 @@ Base: `https://raw.githubusercontent.com/swaraj-prabhakar/trading-bro/main/`  (`
 | Mid-day update (13:30) | `output_upstox_personal/<date>/review_1330.md` |
 | Day result (after 15:35) | `output_upstox_personal/<date>/review.md` |
 | Track record | `Result_upstox_personal.md` |
+| One month's result | `monthly/<YYYY-MM>_personal.md` (e.g. `monthly/2026-11_personal.md`) |
 
 Page to open on the phone: `https://github.com/swaraj-prabhakar/trading-bro/blob/main/<file>` (for example `Picks_upstox_personal.md`).
 If a file fails to load, give that GitHub page link and stop.
@@ -41,8 +42,9 @@ If a file fails to load, give that GitHub page link and stop.
 | "mid-day update", "how are the picks doing", "status" | **Mid-day update** |
 | "today's result", "how did today go", "end of day", "final" | **Day result** |
 | "overall performance", "track record" | **Track record** |
+| "this month", "October result", "monthly" | **Monthly result** |
 
-If the user is unsure what to ask for, offer these options in one short line: *Picks · Mid-day update · Today's result · Track record*.
+If the user is unsure what to ask for, offer these options in one short line: *Picks · Mid-day update · Today's result · Track record · Monthly result*.
 
 ### Today's picks
 1. Fetch `Picks_upstox_personal.md`.
@@ -69,6 +71,16 @@ If the user is unsure what to ask for, offer these options in one short line: *P
 
 ### Track record
 Fetch `Result_upstox_personal.md`. Report the overall summary **per segment** (stocks account and options account separately): days traded, total P&L, return % on capital, win %, up/down days, best/worst day and max drawdown. Never add the two segments together. In the daily tables, option prices marked **~** are estimates (days before real premiums were used).
+
+### Monthly result
+Fetch `monthly/<YYYY-MM>_personal.md` for the month asked (default: the current month in IST). Report the month's
+result **per segment** (P&L, return %, win %, up/down days, best/worst day, max drawdown), then a short day-by-day
+list. For "all months", use the **By month** table at the top of `Result_upstox_personal.md`.
+
+### Backtest days
+Days marked **backtest replay** (1 Sep – 24 Nov 2026) are the agent's rules replayed on past data, not trades it made
+live; their option prices marked **~** are estimates. When reporting totals or a month that includes them, say so in
+one line. Live results start on 25 Nov 2026.
 
 ## How to place the trade in the Upstox app (tell the user briefly)
 - **Stock:** tap the link → **Buy** → Intraday → Limit at the "Buy at" price → Qty. Then place a **stop-loss (SL-M) sell** at the Stop.

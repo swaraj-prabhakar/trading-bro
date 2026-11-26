@@ -11,8 +11,10 @@ the normal end-of-day review grades them, and Result*.md is rebuilt.
 
 Differences from live, stated on the result pages:
 - reviews use 5-minute bars for every day (live uses 1-minute bars on the day itself)
-- the per-symbol backtest filter sees only sessions before each replayed day inside the
-  ~60-session download, so early days have less history than a live scan
+- each replayed day sees exactly the LIVE_SESSIONS (60) sessions before it, like a live scan; the download
+  is longer (--history, default 125) so that is possible for days up to ~65 sessions back
+- options on contracts that have expired since have no Upstox candles any more: their premium is a
+  Black-Scholes estimate (marked ~ on the pages); live contracts use their real 1-minute premiums
 - one scan per day (live may rescan if the workflow is re-run)
 """
 import argparse
@@ -25,6 +27,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+LIVE_SESSIONS = 60
 VARIANTS = {"current": {},
             "rr3": {"options": ["--rr", "3"]},
             "all_refinements": {"stocks": ["--entry", "pullback", "--daily-trend"], "options": ["--cooldown"]}}
@@ -36,14 +39,28 @@ def run_source(a):
 
     from . import daily, options, review, stocks
     from .config import OUTPUT_DIR, RESULT_MD, SOURCE_LABEL
-    from .data import fetch
+    from .data import fetch, fetch_universe
 
-    nifty = fetch(["^NSEI"], "5m", "60d")["^NSEI"]
+    cur = {}
+
+    def sliced(instruments, refresh=False):
+        """The scanners see only the LIVE_SESSIONS sessions before the replayed day (plus the day itself)."""
+        intraday, daily_bars, dropped = fetch_universe(instruments, refresh)
+        out = {}
+        for t, df in intraday.items():
+            dates = sorted({x for x in df.index.date if x <= cur["day"]})[-(LIVE_SESSIONS + 1):]
+            if dates:
+                out[t] = df[(df.index.date >= dates[0]) & (df.index.date <= cur["day"])]
+        return out, daily_bars, dropped
+
+    stocks.fetch_universe = options.fetch_universe = sliced
+    nifty = fetch(["^NSEI"], "5m", f"{os.environ.get('TRADINGBRO_HISTORY_SESSIONS', '60')}d")["^NSEI"]
     days = sorted({d.isoformat() for d in nifty.index.date if a.start <= d.isoformat() <= a.end})
     days = [d for d in days if daily.trading_day(pd.Timestamp(d).date())]
     print(f"[{SOURCE_LABEL}] {len(days)} trading day(s): {days[0]} .. {days[-1]}", flush=True)
 
     for day in days:
+        cur["day"] = pd.Timestamp(day).date()
         n = 0
         for mod in (stocks, options):
             got = []
@@ -76,7 +93,9 @@ def main(argv=None):
     ap.add_argument("--to", dest="end", required=True, help="YYYY-MM-DD")
     ap.add_argument("--time", default="10:05", help="Replay time HH:MM (default 10:05)")
     ap.add_argument("--capital", type=float, default=float(os.environ.get("CAPITAL", "100000")))
-    ap.add_argument("--history", type=int, default=60, help="Sessions of 5-minute history for backtests (default 60)")
+    ap.add_argument("--history", type=int, default=125,
+                    help="Sessions of 5-minute history to download (default 125: each day still sees only the 60 "
+                         "sessions before it, like a live scan)")
     ap.add_argument("--variant", choices=sorted(VARIANTS), default="current",
                     help="rr3 = 3R option target; all_refinements = stock pullback entry + 20-day EMA "
                          "filter + option cooldown")
@@ -93,7 +112,8 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
     # a fresh process, so tradingbro.config picks up the redirected output folder and profile
     env = dict(os.environ, TRADINGBRO_RUN_DIR=str(out), CAPITAL=str(int(a.capital)),
-               TRADINGBRO_HISTORY_SESSIONS=str(a.history), TRADINGBRO_PROFILE=a.profile)
+               TRADINGBRO_HISTORY_SESSIONS=str(a.history), TRADINGBRO_PROFILE=a.profile,
+               TRADINGBRO_CACHE_TTL=os.environ.get("TRADINGBRO_CACHE_TTL", "43200"))   # one download per run
     cmd = [sys.executable, "-m", "tradingbro.replay_days", "--one", "--from", a.start, "--to", a.end,
            "--time", a.time, "--capital", str(a.capital), "--profile", a.profile, "--variant", a.variant]
     if subprocess.run(cmd, cwd=ROOT, env=env).returncode != 0:
