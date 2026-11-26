@@ -30,7 +30,11 @@ ROOT = Path(__file__).resolve().parent.parent
 LIVE_SESSIONS = 60
 VARIANTS = {"current": {},
             "rr3": {"options": ["--rr", "3"]},
-            "all_refinements": {"stocks": ["--entry", "pullback", "--daily-trend"], "options": ["--cooldown"]}}
+            "all_refinements": {"stocks": ["--entry", "pullback", "--daily-trend"], "options": ["--cooldown"]},
+            "opt_pb_atr": {"options": ["--entry", "pullback_atr"]},
+            "opt_pb_level": {"options": ["--entry", "pullback_level"]},
+            "stock_rr1": {"stocks": ["--rr", "1"]},
+            "stock_rr15": {"stocks": ["--rr", "1.5"]}}
 
 
 def run_source(a):

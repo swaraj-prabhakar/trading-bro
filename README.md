@@ -74,7 +74,11 @@ Stop = 2.5 × ATR(14), target = 2R, square-off 15:15 (on the underlying's spot p
 stop/target using its implied volatility. Only if no real price is found does it fall back to a Black-Scholes
 estimate, marked `~` on the pages. (Until 26 Nov 2026 every premium was an estimate, and those were 7–55% too high.)
 Each instrument is backtested on its own last ~60 sessions. Only instruments with a positive
-historical edge after charges are shown, ordered by strategy agreement, then max gain.
+historical edge after charges are shown, ordered by **expected profit per rupee at risk** (the backtested edge ÷
+max loss). Until 26 Nov 2026 they were ordered by strategy agreement, then max gain (`--rank gain`); in replays of
+Jun–Aug and Sep–Nov 2026 the top 2 by the new order averaged −0.01R and +0.33R instead of −0.12R and +0.15R.
+Tested and rejected (Nov 2026): scanning at 10:35 / 11:05 (lost heavily in Jun–Aug) or 09:50, a pullback entry for
+options, and 1R / 1.5R stock targets.
 
 **Loss filters** (from the same 1-year study; `--classic` turns them off): an option is only bought when the price is
 already beyond the 15-minute opening range in the trade's direction **and** at least 2 of the 3 market-trend views
@@ -178,4 +182,4 @@ Tunables (stop/target, vote threshold, entry window, charges) are in `tradingbro
 - 60 days is a short sample, so edges are small and can disappear. Re-run `validate` regularly.
 - Educational tool, **not investment advice**. Intraday and F&O trading carry a high risk of loss.
 
-**Ordering:** picks are listed by how many of the 5 strategies agree (most first), then by max gain. Every listed pick has already passed the positive-backtest-edge filter.
+**Ordering:** stocks by relative volume; options by expected profit per rupee at risk. Every listed pick has already passed the positive-backtest-edge filter.

@@ -86,10 +86,10 @@ Losses are not eliminated: in the study about half the months still had a negati
 trade and the 15:15 square-off.
 
 ## Method
-Direction comes from the 5-strategy ensemble on the underlying's 5-minute chart (VWAP+EMA, ORB, Supertrend, RSI+MACD, CPR). Each historical underlying trade is re-priced as the corresponding CE/PE to measure the option strategy's average return. Only contracts with a positive expected ₹ profit after option charges qualify; they are then ordered by strategy agreement, then max gain.
+Direction comes from the 5-strategy ensemble on the underlying's 5-minute chart (VWAP+EMA, ORB, Supertrend, RSI+MACD, CPR). Each historical underlying trade is re-priced as the corresponding CE/PE to measure the option strategy's average return. Only contracts with a positive expected ₹ profit after option charges qualify; they are then ordered by expected profit per rupee at risk.
 
 Validation: `python -m tradingbro.validate --allow-short`.
 
 End with: not investment advice; most option buyers lose money and premiums can go to zero.
 
-**Ordering:** picks are listed by how many of the 5 strategies agree (most first), then by max gain. Every listed pick has already passed the positive-backtest-edge filter and the loss filters.
+**Ordering:** picks are listed by **expected profit per rupee at risk** (backtested edge ÷ max loss), best first; `--rank gain` restores the old order (strategy votes, then max gain). In replays of Jun–Aug and Sep–Nov 2026 the top 2 by the new order did clearly better. Every listed pick has already passed the positive-backtest-edge filter and the loss filters.

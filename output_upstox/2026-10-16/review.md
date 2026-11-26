@@ -16,13 +16,13 @@ _Status: final_
 
 | Kind | Pick | At | Votes | Entry | Stop | Target | Filled@ | Reached target or stop? | Exit | Option buy | Option exit | R | BestR | P&L Rs | Data |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| options | BHARTIARTL 27Oct 1880 CE | 10:05 | 5/5 | 1,887.00 | 1,873.76 | 1,913.47 | 10:10 | NEITHER - closed 15:15 at +0.83R | 1,898.00 | - | - | 0.83 | 1.72 | 2,710 | 5m |
 | options | JSWSTEEL 27Oct 1220 CE | 10:05 | 5/5 | 1,216.20 | 1,206.37 | 1,235.86 | 10:10 | NEITHER - closed 15:15 at +0.02R | 1,216.40 | - | - | 0.02 | 1.49 | -196 | 5m |
 | options | M&M 27Oct 2900 CE | 10:05 | 5/5 | 2,899.60 | 2,872.31 | 2,954.18 | 10:10 | NEITHER - closed 15:15 at +0.68R | 2,918.20 | - | - | 0.68 | 1.28 | 1,867 | 5m |
 | options | HCLTECH 27Oct 1380 CE | 10:05 | 5/5 | 1,373.30 | 1,359.70 | 1,400.50 | 10:10 | NEITHER - closed 15:15 at -0.17R | 1,371.00 | - | - | -0.17 | 0.85 | -707 | 5m |
+| options | BHARTIARTL 27Oct 1880 CE | 10:05 | 5/5 | 1,887.00 | 1,873.76 | 1,913.47 | 10:10 | NEITHER - closed 15:15 at +0.83R | 1,898.00 | - | - | 0.83 | 1.72 | 2,710 | 5m |
+| options | HDFCBANK 27Oct 730 CE | 10:05 | 5/5 | 732.70 | 727.58 | 742.93 | 10:10 | NO - hit STOP LOSS at 12:50 | 727.58 | - | - | -1.00 | 0.22 | -1,877 | 5m |
 | options | HINDALCO 27Oct 900 CE | 10:05 | 5/5 | 903.80 | 897.01 | 917.38 | 10:10 | NEITHER - closed 15:15 at +0.15R | 904.80 | - | - | 0.15 | 1.19 | 176 | 5m |
 | options | TATASTEEL 27Oct 177.5 CE | 10:05 | 5/5 | 178.00 | 176.54 | 180.91 | 10:10 | NO - hit STOP LOSS at 10:55 | 176.54 | - | - | -1.00 | 0.07 | -2,154 | 5m |
-| options | HDFCBANK 27Oct 730 CE | 10:05 | 5/5 | 732.70 | 727.58 | 742.93 | 10:10 | NO - hit STOP LOSS at 12:50 | 727.58 | - | - | -1.00 | 0.22 | -1,877 | 5m |
 | stocks | TECHM BUY | 10:05 | ORB-30 + RVOL | 1,762.80 | 1,690.10 | 1,908.20 | 10:10 | NEITHER - closed 15:15 at +0.26R | 1,781.50 | - | - | 0.26 | 0.47 | 454 | 5m |
 | stocks | WIPRO BUY | 10:05 | ORB-30 + RVOL | 182.71 | 170.00 | 208.13 | 10:10 | NEITHER - closed 15:15 at +0.16R | 184.70 | - | - | 0.16 | 0.23 | 282 | 5m |
 | stocks | BHARTIARTL BUY | 10:05 | ORB-30 + RVOL | 1,887.00 | 1,857.70 | 1,945.60 | 10:10 | NEITHER - closed 15:15 at +0.38R | 1,898.00 | - | - | 0.38 | 0.77 | 490 | 5m |

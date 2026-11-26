@@ -5,6 +5,7 @@ Covers NIFTY, BANKNIFTY and NIFTY 50 stock options.
     python -m tradingbro.options --capital 20000 --otm 1     # one strike out-of-the-money (cheaper)
 """
 import math
+from dataclasses import replace as dc_replace
 from dataclasses import replace
 
 import numpy as np
@@ -23,6 +24,7 @@ from .universe import estimate_strike_step, filter_symbols, load_instruments
 OPT_MIN_MARKET_SCORE = 2
 OPT_RR = 2.0              # target = 2 x risk. --rr 3 was tested: slightly better in the 1-year study, mixed in a
                           # 30-day replay (-6%), so 2R stays the default
+PULLBACK_UNTIL = "11:30"  # --entry pullback_*: the limit order is valid until then (no fill = no trade)
 COOLDOWN_SESSIONS = 5     # --cooldown: skip a symbol for 5 sessions after its setup hit the stop (opt-in: helped
                           # the 1-year study but cut profit in a 30-day replay)
 
@@ -143,9 +145,22 @@ def analyze(a):
         if not a.classic and not a.no_cooldown and recent_stop(df, asof, p, mkt):
             cooled += 1
             continue
+        now_px = sig.price                             # spot at the scan
+        if a.entry != "now":
+            # Experimental: wait for a pullback instead of buying the scan bar's close (most stop-outs never
+            # moved in our favour). The limit is on the SPOT price; levels are rebuilt from it.
+            bar = df.loc[sig.ts]
+            d = sig.direction
+            if a.entry == "pullback_atr":
+                lim = now_px - d * 0.5 * float(bar["atr"])
+            else:                                       # pullback_level: the nearer of VWAP and the broken OR-15 level
+                lvl = (max(bar["vwap"], bar["orh"]) if d == 1 else min(bar["vwap"], bar["orl"]))
+                lim = float(lvl) if d * (now_px - lvl) > 0 else now_px
+            st_, tg_ = levels(lim, float(bar["atr"]), d, p)
+            sig = dc_replace(sig, price=float(lim), stop=float(st_), target=float(tg_))
         kind = "CE" if sig.direction == 1 else "PE"
-        step = inst.strike_step or estimate_strike_step(sig.price)
-        K = pick_strike(sig.price, step, kind, a.otm)
+        step = inst.strike_step or estimate_strike_step(now_px)
+        K = pick_strike(now_px, step, kind, a.otm)
         exp = next_expiry(asof.date(), inst.expiry, skip_today=not a.expiry_day)
         hist = simulate(df, p, allow_short=True, before_date=asof.date(), market=mkt)
         rets = option_trade_returns(hist, inst, daily, vix, a.otm, a.expiry_day,
@@ -160,8 +175,9 @@ def analyze(a):
         obars = oq.day_bars(okey, asof.date())
         live = oq.price_at(obars, sig.ts + pd.Timedelta(minutes=5))
         if live is not None and live > 0:
-            prem = live
-            iv = oq.implied_vol(live, sig.price, K, T, kind) or iv
+            iv = oq.implied_vol(live, now_px, K, T, kind) or iv
+            # premium at the order's spot level (= the live premium unless a pullback entry is used)
+            prem = live + bs_price(sig.price, K, T, iv, kind) - bs_price(now_px, K, T, iv, kind)
         else:
             prem = prem_model
         if prem < 0.5 or (a.max_premium and prem > a.max_premium):
@@ -170,7 +186,7 @@ def analyze(a):
         prem_stop = bs_price(sig.stop, K, T_exit, iv, kind)
         prem_tgt = bs_price(sig.target, K, T_exit, iv, kind)
         if live is not None:                    # keep them consistent with the real entry premium
-            shift = prem - bs_price(sig.price, K, T, iv, kind)
+            shift = live - bs_price(now_px, K, T, iv, kind)
             prem_stop, prem_tgt = max(prem_stop + shift, 0.05), max(prem_tgt + shift, 0.05)
         lot_cost = prem * inst.lot
         lots_cap = math.floor(a.capital / lot_cost)
@@ -194,6 +210,7 @@ def analyze(a):
             expiry=str(exp), signal_time=f"{sig.ts:%H:%M}", spot=sig.price, iv_pct=iv * 100,
             delta=bs_delta(sig.price, K, T, iv, kind), premium=prem, prem_stop=prem_stop, prem_target=prem_tgt,
             premium_source="live" if live is not None else "estimate", premium_model=prem_model, option_key=okey,
+            entry_type=a.entry, valid_until=PULLBACK_UNTIL if a.entry != "now" else None, spot_now=now_px,
             spot_stop=sig.stop, spot_target=sig.target, lot=inst.lot, lots=lots, qty=qty, invest=prem * qty,
             max_loss=max_loss, risk_pct=max_loss / a.capital * 100,
             max_gain=(prem_tgt - prem) * qty - cost, exp_profit=expected, charges=cost, bt_trades=n,
@@ -210,7 +227,12 @@ def analyze(a):
             row.update(actual=f"{o['reason']}@{o['exit_time']}", actual_pnl=(p_out - prem) * qty - cost)
         rows.append(row)
 
-    rows.sort(key=lambda r: (-int(r["votes"].split("/")[0]), -r["max_gain"]))  # most strategies agreeing, then max gain
+    if a.rank == "edge":
+        # backtested expected profit per rupee at risk: in the Jun-Aug and Sep-Nov 2026 replays the top 2 by this
+        # did better than by votes + max gain (max gain mostly reflects position size, not the chance of success)
+        rows.sort(key=lambda r: -(r["exp_profit"] / max(r["max_loss"], 1.0)))
+    else:
+        rows.sort(key=lambda r: (-int(r["votes"].split("/")[0]), -r["max_gain"]))  # most strategies agreeing, then max gain
     rows = rows[: a.top]
     cols = [("Option", "option", 0), ("At", "signal_time", 0), ("Spot", "spot", 1), ("Premium", "premium", 1),
             ("Src", "premium_source", 0),
@@ -252,6 +274,12 @@ def main(argv=None):
     ap.add_argument("--otm", type=int, default=0, help="Strikes out-of-the-money (0 = ATM, 1 = one strike OTM, cheaper)")
     ap.add_argument("--expiry-day", action="store_true",
                     help="Allow contracts expiring today (default: roll to the next expiry on expiry day)")
+    ap.add_argument("--entry", choices=["now", "pullback_atr", "pullback_level"], default="now",
+                    help="now = buy at the scan (default); pullback_atr = limit 0.5 ATR better on spot; "
+                         "pullback_level = limit at VWAP / the broken opening-range level (experimental)")
+    ap.add_argument("--rank", choices=["gain", "edge"], default="edge",
+                    help="Order of the picks: edge = backtested expected profit per rupee at risk (default); "
+                         "gain = strategy votes, then max gain (the order used until 26 Nov 2026)")
     ap.add_argument("--max-premium", type=float, default=0, help="Skip options whose premium per unit exceeds this (0 = no limit)")
     ap.add_argument("--classic", action="store_true",
                     help="Original rules: no loss filters, no cooldown, 2R target")

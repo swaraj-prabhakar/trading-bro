@@ -15,7 +15,7 @@ _Status: final_
 
 | Kind | Pick | At | Votes | Entry | Stop | Target | Filled@ | Reached target or stop? | Exit | Option buy | Option exit | R | BestR | P&L Rs | Data |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| options | RELIANCE 23Nov 1180 PE | 10:05 | 5/5 | 1,179.50 | 1,193.19 | 1,152.12 | 10:10 | NEITHER - closed 15:15 at +1.40R | 1,160.30 | - | - | 1.40 | 1.69 | 4,725 | 5m |
 | options | JIOFIN 23Nov 205 PE | 10:05 | 5/5 | 205.12 | 207.16 | 201.04 | 10:10 | NO - hit STOP LOSS at 11:15 | 207.16 | - | - | -1.00 | 0.47 | -2,147 | 5m |
+| options | RELIANCE 23Nov 1180 PE | 10:05 | 5/5 | 1,179.50 | 1,193.19 | 1,152.12 | 10:10 | NEITHER - closed 15:15 at +1.40R | 1,160.30 | - | - | 1.40 | 1.69 | 4,725 | 5m |
 
 Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.

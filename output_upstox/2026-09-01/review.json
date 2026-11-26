@@ -99,6 +99,7 @@
       "prem_target": 42.11043781748879,
       "premium_source": "estimate",
       "option_key": null,
+      "valid_until": null,
       "outcome": "stop",
       "exit_time": "2026-09-01 12:30:00+05:30",
       "exit": 1058.2955787037067,

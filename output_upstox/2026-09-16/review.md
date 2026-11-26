@@ -17,7 +17,7 @@ _Status: final_
 | Kind | Pick | At | Votes | Entry | Stop | Target | Filled@ | Reached target or stop? | Exit | Option buy | Option exit | R | BestR | P&L Rs | Data |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | options | KOTAKBANK 29Sep 410 PE | 10:05 | 5/5 | 409.70 | 412.63 | 403.83 | 10:10 | NO - hit STOP LOSS at 10:35 | 412.63 | - | - | -1.00 | 0.02 | -2,704 | 5m |
-| options | NIFTY 22Sep 23200 PE | 10:05 | 4/5 | 23,178.15 | 23,268.47 | 22,997.51 | 10:10 | NO - hit STOP LOSS at 10:50 | 23,268.47 | - | - | -1.00 | 0.07 | -2,728 | 5m |
 | options | BHARTIARTL 29Sep 1820 PE | 10:05 | 4/5 | 1,822.80 | 1,831.46 | 1,805.48 | 10:10 | NO - hit STOP LOSS at 10:30 | 1,831.46 | - | - | -1.00 | 0.07 | -1,911 | 5m |
+| options | NIFTY 22Sep 23200 PE | 10:05 | 4/5 | 23,178.15 | 23,268.47 | 22,997.51 | 10:10 | NO - hit STOP LOSS at 10:50 | 23,268.47 | - | - | -1.00 | 0.07 | -2,728 | 5m |
 
 Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.

@@ -1,6 +1,6 @@
 # TradingBro – personal P&L (Upstox data) – personal (2 picks per segment)
 
-_Updated 2026-11-26 15:40 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
+_Updated 2026-11-26 16:41 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
 
 Each segment below is a separate account: read the row for the segment you trade. The segments are **not** added together.
 
@@ -12,9 +12,9 @@ Each segment below is a separate account: read the row for the segment you trade
 
 | Month | Days | Stocks P&L ₹ | Stocks return % | Options P&L ₹ | Options return % | Details |
 |---|---|---|---|---|---|---|
-| November 2026 | 17 | 3,411 | 3.4 | 11,535 | 11.5 | [2026-11](monthly/2026-11_personal.md) |
-| October 2026 | 20 | -121 | -0.1 | 40,108 | 40.1 | [2026-10](monthly/2026-10_personal.md) |
-| September 2026 | 21 | -620 | -0.6 | -1,419 | -1.4 | [2026-09](monthly/2026-09_personal.md) |
+| November 2026 | 17 | 3,411 | 3.4 | 45,208 | 45.2 | [2026-11](monthly/2026-11_personal.md) |
+| October 2026 | 20 | -121 | -0.1 | 22,682 | 22.7 | [2026-10](monthly/2026-10_personal.md) |
+| September 2026 | 21 | -620 | -0.6 | 3,298 | 3.3 | [2026-09](monthly/2026-09_personal.md) |
 
 ## Per segment
 
@@ -23,7 +23,7 @@ Each segment below is a separate account: read the row for the segment you trade
 | Segment | Days traded | Picks | ✅ Target | ❌ Stop | ➖ 15:15 | Win % | Up / down days | Total P&L ₹ | Return on capital % | Avg / traded day ₹ | Best day ₹ | Worst day ₹ | Max drawdown ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Stocks | 22 | 38 | 3 | 2 | 33 | 55 | 14 / 8 | 2,670 | 2.7 | 121 | 1,680 | -1,207 | -1,642 |
-| Options | 32 | 60 | 11 | 27 | 22 | 48 | 16 / 16 | 50,225 | 50.2 | 1,570 | 19,410 | -7,683 | -19,132 |
+| Options | 32 | 60 | 17 | 26 | 17 | 48 | 18 / 14 | 71,187 | 71.2 | 2,225 | 17,808 | -6,570 | -10,310 |
 
 _Days traded = days the segment had at least one pick. Return on capital = total P&L ÷ ₹100,000. Max drawdown = deepest fall of the running P&L from its high. Win % counts filled picks, after charges. Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices._
 
@@ -31,59 +31,59 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 
 | Date | Market | Stocks | Options |
 |---|---|---|---|
-| 2026-11-26 | BULLISH | -1,207 (2,670) | -5,852 (50,225) |
-| 2026-11-25 | BULLISH | 30 (3,878) | 17,808 (56,077) |
+| 2026-11-26 | BULLISH | -1,207 (2,670) | -5,852 (71,187) |
+| 2026-11-25 | BULLISH | 30 (3,878) | 17,808 (77,039) |
 | 2026-11-23 (replay) | BEARISH | - | - |
-| 2026-11-20 (replay) | BULLISH | 1,680 (3,848) | -1,087 (38,269) |
-| 2026-11-19 (replay) | BULLISH | 287 (2,168) | 5,937 (39,356) |
+| 2026-11-20 (replay) | BULLISH | 1,680 (3,848) | 12,798 (59,231) |
+| 2026-11-19 (replay) | BULLISH | 287 (2,168) | -1,724 (46,433) |
 | 2026-11-18 (replay) | BEARISH | - | - |
-| 2026-11-17 (replay) | BULLISH | - | -307 (33,419) |
-| 2026-11-16 (replay) | BULLISH | 456 (1,881) | -2,908 (33,726) |
+| 2026-11-17 (replay) | BULLISH | - | 183 (48,157) |
+| 2026-11-16 (replay) | BULLISH | 456 (1,881) | 10,245 (47,975) |
 | 2026-11-13 (replay) | BULLISH | 240 (1,425) | - |
-| 2026-11-12 (replay) | BULLISH | -305 (1,185) | -7,683 (36,633) |
-| 2026-11-11 (replay) | BULLISH | - | -6,832 (44,317) |
+| 2026-11-12 (replay) | BULLISH | -305 (1,185) | -4,703 (37,730) |
+| 2026-11-11 (replay) | BULLISH | - | -3,251 (42,433) |
 | 2026-11-09 (replay) | BEARISH | - | - |
-| 2026-11-06 (replay) | BULLISH | 1,024 (1,491) | -1,402 (51,148) |
-| 2026-11-05 (replay) | BULLISH | 1,459 (467) | 6,570 (52,551) |
-| 2026-11-04 (replay) | BULLISH | -629 (-992) | -404 (45,981) |
-| 2026-11-03 (replay) | BULLISH | - | 7,126 (46,385) |
-| 2026-11-02 (replay) | BULLISH | 378 (-363) | 569 (39,259) |
+| 2026-11-06 (replay) | BULLISH | 1,024 (1,491) | 7,490 (45,683) |
+| 2026-11-05 (replay) | BULLISH | 1,459 (467) | 3,955 (38,193) |
+| 2026-11-04 (replay) | BULLISH | -629 (-992) | -6,570 (34,238) |
+| 2026-11-03 (replay) | BULLISH | - | 11,473 (40,808) |
+| 2026-11-02 (replay) | BULLISH | 378 (-363) | 3,356 (29,335) |
 | 2026-10-30 (replay) | BULLISH | 9 (-741) | - |
 | 2026-10-29 (replay) | BULLISH | - | - |
-| 2026-10-28 (replay) | BEARISH | - | 2,578 (38,690) |
+| 2026-10-28 (replay) | BEARISH | - | 2,578 (25,979) |
 | 2026-10-27 (replay) | BULLISH | 120 (-750) | - |
 | 2026-10-26 (replay) | BULLISH | -162 (-870) | - |
-| 2026-10-23 (replay) | BEARISH | - | 19,410 (36,112) |
-| 2026-10-22 (replay) | BEARISH | - | -4,484 (16,702) |
-| 2026-10-21 (replay) | BEARISH | - | 16,120 (21,186) |
+| 2026-10-23 (replay) | BEARISH | - | 6,643 (23,402) |
+| 2026-10-22 (replay) | BEARISH | - | -4,484 (16,759) |
+| 2026-10-21 (replay) | BEARISH | - | 9,326 (21,242) |
 | 2026-10-19 (replay) | BULLISH | -875 (-708) | - |
-| 2026-10-16 (replay) | BULLISH | 359 (167) | 2,515 (5,066) |
+| 2026-10-16 (replay) | BULLISH | 359 (167) | 1,672 (11,916) |
 | 2026-10-15 (replay) | BULLISH | 84 (-192) | - |
 | 2026-10-14 (replay) | BEARISH | - | - |
 | 2026-10-13 (replay) | BULLISH | 1,001 (-277) | - |
 | 2026-10-12 (replay) | BEARISH | - | - |
 | 2026-10-09 (replay) | BULLISH | 365 (-1,278) | - |
-| 2026-10-08 (replay) | BEARISH | - | 6,732 (2,552) |
-| 2026-10-07 (replay) | BEARISH | - | -2,762 (-4,180) |
+| 2026-10-08 (replay) | BEARISH | - | 9,708 (10,244) |
+| 2026-10-07 (replay) | BEARISH | - | -2,762 (536) |
 | 2026-10-06 (replay) | SIDEWAYS | - | - |
 | 2026-10-05 (replay) | BULLISH | -1,022 (-1,642) | - |
 | 2026-10-01 (replay) | BEARISH | - | - |
 | 2026-09-30 (replay) | SIDEWAYS | - | - |
-| 2026-09-29 (replay) | BEARISH | - | -4,472 (-1,419) |
-| 2026-09-28 (replay) | BEARISH | - | 376 (3,053) |
+| 2026-09-29 (replay) | BEARISH | - | -2,780 (3,298) |
+| 2026-09-28 (replay) | BEARISH | - | 6,247 (6,078) |
 | 2026-09-25 (replay) | BEARISH | - | - |
-| 2026-09-24 (replay) | BEARISH | - | 4,572 (2,677) |
+| 2026-09-24 (replay) | BEARISH | - | 3,273 (-169) |
 | 2026-09-23 (replay) | BEARISH | - | - |
 | 2026-09-22 (replay) | SIDEWAYS | - | - |
 | 2026-09-21 (replay) | BEARISH | - | - |
 | 2026-09-18 (replay) | SIDEWAYS | - | - |
 | 2026-09-17 (replay) | BULLISH | -218 (-620) | - |
-| 2026-09-16 (replay) | BEARISH | - | -5,433 (-1,895) |
-| 2026-09-15 (replay) | BEARISH | - | 4,694 (3,538) |
-| 2026-09-11 (replay) | BEARISH | - | -1,263 (-1,156) |
-| 2026-09-10 (replay) | BEARISH | - | 4,538 (107) |
-| 2026-09-09 (replay) | BEARISH | - | -3,171 (-4,431) |
-| 2026-09-08 (replay) | BEARISH | - | 2,241 (-1,260) |
+| 2026-09-16 (replay) | BEARISH | - | -4,615 (-3,442) |
+| 2026-09-15 (replay) | BEARISH | - | 8,209 (1,173) |
+| 2026-09-11 (replay) | BEARISH | - | -1,263 (-7,036) |
+| 2026-09-10 (replay) | BEARISH | - | 4,538 (-5,772) |
+| 2026-09-09 (replay) | BEARISH | - | -3,171 (-10,310) |
+| 2026-09-08 (replay) | BEARISH | - | -3,639 (-7,140) |
 | 2026-09-07 (replay) | BEARISH | - | 1,070 (-3,501) |
 | 2026-09-04 (replay) | BULLISH | -402 (-402) | - |
 | 2026-09-03 (replay) | SIDEWAYS | - | - |
@@ -150,8 +150,8 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| APOLLOHOSP 23Nov 9100 CE | 10:05 | 5/5 | 125.5~ | 125.5~ | 78.5~ | 253.9~ | 148.8~ | 9,147.50 | 9,057.99 | 9,326.51 | ➖ NEITHER - closed 15:15 at +0.47R | 0.47 | 2,824 |
-| MAXHEALTH 23Nov 1080 CE | 10:05 | 5/5 | 15.9~ | 15.9~ | 8.6~ | 37.8~ | 8.6~ | 1,085.75 | 1,071.02 | 1,115.22 | ❌ NO - hit STOP LOSS at 10:50 | -1.00 | -3,911 |
+| BAJFINANCE 23Nov 1100 CE | 10:05 | 5/5 | 14.8~ | 14.8~ | 11.2~ | 23.4~ | 23.3~ | 1,097.60 | 1,089.94 | 1,112.91 | ✅ YES - reached TARGET at 12:00 | 2.00 | 6,281 |
+| NIFTY 23Nov 25500 CE | 10:05 | 4/5 | 163.2~ | 163.2~ | 121.4~ | 265.9~ | 264.6~ | 25,503.35 | 25,418.00 | 25,674.04 | ✅ YES - reached TARGET at 12:20 | 2.00 | 6,517 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -169,8 +169,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MARUTI 23Nov 13250 CE | 10:05 | 5/5 | 171.2~ | 171.2~ | 102.9~ | 369.4~ | 366.6~ | 13,253.00 | 13,101.45 | 13,556.10 | ✅ YES - reached TARGET at 15:10 | 2.00 | 9,702 |
 | JSWSTEEL 23Nov 1320 CE | 10:05 | 5/5 | 23.3~ | 23.3~ | 17.9~ | 36.0~ | 17.8~ | 1,325.00 | 1,314.84 | 1,345.31 | ❌ NO - hit STOP LOSS at 12:15 | -1.00 | -3,765 |
+| JIOFIN 23Nov 225 CE | 10:05 | 4/5 | 3.1~ | 3.1~ | 2.4~ | 4.8~ | 4.0~ | 224.95 | 223.45 | 227.95 | ➖ NEITHER - closed 15:15 at +1.17R | 1.17 | 2,041 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -188,7 +188,7 @@ No picks this day.
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | ICICIBANK 23Nov 1600 CE | 10:05 | 5/5 | 25.5~ | 25.5~ | 21.1~ | 35.4~ | 28.6~ | 1,597.90 | 1,588.94 | 1,615.82 | ➖ NEITHER - closed 15:15 at +0.76R | 0.76 | 2,085 |
-| SBIN 23Nov 1120 CE | 10:05 | 5/5 | 11.9~ | 11.9~ | 8.9~ | 19.4~ | 8.8~ | 1,112.40 | 1,105.03 | 1,127.13 | ❌ NO - hit STOP LOSS at 13:10 | -1.00 | -2,392 |
+| SHRIRAMFIN 23Nov 990 CE | 10:05 | 5/5 | 24.7~ | 24.7~ | 21.8~ | 31.0~ | 22.5~ | 988.00 | 982.11 | 999.77 | ➖ NEITHER - closed 15:15 at -0.59R | -0.59 | -1,902 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -206,8 +206,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ETERNAL 23Nov 370 CE | 10:05 | 5/5 | 7.1~ | 7.1~ | 5.7~ | 10.4~ | 7.3~ | 369.25 | 366.37 | 375.01 | ➖ NEITHER - closed 15:15 at +0.23R | 0.23 | 436 |
-| KOTAKBANK 23Nov 495 CE | 10:05 | 5/5 | 8.5~ | 8.5~ | 6.8~ | 12.3~ | 6.8~ | 496.65 | 493.57 | 502.82 | ❌ NO - hit STOP LOSS at 10:40 | -1.00 | -3,344 |
+| ITC 23Nov 290 CE | 10:05 | 5/5 | 4.4~ | 4.4~ | 3.1~ | 7.9~ | 6.6~ | 291.40 | 288.90 | 296.40 | ➖ NEITHER - closed 15:15 at +1.36R | 1.36 | 3,709 |
+| APOLLOHOSP 23Nov 8700 CE | 10:05 | 5/5 | 125.7~ | 125.7~ | 102.7~ | 179.2~ | 178.7~ | 8,654.00 | 8,602.77 | 8,756.45 | ✅ YES - reached TARGET at 12:15 | 2.00 | 6,536 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -235,8 +235,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| KOTAKBANK 23Nov 495 CE | 10:05 | 5/5 | 8.6~ | 8.6~ | 6.8~ | 12.9~ | 6.8~ | 492.60 | 488.69 | 500.43 | ❌ NO - hit STOP LOSS at 11:40 | -1.00 | -3,681 |
-| ETERNAL 23Nov 365 CE | 10:05 | 5/5 | 10.5~ | 10.5~ | 8.9~ | 13.9~ | 8.9~ | 366.55 | 363.66 | 372.33 | ❌ NO - hit STOP LOSS at 14:35 | -1.00 | -4,002 |
+| RELIANCE 23Nov 1340 CE | 10:05 | 5/5 | 46.1~ | 46.1~ | 42.6~ | 53.4~ | 42.6~ | 1,340.00 | 1,333.32 | 1,353.35 | ❌ NO - hit STOP LOSS at 11:40 | -1.00 | -1,888 |
+| JSWSTEEL 23Nov 1360 CE | 10:05 | 5/5 | 38.0~ | 38.0~ | 34.0~ | 46.7~ | 34.0~ | 1,364.50 | 1,356.96 | 1,379.59 | ❌ NO - hit STOP LOSS at 10:25 | -1.00 | -2,815 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -248,8 +248,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TRENT 23Nov 3200 CE | 10:05 | 5/5 | 78.4~ | 78.4~ | 65.3~ | 108.6~ | 84.9~ | 3,185.80 | 3,158.30 | 3,240.79 | ➖ NEITHER - closed 15:15 at +0.52R | 0.52 | 1,372 |
 | ETERNAL 23Nov 370 CE | 10:05 | 5/5 | 10.8~ | 10.8~ | 9.0~ | 15.1~ | 9.0~ | 371.10 | 367.51 | 378.29 | ❌ NO - hit STOP LOSS at 10:40 | -1.00 | -4,622 |
-| SBIN 23Nov 1060 CE | 10:05 | 5/5 | 22.6~ | 22.6~ | 17.8~ | 34.1~ | 19.8~ | 1,065.05 | 1,056.06 | 1,083.02 | ➖ NEITHER - closed 15:15 at -0.53R | -0.53 | -2,209 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -273,8 +273,8 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TITAN 23Nov 4950 CE | 10:05 | 5/5 | 112.1~ | 112.1~ | 80.1~ | 194.8~ | 133.9~ | 4,954.50 | 4,889.48 | 5,084.53 | ➖ NEITHER - closed 15:15 at +0.61R | 0.61 | 3,727 |
-| M&M 23Nov 3250 CE | 10:05 | 5/5 | 99.2~ | 99.2~ | 74.2~ | 161.3~ | 74.0~ | 3,262.10 | 3,213.23 | 3,359.84 | ❌ NO - hit STOP LOSS at 12:40 | -1.00 | -5,129 |
+| ITC 23Nov 280 CE | 10:05 | 5/5 | 9.1~ | 9.1~ | 7.9~ | 11.6~ | 7.9~ | 281.30 | 279.14 | 285.62 | ❌ NO - hit STOP LOSS at 11:00 | -1.00 | -2,095 |
+| ICICIBANK 23Nov 1520 CE | 10:05 | 5/5 | 42.8~ | 42.8~ | 36.6~ | 56.8~ | 56.7~ | 1,521.90 | 1,509.92 | 1,545.86 | ✅ YES - reached TARGET at 13:40 | 2.00 | 9,585 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -293,8 +293,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| BAJFINANCE 23Nov 1040 CE | 10:05 | 5/5 | 32.7~ | 32.7~ | 25.8~ | 49.3~ | 49.2~ | 1,044.15 | 1,030.86 | 1,070.72 | ✅ YES - reached TARGET at 13:40 | 2.00 | 12,260 |
-| TECHM 23Nov 1840 CE | 10:05 | 5/5 | 78.7~ | 78.7~ | 69.6~ | 98.6~ | 69.5~ | 1,840.50 | 1,822.98 | 1,875.54 | ❌ NO - hit STOP LOSS at 12:05 | -1.00 | -5,690 |
+| JSWSTEEL 23Nov 1360 CE | 10:05 | 5/5 | 55.1~ | 55.1~ | 48.0~ | 70.8~ | 48.0~ | 1,361.90 | 1,348.31 | 1,389.08 | ❌ NO - hit STOP LOSS at 11:15 | -1.00 | -4,932 |
+| ICICIBANK 23Nov 1460 CE | 10:05 | 5/5 | 34.1~ | 34.1~ | 28.4~ | 47.0~ | 46.9~ | 1,462.80 | 1,452.08 | 1,484.25 | ✅ YES - reached TARGET at 13:15 | 2.00 | 8,887 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -313,8 +313,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ADANIENT 23Nov 2700 CE | 10:05 | 5/5 | 92.4~ | 92.4~ | 78.5~ | 124.0~ | 103.9~ | 2,678.00 | 2,648.93 | 2,736.14 | ➖ NEITHER - closed 15:15 at +0.80R | 0.80 | 3,433 |
-| TITAN 23Nov 4650 CE | 10:05 | 5/5 | 110.6~ | 110.6~ | 89.1~ | 161.4~ | 89.2~ | 4,651.10 | 4,608.76 | 4,735.77 | ❌ NO - hit STOP LOSS at 10:25 | -1.00 | -3,837 |
+| TRENT 23Nov 3050 CE | 10:05 | 5/5 | 160.1~ | 160.1~ | 149.4~ | 182.0~ | 149.5~ | 3,040.70 | 3,020.48 | 3,081.14 | ❌ NO - hit STOP LOSS at 10:25 | -1.00 | -2,499 |
+| ADANIPORTS 23Nov 1920 CE | 10:05 | 5/5 | 60.4~ | 60.4~ | 52.1~ | 79.1~ | 52.1~ | 1,912.00 | 1,895.15 | 1,945.71 | ❌ NO - hit STOP LOSS at 11:00 | -1.00 | -4,071 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -326,8 +326,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| HINDUNILVR 23Nov 1940 CE | 10:05 | 5/5 | 52.2~ | 52.2~ | 43.3~ | 72.8~ | 57.8~ | 1,942.50 | 1,925.32 | 1,976.87 | ➖ NEITHER - closed 15:15 at +0.61R | 0.61 | 1,597 |
 | TATACONSUM 23Nov 1040 CE | 10:05 | 5/5 | 41.5~ | 41.5~ | 36.3~ | 52.7~ | 51.7~ | 1,050.00 | 1,040.91 | 1,068.19 | ➖ NEITHER - closed 15:15 at +1.86R | 1.86 | 5,529 |
+| BHARTIARTL 23Nov 2020 CE | 10:05 | 5/5 | 50.7~ | 50.7~ | 44.8~ | 63.5~ | 63.4~ | 2,011.80 | 2,000.04 | 2,035.32 | ✅ YES - reached TARGET at 11:55 | 2.00 | 5,944 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -346,8 +346,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ETERNAL 23Nov 345 CE | 10:05 | 5/5 | 14.4~ | 14.4~ | 12.9~ | 17.8~ | 12.8~ | 347.25 | 344.40 | 352.95 | ❌ NO - hit STOP LOSS at 13:35 | -1.00 | -4,012 |
-| COALINDIA 23Nov 400 CE | 10:05 | 5/5 | 10.3~ | 10.3~ | 8.3~ | 14.9~ | 13.7~ | 400.70 | 396.95 | 408.21 | ➖ NEITHER - closed 15:15 at +1.56R | 1.56 | 4,581 |
+| NIFTY 03Nov 23300 CE | 10:05 | 5/5 | 86.8~ | 86.8~ | 52.7~ | 180.8~ | 49.8~ | 23,303.60 | 23,230.65 | 23,449.50 | ❌ NO - hit STOP LOSS at 13:05 | -1.00 | -2,465 |
+| SHRIRAMFIN 23Nov 840 CE | 10:05 | 5/5 | 37.8~ | 37.8~ | 34.4~ | 45.0~ | 45.0~ | 837.20 | 830.63 | 850.34 | ✅ YES - reached TARGET at 11:10 | 2.00 | 5,821 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -374,8 +374,8 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| RELIANCE 23Nov 1180 PE | 10:05 | 5/5 | 31.9~ | 31.9~ | 26.0~ | 46.3~ | 41.5~ | 1,179.50 | 1,193.19 | 1,152.12 | ➖ NEITHER - closed 15:15 at +1.40R | 1.40 | 4,725 |
 | JIOFIN 23Nov 205 PE | 10:05 | 5/5 | 5.4~ | 5.4~ | 4.5~ | 7.5~ | 4.5~ | 205.12 | 207.16 | 201.04 | ❌ NO - hit STOP LOSS at 11:15 | -1.00 | -2,147 |
+| RELIANCE 23Nov 1180 PE | 10:05 | 5/5 | 31.9~ | 31.9~ | 26.0~ | 46.3~ | 41.5~ | 1,179.50 | 1,193.19 | 1,152.12 | ➖ NEITHER - closed 15:15 at +1.40R | 1.40 | 4,725 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -409,8 +409,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| SHRIRAMFIN 27Oct 890 PE | 10:05 | 5/5 | 18.1~ | 18.1~ | 13.1~ | 31.0~ | 30.8~ | 885.25 | 895.51 | 864.73 | ✅ YES - reached TARGET at 14:40 | 2.00 | 10,376 |
-| BHARTIARTL 27Oct 1900 PE | 10:05 | 5/5 | 24.9~ | 24.9~ | 17.6~ | 44.2~ | 44.1~ | 1,892.60 | 1,907.66 | 1,862.47 | ✅ YES - reached TARGET at 12:45 | 2.00 | 9,034 |
+| JSWSTEEL 27Oct 1200 PE | 10:05 | 5/5 | 15.0~ | 15.0~ | 10.9~ | 25.5~ | 25.2~ | 1,200.70 | 1,209.95 | 1,182.20 | ✅ YES - reached TARGET at 14:50 | 2.00 | 6,839 |
+| ITC 27Oct 255 PE | 10:05 | 5/5 | 3.0~ | 3.0~ | 2.4~ | 4.7~ | 3.0~ | 257.20 | 258.96 | 253.68 | ➖ NEITHER - closed 15:15 at +0.03R | 0.03 | -196 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -435,8 +435,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ETERNAL 27Oct 315 PE | 10:05 | 5/5 | 4.4~ | 4.4~ | 3.0~ | 8.3~ | 8.3~ | 316.00 | 319.54 | 308.92 | ✅ YES - reached TARGET at 13:40 | 2.00 | 9,438 |
-| ADANIPORTS 27Oct 1760 PE | 10:05 | 5/5 | 29.1~ | 29.1~ | 23.1~ | 43.4~ | 43.3~ | 1,761.60 | 1,774.92 | 1,734.95 | ✅ YES - reached TARGET at 12:20 | 2.00 | 6,681 |
+| TRENT 27Oct 2850 PE | 10:05 | 5/5 | 69.8~ | 69.8~ | 60.2~ | 91.2~ | 91.0~ | 2,864.30 | 2,886.18 | 2,820.55 | ✅ YES - reached TARGET at 12:15 | 2.00 | 4,673 |
+| TITAN 27Oct 4400 PE | 10:05 | 3/5 | 54.7~ | 54.7~ | 43.4~ | 81.9~ | 81.7~ | 4,409.10 | 4,435.20 | 4,356.90 | ✅ YES - reached TARGET at 12:15 | 2.00 | 4,654 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -465,8 +465,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| BHARTIARTL 27Oct 1880 CE | 10:05 | 5/5 | 45.2~ | 45.2~ | 38.2~ | 61.2~ | 51.1~ | 1,887.00 | 1,873.76 | 1,913.47 | ➖ NEITHER - closed 15:15 at +0.83R | 0.83 | 2,710 |
 | JSWSTEEL 27Oct 1220 CE | 10:05 | 5/5 | 24.3~ | 24.3~ | 19.7~ | 35.3~ | 24.2~ | 1,216.20 | 1,206.37 | 1,235.86 | ➖ NEITHER - closed 15:15 at +0.02R | 0.02 | -196 |
+| M&M 27Oct 2900 CE | 10:05 | 5/5 | 56.3~ | 56.3~ | 43.0~ | 89.2~ | 66.0~ | 2,899.60 | 2,872.31 | 2,954.18 | ➖ NEITHER - closed 15:15 at +0.68R | 0.68 | 1,867 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -521,7 +521,7 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ADANIPORTS 27Oct 1700 PE | 10:05 | 5/5 | 59.4~ | 59.4~ | 51.7~ | 76.7~ | 60.2~ | 1,700.40 | 1,717.48 | 1,666.24 | ➖ NEITHER - closed 15:15 at +0.14R | 0.14 | 270 |
+| JIOFIN 27Oct 215 PE | 10:05 | 5/5 | 4.7~ | 4.7~ | 4.1~ | 6.1~ | 6.1~ | 213.94 | 215.24 | 211.34 | ✅ YES - reached TARGET at 12:20 | 2.00 | 3,247 |
 | JSWSTEEL 27Oct 1220 PE | 10:05 | 5/5 | 32.7~ | 32.7~ | 28.4~ | 42.5~ | 42.5~ | 1,212.50 | 1,221.37 | 1,194.77 | ✅ YES - reached TARGET at 11:10 | 2.00 | 6,462 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
@@ -573,8 +573,8 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| JSWSTEEL 27Oct 1240 PE | 10:05 | 5/5 | 29.1~ | 29.1~ | 26.0~ | 36.2~ | 26.0~ | 1,249.20 | 1,256.97 | 1,233.65 | ❌ NO - hit STOP LOSS at 11:10 | -1.00 | -2,219 |
-| BAJFINANCE 27Oct 960 PE | 10:05 | 5/5 | 32.9~ | 32.9~ | 30.0~ | 39.1~ | 30.0~ | 963.40 | 969.97 | 950.25 | ❌ NO - hit STOP LOSS at 11:10 | -1.00 | -2,252 |
+| JIOFIN 27Oct 215 PE | 10:05 | 5/5 | 4.6~ | 4.6~ | 4.0~ | 6.2~ | 4.0~ | 215.47 | 217.10 | 212.20 | ❌ NO - hit STOP LOSS at 10:40 | -1.00 | -1,683 |
+| ITC 27Oct 265 PE | 10:05 | 5/5 | 8.6~ | 8.6~ | 8.0~ | 9.8~ | 8.0~ | 263.90 | 265.14 | 261.42 | ❌ NO - hit STOP LOSS at 11:30 | -1.00 | -1,097 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -586,8 +586,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TRENT 29Sep 2650 PE | 10:05 | 5/5 | 24.3~ | 24.3~ | 11.6~ | 60.9~ | 26.9~ | 2,630.50 | 2,651.35 | 2,588.79 | ➖ NEITHER - closed 15:15 at +0.22R | 0.22 | 518 |
-| ICICIBANK 29Sep 1300 PE | 10:05 | 5/5 | 3.9~ | 3.9~ | 1.3~ | 15.1~ | 3.8~ | 1,302.00 | 1,310.34 | 1,285.32 | ➖ NEITHER - closed 15:15 at +0.08R | 0.08 | -141 |
+| SBILIFE 29Sep 1740 PE | 10:05 | 5/5 | 15.0~ | 15.0~ | 9.3~ | 30.5~ | 20.2~ | 1,734.90 | 1,746.26 | 1,712.19 | ➖ NEITHER - closed 15:15 at +0.87R | 0.87 | 1,867 |
+| JIOFIN 29Sep 225 PE | 10:05 | 4/5 | 1.5~ | 1.5~ | 0.9~ | 3.4~ | 3.4~ | 224.08 | 225.30 | 221.63 | ✅ YES - reached TARGET at 12:55 | 2.00 | 4,380 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -604,8 +604,8 @@ No picks this day.
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ADANIPORTS 29Sep 1780 PE | 10:05 | 5/5 | 32.9~ | 32.9~ | 28.9~ | 41.4~ | 35.6~ | 1,787.40 | 1,796.22 | 1,769.75 | ➖ NEITHER - closed 15:15 at +0.84R | 0.84 | 1,205 |
 | BHARTIARTL 29Sep 1820 PE | 10:05 | 5/5 | 28.7~ | 28.7~ | 25.2~ | 36.3~ | 36.0~ | 1,816.10 | 1,823.09 | 1,802.13 | ✅ YES - reached TARGET at 13:45 | 2.00 | 3,367 |
+| HINDUNILVR 29Sep 1940 PE | 10:05 | 5/5 | 19.8~ | 19.8~ | 15.6~ | 29.8~ | 19.7~ | 1,930.70 | 1,938.46 | 1,915.17 | ➖ NEITHER - closed 15:15 at +0.04R | 0.04 | -93 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -649,7 +649,7 @@ No picks this day.
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | KOTAKBANK 29Sep 410 PE | 10:05 | 5/5 | 7.1~ | 7.1~ | 5.7~ | 10.2~ | 5.7~ | 409.70 | 412.63 | 403.83 | ❌ NO - hit STOP LOSS at 10:35 | -1.00 | -2,704 |
-| NIFTY 22Sep 23200 PE | 10:05 | 4/5 | 160.2~ | 160.2~ | 119.3~ | 264.7~ | 119.4~ | 23,178.15 | 23,268.47 | 22,997.51 | ❌ NO - hit STOP LOSS at 10:50 | -1.00 | -2,728 |
+| BHARTIARTL 29Sep 1820 PE | 10:05 | 4/5 | 33.9~ | 33.9~ | 30.0~ | 42.4~ | 30.0~ | 1,822.80 | 1,831.46 | 1,805.48 | ❌ NO - hit STOP LOSS at 10:30 | -1.00 | -1,911 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -661,8 +661,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ICICIBANK 29Sep 1360 PE | 10:05 | 5/5 | 17.3~ | 17.3~ | 13.6~ | 26.2~ | 17.7~ | 1,356.50 | 1,364.41 | 1,340.69 | ➖ NEITHER - closed 15:15 at +0.13R | 0.13 | 201 |
 | ADANIPORTS 29Sep 1740 PE | 10:05 | 5/5 | 49.4~ | 49.4~ | 44.1~ | 60.8~ | 59.0~ | 1,741.10 | 1,752.57 | 1,718.15 | ➖ NEITHER - closed 15:15 at +1.75R | 1.75 | 4,494 |
+| SBIN 29Sep 980 PE | 10:05 | 5/5 | 10.1~ | 10.1~ | 8.1~ | 15.2~ | 15.2~ | 981.70 | 986.75 | 971.61 | ✅ YES - reached TARGET at 14:45 | 2.00 | 3,715 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -699,8 +699,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| KOTAKBANK 29Sep 415 PE | 10:05 | 5/5 | 7.6~ | 7.6~ | 6.6~ | 9.7~ | 6.6~ | 414.75 | 416.89 | 410.47 | ❌ NO - hit STOP LOSS at 14:00 | -1.00 | -2,042 |
 | M&M 29Sep 3100 PE | 10:05 | 5/5 | 34.8~ | 34.8~ | 29.5~ | 47.4~ | 29.5~ | 3,120.50 | 3,134.91 | 3,091.67 | ❌ NO - hit STOP LOSS at 10:20 | -1.00 | -1,128 |
+| KOTAKBANK 29Sep 415 PE | 10:05 | 5/5 | 7.6~ | 7.6~ | 6.6~ | 9.7~ | 6.6~ | 414.75 | 416.89 | 410.47 | ❌ NO - hit STOP LOSS at 14:00 | -1.00 | -2,042 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 
@@ -712,8 +712,8 @@ _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's re
 
 | Option | Signal | Votes | Buy at (premium) | Filled at | Premium stop | Premium target | Exit premium | Spot entry | Spot stop | Spot target | Result | R | P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ICICIBANK 29Sep 1420 PE | 10:05 | 5/5 | 23.4~ | 23.4~ | 20.8~ | 29.2~ | 29.1~ | 1,410.80 | 1,415.96 | 1,400.47 | ✅ YES - reached TARGET at 11:40 | 2.00 | 3,941 |
 | M&M 29Sep 3100 PE | 10:05 | 5/5 | 41.9~ | 41.9~ | 33.7~ | 61.9~ | 33.7~ | 3,109.10 | 3,129.54 | 3,068.21 | ❌ NO - hit STOP LOSS at 11:05 | -1.00 | -1,700 |
+| BHARTIARTL 29Sep 1840 PE | 10:05 | 5/5 | 53.0~ | 53.0~ | 49.2~ | 61.1~ | 49.1~ | 1,832.20 | 1,840.15 | 1,816.30 | ❌ NO - hit STOP LOSS at 11:40 | -1.00 | -1,939 |
 
 _Options: Buy at = the premium in the pick, Filled at / Exit = the contract's real Upstox price at entry and exit (P&L uses these). Values marked ~ are Black-Scholes estimates (no real price available, e.g. picks made before 27 Nov 2026). Target/stop hits are judged on the exact spot price._
 

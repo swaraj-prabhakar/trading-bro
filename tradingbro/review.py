@@ -56,7 +56,8 @@ def normalise(kind, r, day, source):
                  target=r["spot_target"], label=r["option"], opt_type=r["type"], strike=r["strike"],
                  expiry=r["expiry"], iv=r["iv_pct"] / 100, premium=r["premium"],
                  prem_stop=r.get("prem_stop"), prem_target=r.get("prem_target"),
-                 premium_source=r.get("premium_source", "estimate"), option_key=r.get("option_key"))
+                 premium_source=r.get("premium_source", "estimate"), option_key=r.get("option_key"),
+                 valid_until=r.get("valid_until"))
     return p
 
 
