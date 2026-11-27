@@ -1,8 +1,8 @@
 # TradingBro – intraday prediction results (Upstox data)
 
-_Updated 2026-11-26 16:41 IST · scans at 10:10 IST, final review after 15:35 IST (Mon–Fri) · capital ₹100,000 per pick._
+_Updated 2026-11-27 15:40 IST · scans at 10:10 IST, final review after 15:35 IST (Mon–Fri) · capital ₹100,000 per pick._
 
-> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 2 live day(s) 2026-11-25 → 2026-11-26.
+> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 3 live day(s) 2026-11-25 → 2026-11-27.
 
 > Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.
 
@@ -10,25 +10,36 @@ _Updated 2026-11-26 16:41 IST · scans at 10:10 IST, final review after 15:35 IS
 
 | Month | Days | Picks | Win % | Avg R | Profit factor | Total P&L ₹ | Details |
 |---|---|---|---|---|---|---|---|
-| November 2026 | 17 | 136 | 54 | 0.25 | 1.51 | 81,732 | [2026-11](monthly/2026-11.md) |
+| November 2026 | 18 | 137 | 53 | 0.24 | 1.51 | 81,315 | [2026-11](monthly/2026-11.md) |
 | October 2026 | 20 | 77 | 64 | 0.48 | 3.97 | 89,484 | [2026-10](monthly/2026-10.md) |
 | September 2026 | 21 | 48 | 48 | 0.10 | 1.27 | 10,172 | [2026-09](monthly/2026-09.md) |
 
+## Market conditions check (trial)
+
+A shadow-mode flag shown on the Picks page since 27 Nov 2026 (it changes no picks): CAUTION when India VIX rose sharply over 5 days or breadth opposes the trade. This scorecard decides whether it should start cutting position size.
+
+| Verdict · segment | Days | Picks | Win % | Avg R | Total P&L ₹ |
+|---|---|---|---|---|---|
+| OK · stocks | 1 | 1 | 0 | -0.17 | -417 |
+| OK · options | 1 | 0 | - | - | - |
+| CAUTION · stocks | 0 | 0 | - | - | - |
+| CAUTION · options | 0 | 0 | - | - | - |
+
 ## Overall summary
 
-**58 trading day(s)** · 2026-09-01 → 2026-11-26 · 261 picks · 261 filled
+**59 trading day(s)** · 2026-09-01 → 2026-11-27 · 262 picks · 262 filled
 
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
-| All picks | 261 | 0 | 52 | 76 | 133 | 56 | 0.29 | 1.79 | 181,389 |
-| Stocks | 68 | 0 | 3 | 4 | 61 | 59 | 0.15 | 1.47 | 10,064 |
+| All picks | 262 | 0 | 52 | 76 | 134 | 55 | 0.29 | 1.79 | 180,972 |
+| Stocks | 69 | 0 | 3 | 4 | 62 | 58 | 0.14 | 1.44 | 9,647 |
 | Options | 193 | 0 | 49 | 72 | 72 | 54 | 0.34 | 1.83 | 171,325 |
 
 **By strategy agreement**
 
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
-| Votes ORB-30 + RVOL | 68 | 0 | 3 | 4 | 61 | 59 | 0.15 | 1.47 | 10,064 |
+| Votes ORB-30 + RVOL | 69 | 0 | 3 | 4 | 62 | 58 | 0.14 | 1.44 | 9,647 |
 | Votes 5/5 | 178 | 0 | 43 | 67 | 68 | 54 | 0.31 | 1.81 | 156,298 |
 | Votes 4/5 | 10 | 0 | 3 | 4 | 3 | 60 | 0.50 | 1.45 | 5,273 |
 | Votes 3/5 | 5 | 0 | 3 | 1 | 1 | 60 | 0.98 | 4.25 | 9,753 |
@@ -38,11 +49,23 @@ _Updated 2026-11-26 16:41 IST · scans at 10:10 IST, final review after 15:35 IS
 | Group | Picks | Not filled | ✅ Target | ❌ Stop | ➖ 15:15 close | Win % | Avg R | Profit factor | Total P&L ₹ |
 |---|---|---|---|---|---|---|---|---|---|
 | BEARISH | 81 | 0 | 25 | 24 | 32 | 58 | 0.50 | 2.93 | 99,675 |
-| BULLISH | 180 | 0 | 27 | 52 | 101 | 54 | 0.19 | 1.46 | 81,713 |
+| BULLISH | 181 | 0 | 27 | 52 | 102 | 54 | 0.19 | 1.46 | 81,296 |
 
 _Win % = P&L > 0 after charges (filled picks). R = result in multiples of the planned risk. Each pick is sized on the full capital, so totals are a sum of independent trades. Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices. A pick is "not filled" if price never traded back to the entry before 13:30._
 
 ## Daily results
+
+### 2026-11-27 · market BULLISH
+
+1 picks · ✅ 0 target · ❌ 0 stop · ➖ 1 closed 15:15 · ⛔ 0 not filled · win 0% · avg -0.17R · P&L ₹-417
+
+**Stocks**
+
+| Stock | Signal | Entry | Stop | Target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|
+| BEL BUY | 10:05 | 411.90 | 402.50 | 430.70 | ➖ NEITHER - closed 15:15 at -0.17R | -0.17 | -417 |
+
+Files: [conditions.json](output_upstox/2026-11-27/conditions.json), [options_1010.json](output_upstox/2026-11-27/options_1010.json), [stocks_1010.json](output_upstox/2026-11-27/stocks_1010.json) · [full review](output_upstox/2026-11-27/review.md)
 
 ### 2026-11-26 · market BULLISH
 

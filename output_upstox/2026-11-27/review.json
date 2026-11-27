@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-27",
+  "status": "final",
+  "files": [
+    "conditions.json",
+    "options_1010.json",
+    "stocks_1010.json"
+  ],
+  "summary": [
+    {
+      "group": "stocks",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -0.17021276595744358,
+      "total_pnl": -417.1770955055928,
+      "pf": 0.0
+    },
+    {
+      "group": "options",
+      "picks": 0,
+      "not_filled": 0
+    },
+    {
+      "group": "ALL (first per symbol)",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -0.17021276595744358,
+      "total_pnl": -417.1770955055928,
+      "pf": 0.0
+    },
+    {
+      "group": "ALL saved predictions",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -0.17021276595744358,
+      "total_pnl": -417.1770955055928,
+      "pf": 0.0
+    }
+  ],
+  "by_votes": [
+    {
+      "group": "votes ORB-30 + RVOL",
+      "picks": 1,
+      "not_filled": 0,
+      "filled": 1,
+      "targets": 0,
+      "stops": 0,
+      "sqoff": 1,
+      "open": 0,
+      "win_pct": 0.0,
+      "dir_pct": 0.0,
+      "avg_r": -0.17021276595744358,
+      "total_pnl": -417.1770955055928,
+      "pf": 0.0
+    }
+  ],
+  "predictions": [
+    {
+      "kind": "stocks",
+      "source": "stocks_1010.json",
+      "symbol": "BEL",
+      "signal_ts": "2026-11-27 10:05:00+05:30",
+      "votes": "ORB-30 + RVOL",
+      "qty": 212,
+      "charges": 77.97709550559999,
+      "max_gain": 3907.6229044943902,
+      "max_loss": 2070.7770955055953,
+      "direction": 1,
+      "entry": 411.9,
+      "stop": 402.5,
+      "target": 430.69999999999993,
+      "label": "BEL BUY",
+      "valid_until": null,
+      "outcome": "squareoff",
+      "exit_time": "2026-11-27 15:15:00+05:30",
+      "exit": 410.3,
+      "interval": "1m",
+      "move_pct": -0.3884437970381078,
+      "r": -0.17021276595744358,
+      "pnl": -417.1770955055928,
+      "direction_right": false,
+      "win": false,
+      "best_r": 0.2765957446808541,
+      "worst_r": -0.4095744680851037,
+      "fill_time": "2026-11-27 10:10:00+05:30",
+      "verdict": "NEITHER - closed 15:15 at -0.17R",
+      "at": "10:05",
+      "exit_at": "15:15",
+      "fill_at": "10:10"
+    }
+  ]
+}

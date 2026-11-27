@@ -1,6 +1,6 @@
 # TradingBro – personal P&L (Upstox data) – personal (2 picks per segment) – October 2026
 
-_Updated 2026-11-26 16:41 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
+_Updated 2026-11-27 15:40 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
 
 [← All results](../Result_upstox_personal.md)
 

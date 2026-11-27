@@ -1,10 +1,10 @@
 # TradingBro – personal P&L (Upstox data) – personal (2 picks per segment)
 
-_Updated 2026-11-26 16:41 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
+_Updated 2026-11-27 15:40 IST · capital ₹100,000 put into **one segment only**, split between its top 2 picks (₹50,000 each) from the 10:10 scan._
 
 Each segment below is a separate account: read the row for the segment you trade. The segments are **not** added together.
 
-> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 2 live day(s) 2026-11-25 → 2026-11-26.
+> **56 day(s) 2026-09-01 → 2026-11-23 are a BACKTEST REPLAY**: the agent's rules replayed on past Upstox data at 10:05 (one scan a day, graded on 5-minute bars), not trades it made live. Options on contracts that have since expired use Black-Scholes premium estimates (marked ~). 3 live day(s) 2026-11-25 → 2026-11-27.
 
 > Educational tool, not investment advice. Backtests on ~60 days of data do not guarantee future results. Intraday F&O trading is high-risk; most retail traders lose money.
 
@@ -12,17 +12,28 @@ Each segment below is a separate account: read the row for the segment you trade
 
 | Month | Days | Stocks P&L ₹ | Stocks return % | Options P&L ₹ | Options return % | Details |
 |---|---|---|---|---|---|---|
-| November 2026 | 17 | 3,411 | 3.4 | 45,208 | 45.2 | [2026-11](monthly/2026-11_personal.md) |
+| November 2026 | 18 | 3,195 | 3.2 | 45,208 | 45.2 | [2026-11](monthly/2026-11_personal.md) |
 | October 2026 | 20 | -121 | -0.1 | 22,682 | 22.7 | [2026-10](monthly/2026-10_personal.md) |
 | September 2026 | 21 | -620 | -0.6 | 3,298 | 3.3 | [2026-09](monthly/2026-09_personal.md) |
 
+## Market conditions check (trial)
+
+A shadow-mode flag shown on the Picks page since 27 Nov 2026 (it changes no picks): CAUTION when India VIX rose sharply over 5 days or breadth opposes the trade. This scorecard decides whether it should start cutting position size.
+
+| Verdict · segment | Days | Picks | Win % | Avg R | Total P&L ₹ |
+|---|---|---|---|---|---|
+| OK · stocks | 1 | 1 | 0 | -0.17 | -216 |
+| OK · options | 1 | 0 | - | - | - |
+| CAUTION · stocks | 0 | 0 | - | - | - |
+| CAUTION · options | 0 | 0 | - | - | - |
+
 ## Per segment
 
-**58 trading day(s)** · 2026-09-01 → 2026-11-26
+**59 trading day(s)** · 2026-09-01 → 2026-11-27
 
 | Segment | Days traded | Picks | ✅ Target | ❌ Stop | ➖ 15:15 | Win % | Up / down days | Total P&L ₹ | Return on capital % | Avg / traded day ₹ | Best day ₹ | Worst day ₹ | Max drawdown ₹ |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Stocks | 22 | 38 | 3 | 2 | 33 | 55 | 14 / 8 | 2,670 | 2.7 | 121 | 1,680 | -1,207 | -1,642 |
+| Stocks | 23 | 39 | 3 | 2 | 34 | 54 | 14 / 9 | 2,454 | 2.5 | 107 | 1,680 | -1,207 | -1,642 |
 | Options | 32 | 60 | 17 | 26 | 17 | 48 | 18 / 14 | 71,187 | 71.2 | 2,225 | 17,808 | -6,570 | -10,310 |
 
 _Days traded = days the segment had at least one pick. Return on capital = total P&L ÷ ₹100,000. Max drawdown = deepest fall of the running P&L from its high. Win % counts filled picks, after charges. Option P&L uses the contract's real Upstox premium (~ = Black-Scholes estimate where no real price exists); target/stop verdicts use exact spot prices._
@@ -31,6 +42,7 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 
 | Date | Market | Stocks | Options |
 |---|---|---|---|
+| 2026-11-27 | BULLISH | -216 (2,454) | - |
 | 2026-11-26 | BULLISH | -1,207 (2,670) | -5,852 (71,187) |
 | 2026-11-25 | BULLISH | 30 (3,878) | 17,808 (77,039) |
 | 2026-11-23 (replay) | BEARISH | - | - |
@@ -91,6 +103,16 @@ _Days traded = days the segment had at least one pick. Return on capital = total
 | 2026-09-01 (replay) | BEARISH | - | -2,460 (-2,460) |
 
 ## Daily picks
+
+### 2026-11-27 · market BULLISH
+
+**Stocks**
+
+| Stock | Signal | Entry | Stop | Target | Result | R | P&L ₹ |
+|---|---|---|---|---|---|---|---|
+| BEL BUY | 10:05 | 411.90 | 402.50 | 430.70 | ➖ NEITHER - closed 15:15 at -0.17R | -0.17 | -216 |
+
+[full review](output_upstox_personal/2026-11-27/review.md)
 
 ### 2026-11-26 · market BULLISH
 
