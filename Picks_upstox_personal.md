@@ -1,6 +1,6 @@
 # TradingBro – today's picks (Upstox data) – personal (2 picks per segment)
 
-**2026-11-27** · scan at 10:10 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment
+**2026-11-27** · scan at 10:10 IST · market **BULLISH** · capital ₹100,000 → ₹50,000 per pick, trade ONE segment · status as of **mid-day 13:30**
 
 How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry & strike, Buy the CE/PE. Place the stop-loss right after the buy fills; square off by 15:15. Options: exit on the **spot** stop/target.
 
@@ -8,9 +8,9 @@ How to trade: tap **Open in Upstox** → stocks: Buy · options: pick the expiry
 
 ## Stocks (1)
 
-| Stock | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
-|---|---|---|---|---|---|---|---|---|---|
-| BEL | BUY | 411.90 | 402.50 | 430.70 | 106 | ₹1,043 | ₹1,946 | 1.6× | [Open in Upstox](https://upstox.com/stocks/bharat-electronics-ltd-share-price/) |
+| Stock | Status | Side | Buy at | Stop | Target | Qty | Max loss | Max gain | RVOL | Upstox |
+|---|---|---|---|---|---|---|---|---|---|---|
+| BEL | PENDING - open, now -0.06R | BUY | 411.90 | 402.50 | 430.70 | 106 | ₹1,043 | ₹1,946 | 1.6× | [Open in Upstox](https://upstox.com/stocks/bharat-electronics-ltd-share-price/) |
 
 ## Options (0)
 
